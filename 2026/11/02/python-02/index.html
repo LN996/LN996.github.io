@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>流程控制与文件操作 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我的学习笔记,边学边记,持续修订。  📖 流程控制(if &#x2F; while &#x2F; for)1. if 分支结构Python 用缩进**(推荐4空格)表示代码块,if &#x2F; elif &#x2F; else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写">
+<meta property="og:type" content="article">
+<meta property="og:title" content="流程控制与文件操作">
+<meta property="og:url" content="https://ln996.github.io/2026/11/02/python-02/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="我的学习笔记,边学边记,持续修订。  📖 流程控制(if &#x2F; while &#x2F; for)1. if 分支结构Python 用缩进**(推荐4空格)表示代码块,if &#x2F; elif &#x2F; else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-02T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T09:06:59.491Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "流程控制与文件操作",
+  "url": "https://ln996.github.io/2026/11/02/python-02/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-02T01:00:00.000Z",
+  "dateModified": "2026-11-17T09:06:59.491Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/02/python-02/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '流程控制与文件操作',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Python%E5%9F%BA%E7%A1%80/"><i class="fa-fw fas fa-code"></i><span> Python基础</span></a></li><li><a class="site-page child" href="/categories/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"><i class="fa-fw fas fa-cubes"></i><span> 面向对象</span></a></li><li><a class="site-page child" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-network-wired"></i><span> 网络编程</span></a></li><li><a class="site-page child" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-layer-group"></i><span> 并发编程</span></a></li><li><a class="site-page child" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><i class="fa-fw fas fa-database"></i><span> 数据库</span></a></li><li><a class="site-page child" href="/categories/%E5%89%8D%E7%AB%AF/"><i class="fa-fw fas fa-html5"></i><span> 前端</span></a></li><li><a class="site-page child" href="/categories/Django/"><i class="fa-fw fas fa-rocket"></i><span> Django</span></a></li><li><a class="site-page child" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/"><i class="fa-fw fas fa-hammer"></i><span> 项目实战</span></a></li><li><a class="site-page child" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/"><i class="fa-fw fas fa-server"></i><span> 运维与面试</span></a></li><li><a class="site-page child" href="/categories/%E7%BB%83%E4%B9%A0%E4%B8%8E%E4%BB%A3%E7%A0%81/"><i class="fa-fw fas fa-keyboard"></i><span> 练习与代码</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">流程控制与文件操作</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Python%E5%9F%BA%E7%A1%80/"><i class="fa-fw fas fa-code"></i><span> Python基础</span></a></li><li><a class="site-page child" href="/categories/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"><i class="fa-fw fas fa-cubes"></i><span> 面向对象</span></a></li><li><a class="site-page child" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-network-wired"></i><span> 网络编程</span></a></li><li><a class="site-page child" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-layer-group"></i><span> 并发编程</span></a></li><li><a class="site-page child" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><i class="fa-fw fas fa-database"></i><span> 数据库</span></a></li><li><a class="site-page child" href="/categories/%E5%89%8D%E7%AB%AF/"><i class="fa-fw fas fa-html5"></i><span> 前端</span></a></li><li><a class="site-page child" href="/categories/Django/"><i class="fa-fw fas fa-rocket"></i><span> Django</span></a></li><li><a class="site-page child" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/"><i class="fa-fw fas fa-hammer"></i><span> 项目实战</span></a></li><li><a class="site-page child" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/"><i class="fa-fw fas fa-server"></i><span> 运维与面试</span></a></li><li><a class="site-page child" href="/categories/%E7%BB%83%E4%B9%A0%E4%B8%8E%E4%BB%A3%E7%A0%81/"><i class="fa-fw fas fa-keyboard"></i><span> 练习与代码</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">流程控制与文件操作</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-11-02T01:00:00.000Z" title="发表于 2026-11-02 09:00:00">2026-11-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python%E5%9F%BA%E7%A1%80/">Python基础</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>我的学习笔记,边学边记,持续修订。</p>
+</blockquote>
+<h2 id="📖-流程控制-if-while-for"><a href="#📖-流程控制-if-while-for" class="headerlink" title="📖 流程控制(if &#x2F; while &#x2F; for)"></a>📖 流程控制(if &#x2F; while &#x2F; for)</h2><h3 id="1-if-分支结构"><a href="#1-if-分支结构" class="headerlink" title="1. if 分支结构"></a>1. if 分支结构</h3><p><strong>Python 用</strong>缩进**(推荐4空格)表示代码块,<code>if / elif / else</code> 从上到下命中一个分支后其余不再执行。**</p>
+<ul>
+<li>条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;<code>None</code> 为假</li>
+<li>多条件用 and &#x2F; or 连接;判断区间可连写 <code>90 &gt; score &gt;= 80</code></li>
+<li>elif 可以有多个,else 最多一个且可不写</li>
+<li>三元表达式:<code>值1 if 条件 else 值2</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">score = <span class="number">85</span></span><br><span class="line"><span class="keyword">if</span> score &gt;= <span class="number">90</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;A&quot;</span>)</span><br><span class="line"><span class="keyword">elif</span> score &gt;= <span class="number">80</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;B&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;C&quot;</span>)</span><br><span class="line">level = <span class="string">&quot;及格&quot;</span> <span class="keyword">if</span> score &gt;= <span class="number">60</span> <span class="keyword">else</span> <span class="string">&quot;不及格&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-while-循环与-break-continue"><a href="#2-while-循环与-break-continue" class="headerlink" title="2. while 循环与 break &#x2F; continue"></a>2. while 循环与 break &#x2F; continue</h3><p><strong>while 适合“不知道循环次数”的场景;<code>break</code> <strong>跳出整个循环</strong>,<code>continue</code> <strong>跳过本次</strong>进入下一次。</strong></p>
+<ul>
+<li>while True + break 是最常见的“菜单循环”写法</li>
+<li>while 后面可以直接接 else:循环<strong>没有被 break 打断</strong>时执行</li>
+<li>注意循环变量要自己更新,否则就是死循环</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> i &lt; <span class="number">5</span>:</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">continue</span>   <span class="comment"># 跳过 3</span></span><br><span class="line">    <span class="built_in">print</span>(i, end=<span class="string">&quot; &quot;</span>)  <span class="comment"># 1 2 4 5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-for-循环与-range"><a href="#3-for-循环与-range" class="headerlink" title="3. for 循环与 range"></a>3. for 循环与 range</h3><p><strong>for 用于遍历</strong>可迭代对象**(字符串、列表、字典、文件…);<code>range(起, 止, 步长)</code> 同样<strong>含头不含尾</strong>。**</p>
+<ul>
+<li><code>range(5)</code> → 0 1 2 3 4;<code>range(1, 10, 3)</code> → 1 4 7</li>
+<li>遍历字典默认取键:<code>for k in d</code>;取键值对用 <code>d.items()</code></li>
+<li>嵌套循环:外层走一步,内层走完一圈</li>
+<li>for 也能接 else(没被 break 打断时执行)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">count = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i, <span class="number">3</span>):</span><br><span class="line">        count += <span class="number">1</span></span><br><span class="line"><span class="built_in">print</span>(count)   <span class="comment"># 3+2+1 = 6</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-推导式-列表-字典-集合"><a href="#4-推导式-列表-字典-集合" class="headerlink" title="4. 推导式(列表&#x2F;字典&#x2F;集合)"></a>4. 推导式(列表&#x2F;字典&#x2F;集合)</h3><p><strong>推导式是“循环+判断+生成”一行的简写,格式:</strong>[表达式 for x in 可迭代 if 条件]<strong>。</strong></p>
+<ul>
+<li>列表推导式:<code>[x*x for x in range(1, 6) if x % 2 == 1]</code> → [1, 9, 25]</li>
+<li>字典推导式:<code>{k: v for k, v in pairs}</code></li>
+<li>推导式比 for 循环快,但复杂逻辑不要硬塞,可读性优先</li>
+<li>生成器表达式把 [] 换成 ():不占内存,只能遍历一次</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lst = [x * x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">6</span>) <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(lst)   <span class="comment"># [1, 9, 25]</span></span><br><span class="line">d = &#123;k: k * <span class="number">2</span> <span class="keyword">for</span> k <span class="keyword">in</span> <span class="string">&quot;abc&quot;</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(d)     <span class="comment"># &#123;&#x27;a&#x27;: &#x27;aa&#x27;, &#x27;b&#x27;: &#x27;bb&#x27;, &#x27;c&#x27;: &#x27;cc&#x27;&#125; 字符串*2是重复</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-while-else-与-for-else"><a href="#5-while-else-与-for-else" class="headerlink" title="5. while-else 与 for-else"></a>5. while-else 与 for-else</h3><p><strong>循环可以接 <strong>else</strong>:只有循环</strong>正常跑完、没有被 break 打断<strong>才执行 else;continue 不影响 else,循环体一次没跑也会执行 else。</strong></p>
+<ul>
+<li>语法:while 条件: … else: …;for x in it: … else: …;else 与循环体同级对齐</li>
+<li>触发规则:循环<strong>正常结束</strong>(条件不满足&#x2F;迭代完毕)→ 执行 else;一旦 <strong>break 跳出 → 跳过 else</strong></li>
+<li>continue 只是跳过本轮、循环继续,不会跳过 else;循环条件一开始就不满足(循环体一次没执行)同样会执行 else</li>
+<li>典型用途:”查找类”需求 —— 找到就 break,循环跑完还没找到,在 else 里统一处理”不存在”,不用额外设 found 标志变量</li>
+<li>判断质数、校验用户名是否已注册,都是 for-else 的经典场景</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">names = [<span class="string">&quot;alex&quot;</span>, <span class="string">&quot;wusir&quot;</span>]</span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> names:</span><br><span class="line">    <span class="keyword">if</span> n == <span class="string">&quot;xiaoming&quot;</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;找到了&quot;</span>, n)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;名单里没有这个人&quot;</span>)</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> i &lt; <span class="number">3</span>:</span><br><span class="line">    i += <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">continue</span>     <span class="comment"># 不影响 else</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;while正常结束, i =&quot;</span>, i)   <span class="comment"># while正常结束, i = 3</span></span><br></pre></td></tr></table></figure>
+
+<p><em>for-else 与 while-else</em></p>
+<h3 id="6-嵌套循环-break-只跳一层"><a href="#6-嵌套循环-break-只跳一层" class="headerlink" title="6. 嵌套循环:break 只跳一层"></a>6. 嵌套循环:break 只跳一层</h3><p><strong>嵌套循环中 <strong>break 只能跳出它所在的那一层</strong>,外层照常继续;想一次退出多层,要么逐层判断标志位,要么封装成函数用 return。</strong></p>
+<ul>
+<li>break 和 continue 都只对<strong>当前这层循环</strong>生效:内层 break 后,外层这一轮剩余代码照走、外层继续下一轮</li>
+<li>方案一标志位:内层满足条件时设 flag &#x3D; True 再 break,外层每轮开头检查 flag 决定是否也 break</li>
+<li>方案二封装函数:把整个嵌套循环放进函数,满足条件直接 return,一次跳出所有层,Python 中最干净</li>
+<li>while 嵌套要点:内层的循环变量(计数器)要在<strong>外层每一轮开始时重置</strong>,否则内层只会跑一遍</li>
+<li>经典结构:外层控制”共几轮”,内层控制”每轮做几次” —— 打印三角形、九九乘法表都是这个套路</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">flag = <span class="literal">False</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">        <span class="keyword">if</span> i == <span class="number">1</span> <span class="keyword">and</span> j == <span class="number">1</span>:</span><br><span class="line">            flag = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">break</span>           <span class="comment"># 只跳出内层</span></span><br><span class="line">    <span class="keyword">if</span> flag:</span><br><span class="line">        <span class="keyword">break</span>               <span class="comment"># 外层再看标志位</span></span><br><span class="line"><span class="built_in">print</span>(i, j)                 <span class="comment"># 1 1</span></span><br></pre></td></tr></table></figure>
+
+<p><em>标志位跳出多层循环</em></p>
+<h3 id="7-短路运算-and-or-的返回值"><a href="#7-短路运算-and-or-的返回值" class="headerlink" title="7. 短路运算(and &#x2F; or 的返回值)"></a>7. 短路运算(and &#x2F; or 的返回值)</h3><p><strong><strong>and 遇到假就停、or 遇到真就停</strong>,表达式直接返回那个”决定结果”的操作数 —— 结果不一定是 True&#x2F;False,常用来写默认值。</strong></p>
+<ul>
+<li>a and b:a 为假直接返回 a(结果已定),a 为真则返回 b;”第一个为真才看第二个”</li>
+<li>a or b:a 为真直接返回 a,a 为假返回 b;最常用:x &#x3D; user_input or “默认值”,输入为空串时自动用默认</li>
+<li>优先级 not &gt; and &gt; or;混合时先算 and 再算 or:3 and 5 or 0 → 5</li>
+<li>短路意味着后面的表达式<strong>可能根本不执行</strong>:0 and 1&#x2F;0 不报错,因为 1&#x2F;0 没跑;别把必须执行的副作用代码(打印、修改)放在 and&#x2F;or 后面</li>
+<li>布尔判断:0、0.0、””、[]、{}、None 都为假;if lst: 等价于 if len(lst) &gt; 0:</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="number">0</span> <span class="keyword">or</span> <span class="string">&quot;默认值&quot;</span>)       <span class="comment"># 默认值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;a&quot;</span> <span class="keyword">and</span> <span class="string">&quot;b&quot;</span>)          <span class="comment"># b(and 返回最后一个)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="number">0</span> <span class="keyword">and</span> <span class="number">1</span> / <span class="number">0</span>)          <span class="comment"># 0:短路,1/0 没执行,不报错</span></span><br><span class="line"><span class="built_in">print</span>(<span class="number">3</span> <span class="keyword">and</span> <span class="number">5</span> <span class="keyword">or</span> <span class="number">0</span>)         <span class="comment"># 5</span></span><br></pre></td></tr></table></figure>
+
+<p><em>短路运算示例</em></p>
+<h3 id="8-三元表达式-条件表达式"><a href="#8-三元表达式-条件表达式" class="headerlink" title="8. 三元表达式(条件表达式)"></a>8. 三元表达式(条件表达式)</h3><p><strong><strong>值1 if 条件 else 值2</strong>:条件为真取值1、为假取值2,把”二选一”压缩成一行表达式;有返回值,可以嵌进赋值、f-string、列表生成式,复杂逻辑不要硬塞。</strong></p>
+<ul>
+<li>语法:max_ab &#x3D; a if a &gt; b else b —— 先判断条件,True 取 if 前面的值,False 取 else 后面的值</li>
+<li>它是<strong>表达式</strong>而不是语句:有返回值,能写在赋值右侧、f-string 里、列表生成式的元素位置;普通 if&#x2F;else 语句则不能嵌在这些位置</li>
+<li>两个以上分支可以嵌套:<code>a if x &gt; 0 else (b if x == 0 else c)</code>,超过一层可读性骤降,老老实实写 if&#x2F;elif</li>
+<li>和列表生成式的两种 if:<code>[取值 if 条件 else 另值 for x in it]</code> 是<strong>逐个取值</strong>;<code>[x for x in it if 条件]</code> 是<strong>过滤</strong>,过滤版 if 后面没有 else</li>
+<li>常见错误:漏写 else(语法直接报错,三元必须三段齐全);把冒号写成中文;条件里再套赋值(表达式里不允许 &#x3D;)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a, b = <span class="number">10</span>, <span class="number">20</span></span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">if</span> a &gt; b <span class="keyword">else</span> b)                    <span class="comment"># 20</span></span><br><span class="line">score = <span class="number">85</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;及格&quot;</span> <span class="keyword">if</span> score &gt;= <span class="number">60</span> <span class="keyword">else</span> <span class="string">&quot;不及格&quot;</span>)   <span class="comment"># 及格</span></span><br><span class="line">scores = [<span class="number">58</span>, <span class="number">76</span>, <span class="number">90</span>]</span><br><span class="line"><span class="built_in">print</span>([<span class="string">&quot;及格&quot;</span> <span class="keyword">if</span> s &gt;= <span class="number">60</span> <span class="keyword">else</span> <span class="string">&quot;不及格&quot;</span> <span class="keyword">for</span> s <span class="keyword">in</span> scores])</span><br><span class="line"><span class="comment"># [&#x27;不及格&#x27;, &#x27;及格&#x27;, &#x27;及格&#x27;]</span></span><br></pre></td></tr></table></figure>
+
+<p><em>三元表达式与生成式结合</em></p>
+<h2 id="📖-文件操作"><a href="#📖-文件操作" class="headerlink" title="📖 文件操作"></a>📖 文件操作</h2><h3 id="1-打开文件与三种基础模式"><a href="#1-打开文件与三种基础模式" class="headerlink" title="1. 打开文件与三种基础模式"></a>1. 打开文件与三种基础模式</h3><p><strong><code>open(路径, 模式, encoding=编码)</code>,核心模式:<strong>r 读 &#x2F; w 写(清空) &#x2F; a 追加</strong>,默认都是文本模式。</strong></p>
+<ul>
+<li>r:只读,文件<strong>不存在直接报错</strong> FileNotFoundError</li>
+<li>w:只写,文件不存在则创建,<strong>存在则清空重写</strong></li>
+<li>a:追加,不存在则创建,存在则在<strong>末尾续写</strong></li>
+<li>加 <code>+</code> 变读写模式:r+ 从<strong>文件头</strong>开始覆盖写、写多少覆盖多少</li>
+<li>加 <code>b</code> 变字节模式(rb&#x2F;wb):处理图片、视频等二进制文件,不能指定 encoding</li>
+<li>文本模式一定要写 <code>encoding=&quot;utf-8&quot;</code>,Windows 默认 gbk 会乱码</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;a.txt&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">f.write(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">f.write(<span class="string">&quot;world&quot;</span>)   <span class="comment"># 接着写,不换行</span></span><br><span class="line">f.close()          <span class="comment"># 必须关闭才落盘</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-读取文件的三种方式"><a href="#2-读取文件的三种方式" class="headerlink" title="2. 读取文件的三种方式"></a>2. 读取文件的三种方式</h3><p><strong><code>read()</code> 全部读成字符串、<code>readline()</code> 一次一行、<code>readlines()</code> 全部读成</strong>行列表**;大文件用 for 逐行迭代。**</p>
+<ul>
+<li>read():文件多大内存吃多少,大文件慎用</li>
+<li>readlines():返回列表,每个元素是一行(带换行符 \n)</li>
+<li>推荐:<code>for line in f</code> 每次只加载一行,内存友好</li>
+<li>读取后指针在文件末尾,再 read 得到空字符串</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;a.txt&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        <span class="built_in">print</span>(line.rstrip(<span class="string">&quot;\n&quot;</span>))   <span class="comment"># 逐行处理,去掉换行符</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-with-上下文管理器"><a href="#3-with-上下文管理器" class="headerlink" title="3. with 上下文管理器"></a>3. with 上下文管理器</h3><p><strong><code>with open(...) as f:</code> 结束时</strong>自动调用 close**,即使中途报错也会关闭,是最推荐的写法。**</p>
+<ul>
+<li>with 内部实现了 <strong>enter</strong> &#x2F; <strong>exit</strong>,属于上下文管理协议</li>
+<li>可以同时打开多个:<code>with open(a) as f1, open(b) as f2:</code></li>
+<li>文件指针:read 之后想重新读,要 <code>f.seek(0)</code> 把指针拨回开头;<code>f.tell()</code> 查看当前位置</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;src.txt&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f1, \</span><br><span class="line">     <span class="built_in">open</span>(<span class="string">&quot;dst.txt&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f2:</span><br><span class="line">    f2.write(f1.read())   <span class="comment"># 一行完成文件复制</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-字符编码发展史-ASCII-→-GBK-→-Unicode-→-UTF-8"><a href="#4-字符编码发展史-ASCII-→-GBK-→-Unicode-→-UTF-8" class="headerlink" title="4. 字符编码发展史(ASCII → GBK → Unicode → UTF-8)"></a>4. 字符编码发展史(ASCII → GBK → Unicode → UTF-8)</h3><p><strong>编码的进化:<strong>ASCII(英文)→ 各国自定(GBK 等)→ Unicode(全球统一编号)→ UTF-8(Unicode 的变长实现)</strong>;理解这条线就看懂了乱码。</strong></p>
+<ul>
+<li>计算机只认二进制,字符必须按”对照表”翻译成数字再存储:这张对照表就是<strong>字符编码</strong></li>
+<li>ASCII:美国制定,1 字节 8 位,收录英文、数字、符号共 127 个,英文世界够用</li>
+<li>各国自己扩展:中国 GBK 用 2 字节表示一个汉字(向下兼容 ASCII);日本、韩国各搞一套,互不兼容 —— <strong>A 编码存的文件用 B 编码打开必然乱码</strong></li>
+<li>Unicode(万国码):把全球所有字符统一编号,任何语言都用同一张表;但它是”编号标准”,定长存储对英文太浪费(一个字母也要占多字节)</li>
+<li>UTF-8:Unicode 的<strong>变长编码实现</strong>:英文 1 字节、汉字 3 字节,向下兼容 ASCII,成为互联网事实标准;平时说的”Unicode 编码”实际多指 UTF-8</li>
+<li>乱码两大类:① 存取编码不一致 → 用正确编码重新解码可救回 ② 存的时候字符就不在表里(如用 gbk 存 emoji)→ 换 utf-8 才能救</li>
+</ul>
+<h3 id="5-文件修改的两种方式"><a href="#5-文件修改的两种方式" class="headerlink" title="5. 文件修改的两种方式"></a>5. 文件修改的两种方式</h3><p><strong>硬盘数据无法原地修改,<strong>改文件 &#x3D; 读入内存改好再写回</strong>:方式一整读整写(占内存),方式二逐行写临时文件再改名顶替(省内存、推荐)。</strong></p>
+<ul>
+<li>原理:文本编辑器”改文件”也是把文件读进内存、改完后保存写回硬盘;程序修改文件同理,不是在硬盘上直接改</li>
+<li>方式一:read() 一次性读入内存 → 字符串 replace 修改 → 以 w 模式重新写回;简单粗暴,文件大就爆内存</li>
+<li>方式二:以 r 模式逐行读原文件,边改边写入<strong>临时文件</strong>;全部处理完后 os.remove 删原文件、os.rename 把临时文件改名顶替 —— 内存始终只有一行</li>
+<li>两个注意:rename 前要先 remove(Windows 下目标名已存在会报错);读写都显式指定 encoding&#x3D;”utf-8”</li>
+<li>记忆:小文件用方式一图省事,<strong>大文件(日志、账单)必须用方式二</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;a.txt&quot;</span>, <span class="string">&quot;r&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f_read, \</span><br><span class="line">     <span class="built_in">open</span>(<span class="string">&quot;a.txt.bak&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>) <span class="keyword">as</span> f_write:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f_read:</span><br><span class="line">        f_write.write(line.replace(<span class="string">&quot;alex&quot;</span>, <span class="string">&quot;ALEX&quot;</span>))</span><br><span class="line"></span><br><span class="line">os.remove(<span class="string">&quot;a.txt&quot;</span>)               <span class="comment"># 删原文件</span></span><br><span class="line">os.rename(<span class="string">&quot;a.txt.bak&quot;</span>, <span class="string">&quot;a.txt&quot;</span>)  <span class="comment"># 临时文件顶替原名</span></span><br></pre></td></tr></table></figure>
+
+<p><em>文件修改方式二(推荐)</em></p>
+<h3 id="6-x-模式与-b-模式"><a href="#6-x-模式与-b-模式" class="headerlink" title="6. x 模式与 b 模式"></a>6. x 模式与 b 模式</h3><p>**<strong>x:独占创建写,文件已存在直接报错</strong>,防止误覆盖;**b:字节模式(rb&#x2F;wb&#x2F;ab)<strong>读写图片视频等二进制,write 必须传 bytes 且不能指定 encoding。</strong></p>
+<ul>
+<li>x 模式:文件不存在 → 创建并写;文件已存在 → 抛 FileExistsError。和 w 的区别就在这:w 会静默清空原文件,x 会提醒你”已经有了”</li>
+<li>b 模式是”读写单位变成字节”,要和 r&#x2F;w&#x2F;a 组合成 rb、wb、ab、r+b 使用</li>
+<li>b 模式<strong>不能传 encoding 参数</strong>;read() 得到 bytes、write() 必须传 bytes,文本要先 .encode(“utf-8”)</li>
+<li>典型应用:复制图片&#x2F;视频&#x2F;音频(rb 读 + wb 写);网络(socket)传来的数据天生是 bytes</li>
+<li>b 模式下指针 seek 按<strong>字节</strong>移动,可以精确定位;二进制处理、断点续传等场景都靠它</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;logo.png&quot;</span>, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f1, <span class="built_in">open</span>(<span class="string">&quot;copy.png&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f2:</span><br><span class="line">    f2.write(f1.read())               <span class="comment"># 二进制文件复制</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;b.txt&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(<span class="string">&quot;中文&quot;</span>.encode(<span class="string">&quot;utf-8&quot;</span>))   <span class="comment"># 文本必须先编码成 bytes</span></span><br><span class="line"><span class="comment"># f.write(&quot;中文&quot;)                     # ❌ TypeError</span></span><br></pre></td></tr></table></figure>
+
+<p><em>b 模式读写二进制</em></p>
+<h3 id="7-文件指针详解-seek-tell-truncate"><a href="#7-文件指针详解-seek-tell-truncate" class="headerlink" title="7. 文件指针详解(seek &#x2F; tell &#x2F; truncate)"></a>7. 文件指针详解(seek &#x2F; tell &#x2F; truncate)</h3><p><strong>文件有一个</strong>指针<strong>标记当前读写位置:r&#x2F;w 打开在开头、</strong>a 固定在末尾**;tell() 查位置、seek() 移动,且 whence&#x3D;1&#x2F;2 只能在 b 模式下用。**</p>
+<ul>
+<li>指针规则:r 模式打开指针在文件开头;w 打开(先清空)指针在开头;<strong>a 模式指针在末尾且写入永远发生在末尾</strong>,seek 挪不动写入位置</li>
+<li>tell():返回当前指针位置;read(n)&#x2F;readline() 读完指针停在已读内容之后,再 read() 就是空 —— 想重读要 f.seek(0)</li>
+<li>seek(offset, whence):whence&#x3D;0 从文件开头(默认)、1 从当前位置、2 从文件末尾;<strong>1 和 2 只能在 b 模式下使用</strong>,文本模式只支持 seek(0) 或 tell() 返回的位置</li>
+<li>文本模式按<strong>字符</strong>移动、b 模式按<strong>字节</strong>移动:处理二进制或需要精确定位(比如只读文件最后 200 字节)时用 rb</li>
+<li>f.truncate(n):把文件截断,只保留开头 n 个字节(常在 b 模式下用);不传参数则截断到当前位置</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;a.txt&quot;</span>, <span class="string">&quot;rb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="built_in">print</span>(f.tell())      <span class="comment"># 0</span></span><br><span class="line">    f.read(<span class="number">3</span>)            <span class="comment"># 读 3 个字节</span></span><br><span class="line">    <span class="built_in">print</span>(f.tell())      <span class="comment"># 3</span></span><br><span class="line">    f.seek(<span class="number">0</span>)            <span class="comment"># 拨回开头,可以重读</span></span><br><span class="line">    f.seek(-<span class="number">2</span>, <span class="number">2</span>)        <span class="comment"># 从末尾倒数 2 字节(仅 b 模式)</span></span><br></pre></td></tr></table></figure>
+
+<p><em>指针操作</em></p>
+<h3 id="8-文件对象的其他方法-flush-closed-readable-等"><a href="#8-文件对象的其他方法-flush-closed-readable-等" class="headerlink" title="8. 文件对象的其他方法(flush&#x2F;closed&#x2F;readable 等)"></a>8. 文件对象的其他方法(flush&#x2F;closed&#x2F;readable 等)</h3><p><strong>除了读写,文件对象还有一组”状态与控制”方法:<strong>flush 强制刷缓冲落盘、closed 判断是否关闭、readable&#x2F;writable 判断权限、name&#x2F;encoding 查看打开属性</strong>。</strong></p>
+<ul>
+<li>flush():write 的数据先躺在<strong>内存缓冲区</strong>,攒够或 close 才真正写硬盘;flush() 强制立刻落盘 —— 常驻程序写日志时”写一条 flush 一条”,避免断电丢日志</li>
+<li>closed:布尔属性,文件是否已关闭;with 代码块结束后自动变 True,手动 open 的文件 close 后变 True</li>
+<li>readable()&#x2F;writable():当前模式有没有读&#x2F;写权限,如 r 模式 readable() 为 True、writable() 为 False,对 r 打开的文件 write 会报错</li>
+<li>name &#x2F; mode &#x2F; encoding:文件路径、打开模式、打开时用的编码;排查乱码第一件事就是 print(f.encoding),确认读写用的是不是同一张表</li>
+<li>readline():一次读一行(带 \n),读到末尾返回空字符串,配合 while 也能逐行处理,但更推荐直接 for line in f</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;a.txt&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(f.writable(), f.readable())   <span class="comment"># True False</span></span><br><span class="line">f.write(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">f.flush()          <span class="comment"># 立刻落盘,不等缓冲</span></span><br><span class="line"><span class="built_in">print</span>(f.closed)    <span class="comment"># False:还没关闭</span></span><br><span class="line">f.close()</span><br><span class="line"><span class="built_in">print</span>(f.closed)    <span class="comment"># True</span></span><br></pre></td></tr></table></figure>
+
+<p><em>文件对象状态方法</em></p>
+<hr>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/02/python-02/">https://ln996.github.io/2026/11/02/python-02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80/">基础</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/03/python-03/" title="函数与模块"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">函数与模块</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 函数1. 函数定义与返回值函数用 def 定义,没有 return 或只写 return 时默认返回 None;return a, b 本质是返回一个元组。  定义:def 函数名(参数): + 缩进的函数体;函数先定义后调用,定义时函数体并不执行 return 会立即结束函数;没有 return 或 return 后面不带值,统一返回 None return a, b 是把两个值打包成元组返回,接收时 a, b = f() 解包 函数体第一行可写三引号字符串作文档说明,用 函数名.__doc__ 查看 函数名遵循变量命名规范,且不能与内置函数重名(如自定义 list 会遮蔽内置 list)  123456def my_max(a, b):    &quot;&quot;&quot;返回较大的数&quot;&quot;&quot;    return a if a &gt; b else bprint(my_max(3, 7))     # 7print(my_max.__doc__)   # 返回较大的数  定义函数并调用 2. 函...</div></div></div></a><a class="pagination-related" href="/2026/11/01/python-01/" title="Python 入门与数据类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Python 入门与数据类型</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 计算机基础1. 计算机五大组成计算机五大组成:控制器、运算器、存储器、输入设备、输出设备;控制器 + 运算器 &#x3D; CPU,程序的本质是”数据 + 指令”,全部用二进制表示。  控制器:计算机的”指挥系统”,负责读取指令、分析指令、发出控制信号,协调各部件工作 运算器:负责算术运算(加、减、乘、除)和逻辑运算(与、或、非、比较),是真正”算数”的部件 存储器:保存数据和程序;分内存(电信号存储、速度快、断电丢失)与外存&#x2F;硬盘(永久保存、速度慢) 输入设备:把外界信息转成二进制给计算机,如键盘、鼠标、麦克风;输出设备:把二进制结果还原成人能看懂的形式,如显示器、音箱、打印机 程序运行的本质:程序(指令 + 数据)先加载到存储器,CPU 不断”取指令 → 分析 → 执行”,结果交给输出设备呈现  2. 三大核心硬件与存储器(IO瓶颈)三大核心硬件:CPU(运算+控制)、内存(临时)、硬盘(永久);速度 CPU 远快于内存、内存远快于磁盘,IO 才是程序性能的主要瓶颈。  CPU:中央处理器,内含运算器和控制器,只认识二进...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/11/01/python-01/" title="Python 入门与数据类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-01</div><div class="info-item-2">Python 入门与数据类型</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 计算机基础1. 计算机五大组成计算机五大组成:控制器、运算器、存储器、输入设备、输出设备;控制器 + 运算器 &#x3D; CPU,程序的本质是”数据 + 指令”,全部用二进制表示。  控制器:计算机的”指挥系统”,负责读取指令、分析指令、发出控制信号,协调各部件工作 运算器:负责算术运算(加、减、乘、除)和逻辑运算(与、或、非、比较),是真正”算数”的部件 存储器:保存数据和程序;分内存(电信号存储、速度快、断电丢失)与外存&#x2F;硬盘(永久保存、速度慢) 输入设备:把外界信息转成二进制给计算机,如键盘、鼠标、麦克风;输出设备:把二进制结果还原成人能看懂的形式,如显示器、音箱、打印机 程序运行的本质:程序(指令 + 数据)先加载到存储器,CPU 不断”取指令 → 分析 → 执行”,结果交给输出设备呈现  2. 三大核心硬件与存储器(IO瓶颈)三大核心硬件:CPU(运算+控制)、内存(临时)、硬盘(永久);速度 CPU 远快于内存、内存远快于磁盘,IO 才是程序性能的主要瓶颈。  CPU:中央处理器,内含运算器和控制器,只认识二进...</div></div></div></a><a class="pagination-related" href="/2026/11/07/python-07/" title="异常处理与代码模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-07</div><div class="info-item-2">异常处理与代码模板</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 异常处理1. 为什么要处理异常异常就是程序运行时发生的错误,不处理程序会当场崩溃,处理了就能给出友好提示并继续运行。  异常发生后若不捕获,程序立即终止,并打印异常类型、位置和描述(堆栈信息) Python 中一切异常都是异常类的实例,不同错误对应不同类型 崩溃是不可接受的,尤其是服务端程序:一个用户请求出错不能拖垮整个服务  2. try &#x2F; except &#x2F; else &#x2F; finally 完整结构try 包可能出错的代码,except 捕获并处理,else 在没异常时执行,finally 无论如何都执行。  except 可以写多个,从上到下匹配,子类异常要写在父类前面 except 后不写类型 &#x3D; 捕获所有异常(方便但危险,不推荐用于生产) except XxxError as e 可以拿到异常对象,print(e) 看错误信息 else:try 块没有发生异常时才执行,常用来放“成功后的收尾逻辑” finally:无论是否异常、甚至 try 里 return 了都会执行,放资源释放(关文...</div></div></div></a><a class="pagination-related" href="/2026/11/03/python-03/" title="函数与模块"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-03</div><div class="info-item-2">函数与模块</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 函数1. 函数定义与返回值函数用 def 定义,没有 return 或只写 return 时默认返回 None;return a, b 本质是返回一个元组。  定义:def 函数名(参数): + 缩进的函数体;函数先定义后调用,定义时函数体并不执行 return 会立即结束函数;没有 return 或 return 后面不带值,统一返回 None return a, b 是把两个值打包成元组返回,接收时 a, b = f() 解包 函数体第一行可写三引号字符串作文档说明,用 函数名.__doc__ 查看 函数名遵循变量命名规范,且不能与内置函数重名(如自定义 list 会遮蔽内置 list)  123456def my_max(a, b):    &quot;&quot;&quot;返回较大的数&quot;&quot;&quot;    return a if a &gt; b else bprint(my_max(3, 7))     # 7print(my_max.__doc__)   # 返回较大的数  定义函数并调用 2. 函...</div></div></div></a><a class="pagination-related" href="/2026/11/04/python-04/" title="面向对象编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-04</div><div class="info-item-2">面向对象编程</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 面向对象1. 类与对象(类属性 vs 实例属性)类是模板**,对象是实例;__init__ 在实例化时自动执行;类属性所有实例共享,实例属性每个对象独有一份。**  定义:class 类名:(大驼峰命名);实例化 p = 类名(参数) 自动触发 __init__ 实例方法的第一个参数 self 就是当前实例,实例属性靠 self.x = ... 绑定在对象上 类属性写在类里方法外,所有实例共享;实例属性只属于一个对象 取值先找实例属性,找不到再找类属性;实例.属性 = 值 是给实例新增属性,不会改类属性 对象属性可以动态增删:p.age = 18、del p.age  12345678class Student:    def __init__(self, name):        self.name = name   # 实例属性,每个对象独有s1 = Student(&quot;alex&quot;)s2 = Student(&quot;wusir&quot;)s1.school = &quot;AA&quot;   # 给 s...</div></div></div></a><a class="pagination-related" href="/2026/11/14/python-14/" title="代码精选 51 段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-14</div><div class="info-item-2">代码精选 51 段</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。   本文整理视频里老师敲的重点课堂代码,每段标注对应集数与练习要点。建议:先遮住代码自己写,写完对照;改参数看变化。   ⌨️ 变量引用与 id &#x2F; is &#x2F; &#x3D;&#x3D;(第一周必敲)🎯 这段练什么: 变量存的是引用不是值本身;b &#x3D; a 后两个名字共用对象;is 比地址、== 比值。敲完这段,后面所有”改了a怎么b也变了”的问题都能自己推导。 12345678910a = [1, 2, 3]b = a              # b 和 a 指向同一个列表b.append(4)print(a)           # [1, 2, 3, 4]  改b即改aprint(a is b)      # True 同一个对象c = [1, 2, 3, 4]print(a == c)      # True 值相等print(a is c)      # False 但不是同一个对象print(id(a), id(c))  # 两个不同的内存地址   ⌨️ 可变 &#x2F; 不可变 类型行为实验🎯 ...</div></div></div></a><a class="pagination-related" href="/2026/11/05/python-05/" title="网络编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-05</div><div class="info-item-2">网络编程</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 网络编程1. 网络基础(IP、端口、子网掩码)网络通信三要素:IP 定位主机、端口定位程序、协议约定数据格式;子网掩码用来区分 IP 的网络位与主机位。  局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网 IP 地址:标识网络中的一台主机,如 192.168.1.10;127.0.0.1 是本机回环地址,永远代表自己,常用于本机测试 端口:范围 0~65535,标识主机上的一个应用程序;0~1023 是知名端口(80 HTTP、443 HTTPS、3306 MySQL),自写程序避开 子网掩码:如 255.255.255.0,与 IP 做按位与运算,得到网络位,用来判断两台机器是否在同一网段 MAC 地址:网卡的物理地址,用于局域网内定位设备;发送数据实际是 IP 找主机、MAC 找网卡、端口找程序  2. 网络分层模型(OSI七层与TCP&#x2F;IP五层)OSI 分七层**;实际教学常用 TCP&#x2F;IP 五层:物理层、数据链路层、网络层、传输层、应用层,socket 工作在传输层与应用层...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6-if-while-for"><span class="toc-number">1.</span> <span class="toc-text">📖 流程控制(if &#x2F; while &#x2F; for)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-if-%E5%88%86%E6%94%AF%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">1. if 分支结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-while-%E5%BE%AA%E7%8E%AF%E4%B8%8E-break-continue"><span class="toc-number">1.2.</span> <span class="toc-text">2. while 循环与 break &#x2F; continue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-for-%E5%BE%AA%E7%8E%AF%E4%B8%8E-range"><span class="toc-number">1.3.</span> <span class="toc-text">3. for 循环与 range</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%8E%A8%E5%AF%BC%E5%BC%8F-%E5%88%97%E8%A1%A8-%E5%AD%97%E5%85%B8-%E9%9B%86%E5%90%88"><span class="toc-number">1.4.</span> <span class="toc-text">4. 推导式(列表&#x2F;字典&#x2F;集合)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-while-else-%E4%B8%8E-for-else"><span class="toc-number">1.5.</span> <span class="toc-text">5. while-else 与 for-else</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF-break-%E5%8F%AA%E8%B7%B3%E4%B8%80%E5%B1%82"><span class="toc-number">1.6.</span> <span class="toc-text">6. 嵌套循环:break 只跳一层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E7%9F%AD%E8%B7%AF%E8%BF%90%E7%AE%97-and-or-%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="toc-number">1.7.</span> <span class="toc-text">7. 短路运算(and &#x2F; or 的返回值)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F-%E6%9D%A1%E4%BB%B6%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">1.8.</span> <span class="toc-text">8. 三元表达式(条件表达式)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">📖 文件操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1. 打开文件与三种基础模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">2. 读取文件的三种方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-with-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-number">2.3.</span> <span class="toc-text">3. with 上下文管理器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81%E5%8F%91%E5%B1%95%E5%8F%B2-ASCII-%E2%86%92-GBK-%E2%86%92-Unicode-%E2%86%92-UTF-8"><span class="toc-number">2.4.</span> <span class="toc-text">4. 字符编码发展史(ASCII → GBK → Unicode → UTF-8)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%96%87%E4%BB%B6%E4%BF%AE%E6%94%B9%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.</span> <span class="toc-text">5. 文件修改的两种方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-x-%E6%A8%A1%E5%BC%8F%E4%B8%8E-b-%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.6.</span> <span class="toc-text">6. x 模式与 b 模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E8%AF%A6%E8%A7%A3-seek-tell-truncate"><span class="toc-number">2.7.</span> <span class="toc-text">7. 文件指针详解(seek &#x2F; tell &#x2F; truncate)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E6%96%87%E4%BB%B6%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95-flush-closed-readable-%E7%AD%89"><span class="toc-number">2.8.</span> <span class="toc-text">8. 文件对象的其他方法(flush&#x2F;closed&#x2F;readable 等)</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-04/" title="MySQL学习笔记 04:表关系设计(一对一·一对多·多对多)">MySQL学习笔记 04:表关系设计(一对一·一对多·多对多)</a><time datetime="2026-11-17T05:00:00.000Z" title="发表于 2026-11-17 13:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-03/" title="MySQL学习笔记 03:进阶查询(having·去重·排序·分页·多表联查·ORM)">MySQL学习笔记 03:进阶查询(having·去重·排序·分页·多表联查·ORM)</a><time datetime="2026-11-17T04:00:00.000Z" title="发表于 2026-11-17 12:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-02/" title="MySQL学习笔记 02:分组统计与聚合函数(含 where + group by 组合)">MySQL学习笔记 02:分组统计与聚合函数(含 where + group by 组合)</a><time datetime="2026-11-17T03:00:00.000Z" title="发表于 2026-11-17 11:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-01/" title="MySQL学习笔记 01:基础查询与 where 条件筛选">MySQL学习笔记 01:基础查询与 where 条件筛选</a><time datetime="2026-11-17T02:00:00.000Z" title="发表于 2026-11-17 10:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-00/" title="MySQL学习笔记 00:数据库增删改查(CRUD)大全【库·表·数据】">MySQL学习笔记 00:数据库增删改查(CRUD)大全【库·表·数据】</a><time datetime="2026-11-17T01:00:00.000Z" title="发表于 2026-11-17 09:00:00">2026-11-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

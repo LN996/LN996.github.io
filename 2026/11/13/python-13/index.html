@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>运维与面试 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我的学习笔记,边学边记,持续修订。  📖 Git 与 Linux1. Git 三区模型、基础命令与版本回退Git 分工作区、暂存区、版本库三个区域,add 进暂存区、commit 进版本库;reset --hard 回退版本,误操作用 git reflog 找回。  三区模型:工作区(正在编辑的目录)→ git add 进暂存区(stage)→ git commit 进版本库(.git 里的提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运维与面试">
+<meta property="og:url" content="https://ln996.github.io/2026/11/13/python-13/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="我的学习笔记,边学边记,持续修订。  📖 Git 与 Linux1. Git 三区模型、基础命令与版本回退Git 分工作区、暂存区、版本库三个区域,add 进暂存区、commit 进版本库;reset --hard 回退版本,误操作用 git reflog 找回。  三区模型:工作区(正在编辑的目录)→ git add 进暂存区(stage)→ git commit 进版本库(.git 里的提">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-13T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T09:06:59.494Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="运维">
+<meta property="article:tag" content="面试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "运维与面试",
+  "url": "https://ln996.github.io/2026/11/13/python-13/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-13T01:00:00.000Z",
+  "dateModified": "2026-11-17T09:06:59.494Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/13/python-13/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '运维与面试',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Python%E5%9F%BA%E7%A1%80/"><i class="fa-fw fas fa-code"></i><span> Python基础</span></a></li><li><a class="site-page child" href="/categories/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"><i class="fa-fw fas fa-cubes"></i><span> 面向对象</span></a></li><li><a class="site-page child" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-network-wired"></i><span> 网络编程</span></a></li><li><a class="site-page child" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-layer-group"></i><span> 并发编程</span></a></li><li><a class="site-page child" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><i class="fa-fw fas fa-database"></i><span> 数据库</span></a></li><li><a class="site-page child" href="/categories/%E5%89%8D%E7%AB%AF/"><i class="fa-fw fas fa-html5"></i><span> 前端</span></a></li><li><a class="site-page child" href="/categories/Django/"><i class="fa-fw fas fa-rocket"></i><span> Django</span></a></li><li><a class="site-page child" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/"><i class="fa-fw fas fa-hammer"></i><span> 项目实战</span></a></li><li><a class="site-page child" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/"><i class="fa-fw fas fa-server"></i><span> 运维与面试</span></a></li><li><a class="site-page child" href="/categories/%E7%BB%83%E4%B9%A0%E4%B8%8E%E4%BB%A3%E7%A0%81/"><i class="fa-fw fas fa-keyboard"></i><span> 练习与代码</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">运维与面试</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Python%E5%9F%BA%E7%A1%80/"><i class="fa-fw fas fa-code"></i><span> Python基础</span></a></li><li><a class="site-page child" href="/categories/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"><i class="fa-fw fas fa-cubes"></i><span> 面向对象</span></a></li><li><a class="site-page child" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-network-wired"></i><span> 网络编程</span></a></li><li><a class="site-page child" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-layer-group"></i><span> 并发编程</span></a></li><li><a class="site-page child" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><i class="fa-fw fas fa-database"></i><span> 数据库</span></a></li><li><a class="site-page child" href="/categories/%E5%89%8D%E7%AB%AF/"><i class="fa-fw fas fa-html5"></i><span> 前端</span></a></li><li><a class="site-page child" href="/categories/Django/"><i class="fa-fw fas fa-rocket"></i><span> Django</span></a></li><li><a class="site-page child" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/"><i class="fa-fw fas fa-hammer"></i><span> 项目实战</span></a></li><li><a class="site-page child" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/"><i class="fa-fw fas fa-server"></i><span> 运维与面试</span></a></li><li><a class="site-page child" href="/categories/%E7%BB%83%E4%B9%A0%E4%B8%8E%E4%BB%A3%E7%A0%81/"><i class="fa-fw fas fa-keyboard"></i><span> 练习与代码</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">运维与面试</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/">运维与面试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>我的学习笔记,边学边记,持续修订。</p>
+</blockquote>
+<h2 id="📖-Git-与-Linux"><a href="#📖-Git-与-Linux" class="headerlink" title="📖 Git 与 Linux"></a>📖 Git 与 Linux</h2><h3 id="1-Git-三区模型、基础命令与版本回退"><a href="#1-Git-三区模型、基础命令与版本回退" class="headerlink" title="1. Git 三区模型、基础命令与版本回退"></a>1. Git 三区模型、基础命令与版本回退</h3><p><strong>Git 分</strong>工作区、暂存区、版本库<strong>三个区域,<code>add</code> 进暂存区、<code>commit</code> 进版本库;<code>reset --hard</code> 回退版本,误操作用 <code>git reflog</code> 找回。</strong></p>
+<ul>
+<li>三区模型:<strong>工作区</strong>(正在编辑的目录)→ <code>git add</code> 进<strong>暂存区</strong>(stage)→ <code>git commit</code> 进<strong>版本库</strong>(.git 里的提交历史)</li>
+<li><code>git init</code> 初始化本地仓库;<code>git clone url</code> 克隆远程仓库(自带全部历史);<code>git status</code> 看三区状态,<code>git diff</code> 看工作区与暂存区的差异,<code>git log --oneline</code> 一行一条看提交历史</li>
+<li>回退:<code>git reset --hard 提交id</code>(或 <code>HEAD^</code>、<code>HEAD~2</code>)把分支指针移过去,工作区、暂存区、版本库<strong>一起回退</strong>;<code>--soft</code> 只动 HEAD、改动留在暂存区;<code>--mixed</code>(默认)改动留在工作区</li>
+<li><code>git log</code> 只显示<strong>当前分支可达</strong>的提交;回退后「消失」的提交用 <strong><code>git reflog</code></strong>(记录 HEAD 每一次移动)查到 id,再 reset 回去即可找回</li>
+<li>丢弃某个文件的工作区修改:<code>git checkout -- 文件名</code>;提交说明要写清楚改动内容,方便日后回溯</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .                        <span class="comment"># 工作区 -&gt; 暂存区</span></span><br><span class="line">git commit -m <span class="string">&quot;修复登录bug&quot;</span>       <span class="comment"># 暂存区 -&gt; 版本库</span></span><br><span class="line">git reset --hard a1b2c3d         <span class="comment"># 回退到指定提交</span></span><br><span class="line">git reflog                       <span class="comment"># 记录 HEAD 每次移动,可找回提交</span></span><br></pre></td></tr></table></figure>
+
+<p><em>三区流转与回退速查</em></p>
+<h3 id="2-分支与合并冲突"><a href="#2-分支与合并冲突" class="headerlink" title="2. 分支与合并冲突"></a>2. 分支与合并冲突</h3><p><strong>分支是</strong>平行开发线**:<code>checkout -b</code> 创建并切换,<code>merge</code> 合并;两个分支改了<strong>同一处代码</strong>才会冲突,手动解决后 add、commit。**</p>
+<ul>
+<li><code>git branch</code> 查看、<code>git branch dev</code> 创建、<code>git checkout dev</code> &#x2F; <code>git switch dev</code> 切换、<code>git checkout -b dev</code> 创建并切换、<code>git branch -d dev</code> 删除分支</li>
+<li>习惯:master 保持稳定,功能开发在 dev&#x2F;feature 分支上做,完成后 <code>git merge dev</code> 合并回去</li>
+<li>从同一提交分叉后合并会产生一个<strong>合并提交</strong>(有两个父提交);快进合并(fast-forward)只在 master 没有新提交时发生</li>
+<li>冲突的必要条件:两个分支改了<strong>同一行代码</strong>;冲突时文件里出现 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>、<code>=======</code>、<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; dev</code> 三对标记,<code>git status</code> 中该文件显示 both modified</li>
+<li>解决冲突四步:打开文件手动保留想要的代码 → 删掉标记行 → <code>git add 文件</code> → <code>git commit</code> 完成合并</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b dev      <span class="comment"># 创建并切换到 dev</span></span><br><span class="line"><span class="comment"># ...开发、提交...</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge dev            <span class="comment"># 把 dev 合并进 master</span></span><br><span class="line">git branch -d dev        <span class="comment"># 删除已合并的分支</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-远程协作与-gitignore"><a href="#3-远程协作与-gitignore" class="headerlink" title="3. 远程协作与 .gitignore"></a>3. 远程协作与 .gitignore</h3><p><strong><code>push</code> 推送、<code>pull</code> 拉取(<strong>fetch+merge</strong>)、<code>fetch</code> 只下载不合并;认证用 <strong>SSH key 或 token</strong>;<code>.gitignore</code> 忽略不该提交的文件。</strong></p>
+<ul>
+<li><code>git remote add origin url</code> 关联远程仓库(github&#x2F;gitee 用法一致);首次推送 <code>git push -u origin master</code> 并建立跟踪关系</li>
+<li><code>git pull</code> &#x3D; <strong>fetch + merge</strong>:fetch 只把远程新提交下载到本地仓库(不动工作区,更安全),pull 下载后直接尝试合并进当前分支</li>
+<li>认证:HTTPS 方式推送用<strong>用户名 + token</strong>(github 已禁止密码);SSH 方式先 <code>ssh-keygen</code> 生成密钥对,把<strong>公钥</strong>粘贴到平台的 SSH 设置里</li>
+<li>多人协作习惯流程:开工先 <code>pull</code> 拉最新 → 本地开发并提交 → <code>push</code>;push 被拒绝说明远程有新提交,先 pull(必要时解决冲突)再推</li>
+<li><code>.gitignore</code> 声明不纳入版本控制的文件:<code>*.pyc</code>、<code>.idea/</code>、<code>venv/</code>、日志文件;<strong>数据库密码等敏感配置绝不能提交</strong>上去</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .gitignore 示例</span></span><br><span class="line">*.pyc</span><br><span class="line">__pycache__/</span><br><span class="line">.idea/</span><br><span class="line">venv/</span><br><span class="line">*.log</span><br><span class="line">.env</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-Linux-常用命令与权限"><a href="#4-Linux-常用命令与权限" class="headerlink" title="4. Linux 常用命令与权限"></a>4. Linux 常用命令与权限</h3><p><strong>目录文件记牢 <code>ls -l</code>、<code>mkdir -p</code>、<code>rm -rf</code>、<code>cp</code>、<code>mv</code>;查日志 <code>tail -f</code>、过滤 <code>grep</code> 配合管道 <code>|</code>;进程 <code>ps aux</code>&#x2F;<code>top</code>&#x2F;<code>kill</code>;<code>chmod 755</code> &#x3D; 所有者 rwx、组和其他人 r-x。</strong></p>
+<ul>
+<li>浏览定位:<code>pwd</code> 当前路径、<code>ls -l</code> 详细列表、<code>cd</code> 切换目录;<code>which</code> &#x2F; <code>whereis</code> 查命令的安装位置;<code>useradd</code> 创建用户</li>
+<li>文件操作:<code>mkdir -p a/b/c</code> 递归创建、<code>cp</code> 复制、<code>mv</code> 移动&#x2F;重命名、<code>rm -rf</code> 强制递归删除(<strong>高危命令,回车前看清路径</strong>)</li>
+<li>查看内容:<code>cat</code> 看小文件、<code>less</code> 分页翻大文件、<code>tail -f app.log</code> <strong>实时追踪</strong>日志新增</li>
+<li>文本与管道:<code>grep 关键词 文件</code> 过滤;管道 <code>|</code> 把左边命令的输出交给右边处理,如 <code>ps aux | grep python</code>;<code>ps aux</code> 进程快照、<code>top</code> 实时动态、<code>kill -9 进程号</code> 强杀</li>
+<li>压缩:<code>tar -zcvf x.tar.gz 目录</code> 打包压缩、<code>tar -zxvf x.tar.gz</code> 解压</li>
+<li>权限:r&#x3D;4、w&#x3D;2、x&#x3D;1,三位分别对应<strong>所有者&#x2F;同组&#x2F;其他人</strong>;<code>chmod 755</code> &#x3D; 所有者 rwx(7)、同组 r-x(5)、其他人 r-x(5)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf app.tar.gz          <span class="comment"># 解压 .tar.gz</span></span><br><span class="line">ps aux | grep python          <span class="comment"># 找 python 进程</span></span><br><span class="line">kill -<span class="number">9</span> <span class="number">12345</span>                 <span class="comment"># 强制结束进程</span></span><br><span class="line">chmod <span class="number">755</span> start.sh            <span class="comment"># 所有者 rwx,组和其他人 r-x</span></span><br><span class="line">tail -f app.log               <span class="comment"># 实时追踪日志</span></span><br></pre></td></tr></table></figure>
+
+<p><em>运维常用命令速查</em></p>
+<h3 id="5-vim-三种模式与部署基础"><a href="#5-vim-三种模式与部署基础" class="headerlink" title="5. vim 三种模式与部署基础"></a>5. vim 三种模式与部署基础</h3><p><strong>vim 有</strong>命令、插入、末行<strong>三种模式:<code>i</code> 进插入、<code>Esc</code> 回命令、<code>:wq</code> 保存退出;部署常见组合 <strong>nginx 反向代理 + gunicorn&#x2F;uwsgi</strong>,后台挂起用 <code>nohup ... &amp;</code> 或 <code>screen</code>。</strong></p>
+<ul>
+<li><strong>命令模式</strong>(打开文件默认):yy 复制行、p 粘贴、dd 删行、u 撤销、G 跳到末尾;按 <code>i</code> &#x2F; <code>a</code> &#x2F; <code>o</code> 进入<strong>插入模式</strong>才能输入文字,Esc 退回命令模式</li>
+<li><strong>末行模式</strong>(按 <code>:</code> 进入):<code>:w</code> 保存、<code>:wq</code> 保存退出、<code>:q!</code> 不保存强制退出、<code>:set nu</code> 显示行号</li>
+<li>nginx <strong>反向代理</strong>:请求先到 nginx,由它转发给后端应用,客户端感知不到后端;顺带做静态文件托管和<strong>负载均衡</strong></li>
+<li>gunicorn &#x2F; uwsgi 是 <strong>WSGI 服务器</strong>,真正负责运行 Python web 应用;典型组合:nginx(80 端口)→ gunicorn&#x2F;uwsgi → Django&#x2F;Flask</li>
+<li>后台运行:<code>nohup python xxx.py &amp;</code>(退出终端不中断,输出写入 nohup.out);<code>screen</code> 可以开一个会话挂起(detach),断线后 attach 回来任务还在跑</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vim:yy 复制行  p 粘贴  dd 删行  u 撤销  :wq 保存退出  :q! 强制退出</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 部署链路:nginx(80端口) -&gt; gunicorn/uwsgi -&gt; Django</span></span><br><span class="line">nohup python manage.py runserver <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">8000</span> &amp;   <span class="comment"># 后台启动,输出写 nohup.out</span></span><br><span class="line"></span><br><span class="line">screen -S deploy      <span class="comment"># 新建名为 deploy 的会话</span></span><br><span class="line"><span class="comment"># Ctrl+A 再按 D:挂起会话;screen -r deploy:恢复</span></span><br></pre></td></tr></table></figure>
+
+<p><em>vim 与部署常用操作</em></p>
+<h2 id="📖-爬虫基础"><a href="#📖-爬虫基础" class="headerlink" title="📖 爬虫基础"></a>📖 爬虫基础</h2><h3 id="1-爬虫流程与-requests-发请求"><a href="#1-爬虫流程与-requests-发请求" class="headerlink" title="1. 爬虫流程与 requests 发请求"></a>1. 爬虫流程与 requests 发请求</h3><p><strong>爬虫四步:<strong>发起请求 → 获取响应 → 解析 → 存储</strong>;requests 中 <code>params</code> 拼 URL 参数、<code>data</code> 提交表单,<code>text</code> 是 str、<code>content</code> 是 bytes。</strong></p>
+<ul>
+<li>四步流程:模拟浏览器发 HTTP 请求 → 拿到 HTML&#x2F;JSON 响应 → 用解析库提取目标字段 → 存到文件或数据库</li>
+<li><code>requests.get(url, params=字典)</code> 把参数拼到 URL 问号后面;<code>requests.post(url, data=字典)</code> 把表单放进请求体(登录、提交常用)</li>
+<li>伪装浏览器:<code>headers</code> 里放<strong>User-Agent</strong> 浏览器 UA 字符串,否则默认 UA(python-requests)很容易被识别拦截</li>
+<li><code>response.text</code> 返回 <strong>str</strong>(按编码解码后的字符串),<code>response.content</code> 返回 <strong>bytes</strong>(存图片、视频用它,或自己 <code>.decode()</code>)</li>
+<li><code>response.status_code</code> 判断结果:200 成功、404 资源不存在、403 被拒绝、5xx 服务器错误;加 <code>timeout=3</code> 防止卡死,超时抛异常</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;https://www.example.com/search&quot;</span></span><br><span class="line">headers = &#123;<span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&quot;</span>&#125;</span><br><span class="line">r = requests.get(url, params=&#123;<span class="string">&quot;wd&quot;</span>: <span class="string">&quot;python&quot;</span>&#125;, headers=headers, timeout=<span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(r.status_code)    <span class="comment"># 200</span></span><br><span class="line"><span class="built_in">print</span>(r.url)            <span class="comment"># https://www.example.com/search?wd=python</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-会话保持-Session-与-cookie"><a href="#2-会话保持-Session-与-cookie" class="headerlink" title="2. 会话保持:Session 与 cookie"></a>2. 会话保持:Session 与 cookie</h3><p><strong><code>requests.Session()</code> 会</strong>自动保存并携带 cookie**,登录一次后,后续请求自动带上,实现会话保持。**</p>
+<ul>
+<li>HTTP 本身无状态,服务器靠 cookie 识别「你是谁」;直接用 requests 每次请求都是「新面孔」</li>
+<li><code>s = requests.Session()</code>,之后用 <code>s.get</code> &#x2F; <code>s.post</code> 发请求:登录接口返回的 Set-Cookie 自动保存,下次请求自动携带</li>
+<li>典型场景:需要登录的网站——先 post 登录接口,再用同一个 Session 访问只有登录后才能看的页面</li>
+<li>也可以手动携带:<code>requests.get(url, cookies=cookie字典)</code>,但 Session 方式更省心</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">s = requests.Session()</span><br><span class="line">s.post(<span class="string">&quot;https://example.com/login&quot;</span>, data=&#123;<span class="string">&quot;user&quot;</span>: <span class="string">&quot;py&quot;</span>, <span class="string">&quot;pwd&quot;</span>: <span class="string">&quot;123&quot;</span>&#125;)</span><br><span class="line">r = s.get(<span class="string">&quot;https://example.com/user&quot;</span>)   <span class="comment"># 自动携带登录后的 cookie</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-解析方式-bs4-xpath-正则-json"><a href="#3-解析方式-bs4-xpath-正则-json" class="headerlink" title="3. 解析方式:bs4 &#x2F; xpath &#x2F; 正则 &#x2F; json"></a>3. 解析方式:bs4 &#x2F; xpath &#x2F; 正则 &#x2F; json</h3><p><strong>HTML 用 <strong>bs4 或 xpath</strong> 解析,接口返回的 JSON 直接 <code>r.json()</code> 转字典取字段,正则适合提取有固定规律的文本。</strong></p>
+<ul>
+<li>bs4:<code>soup.find(&quot;div&quot;, class_=&quot;box&quot;)</code> 找第一个、<code>find_all(&quot;a&quot;)</code> 找全部返回<strong>列表</strong>、<code>tag.get_text()</code> 取文本、<code>tag.get(&quot;href&quot;)</code> 取属性</li>
+<li>bs4 的 css 选择器:<code>soup.select(&quot;div.box &gt; a&quot;)</code>,同样返回列表,元素还要 <code>.get_text()</code></li>
+<li>xpath(lxml):<code>//div[@class=&quot;box&quot;]/a/@href</code> 中 <code>//</code> 表示任意层级、<code>@</code> 取属性、<code>contains(@class, &quot;box&quot;)</code> 模糊匹配、<code>/text()</code> 取文本</li>
+<li>接口数据:<code>r.json()</code> 把 JSON 响应直接转成 dict&#x2F;list,再按键取值,比解析 HTML 干净得多</li>
+<li>正则:<code>re.findall(r&#39;模式&#39;, html)</code>,注意贪婪 <code>.*</code> 与非贪婪 <code>.*?</code> 的区别,爬虫里绝大多数情况用非贪婪</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">html = <span class="string">&#x27;&lt;div class=&quot;box&quot;&gt;&lt;a href=&quot;/1&quot;&gt;一&lt;/a&gt;&lt;a href=&quot;/2&quot;&gt;二&lt;/a&gt;&lt;/div&gt;&#x27;</span></span><br><span class="line">soup = BeautifulSoup(html, <span class="string">&quot;html.parser&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(soup.find_all(<span class="string">&quot;a&quot;</span>)))       <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(soup.select(<span class="string">&quot;div.box a&quot;</span>))      <span class="comment"># css 选择器</span></span><br><span class="line"><span class="built_in">print</span>(soup.find(<span class="string">&quot;a&quot;</span>).get(<span class="string">&quot;href&quot;</span>))    <span class="comment"># /1</span></span><br><span class="line"><span class="built_in">print</span>(soup.find(<span class="string">&quot;a&quot;</span>).get_text())     <span class="comment"># 一</span></span><br><span class="line"><span class="comment"># xpath 等价写法://div[@class=&quot;box&quot;]/a/@href</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-反爬手段与应对策略"><a href="#4-反爬手段与应对策略" class="headerlink" title="4. 反爬手段与应对策略"></a>4. 反爬手段与应对策略</h3><p><strong>常见反爬:<strong>UA 检测、IP 封禁、频率限制、验证码、cookie 校验</strong>;应对思路是把自己伪装成正常用户:UA 池、代理池、限速、遵守 robots 协议。</strong></p>
+<ul>
+<li>UA 检测:服务器检查 User-Agent → 维护 UA 列表,每次请求<strong>随机换</strong>(UA 池)</li>
+<li>IP 封禁:同一 IP 请求过多被封 → <strong>代理池</strong>,用 <code>proxies={&quot;http&quot;: &quot;ip:port&quot;}</code> 换出口 IP</li>
+<li>频率控制:请求太快被限制 → <code>time.sleep(random.uniform(1, 3))</code> 随机间隔,既是礼仪也是自保</li>
+<li>验证码与 cookie 校验:复杂验证码可借助打码平台;有些接口校验 cookie&#x2F;token,要先访问页面拿到合法 cookie 再发请求</li>
+<li><strong>robots 协议</strong>:网站根目录 <code>/robots.txt</code> 声明哪些内容允许抓取,属于行业规范(君子协定),爬之前先看一眼</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time, random</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">UA_LIST = [<span class="string">&quot;Mozilla/5.0 (Windows NT 10.0)&quot;</span>, <span class="string">&quot;Mozilla/5.0 (Macintosh)&quot;</span>]</span><br><span class="line">headers = &#123;<span class="string">&quot;User-Agent&quot;</span>: random.choice(UA_LIST)&#125;</span><br><span class="line">proxies = &#123;<span class="string">&quot;http&quot;</span>: <span class="string">&quot;http://113.200.0.1:8000&quot;</span>&#125;   <span class="comment"># 代理池取出的 ip:port</span></span><br><span class="line">r = requests.get(<span class="string">&quot;https://example.com&quot;</span>, headers=headers, proxies=proxies, timeout=<span class="number">3</span>)</span><br><span class="line">time.sleep(random.uniform(<span class="number">1</span>, <span class="number">3</span>))   <span class="comment"># 随机限速</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-scrapy-框架-架构与运行"><a href="#5-scrapy-框架-架构与运行" class="headerlink" title="5. scrapy 框架:架构与运行"></a>5. scrapy 框架:架构与运行</h3><p><strong>scrapy 五大组件:<strong>Engine(引擎)、Scheduler(调度器)、Downloader(下载器)、Spider(爬虫)、Pipeline(管道)</strong>,项目目录里 <code>scrapy crawl 爬虫名</code> 运行。</strong></p>
+<ul>
+<li>数据流:Engine 是总指挥;Scheduler 负责请求<strong>排队去重</strong>;Downloader 负责下载;Spider 写解析逻辑;Pipeline 负责<strong>清洗和存储</strong>;下载中间件、爬虫中间件可拦截加工请求与响应</li>
+<li>入口:<code>start_urls</code> 列表里的地址会被自动请求,响应交给 <code>parse(self, response)</code> 方法解析</li>
+<li>翻页&#x2F;跟进:在 parse 里 <code>yield scrapy.Request(下一页url, callback=self.parse_detail)</code>(或 <code>response.follow</code>)把新请求交回引擎继续调度</li>
+<li>运行:项目目录下 <code>scrapy crawl 爬虫名</code>;想直接存文件可以加 <code>-o data.json</code></li>
+<li>settings 常用:<code>ROBOTSTXT_OBEY = True</code> 遵守 robots、<code>DOWNLOAD_DELAY = 2</code> 下载间隔、<code>USER_AGENT</code> 设 UA;开启管道要在 <code>ITEM_PIPELINES</code> 里注册</li>
+<li><strong>CrawlSpider</strong>:通过 Rule(LinkExtractor + callback)自动跟进符合规则的链接,适合全站批量爬取</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">JobSpider</span>(scrapy.Spider):</span><br><span class="line">    name = <span class="string">&quot;job&quot;</span></span><br><span class="line">    start_urls = [<span class="string">&quot;https://example.com/list&quot;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">self, response</span>):</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> response.css(<span class="string">&quot;div.item&quot;</span>):</span><br><span class="line">            <span class="keyword">yield</span> &#123;<span class="string">&quot;title&quot;</span>: item.css(<span class="string">&quot;h3::text&quot;</span>).get()&#125;</span><br><span class="line">        next_url = response.css(<span class="string">&quot;a.next::attr(href)&quot;</span>).get()</span><br><span class="line">        <span class="keyword">if</span> next_url:</span><br><span class="line">            <span class="keyword">yield</span> response.follow(next_url, callback=<span class="variable language_">self</span>.parse)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 项目目录下运行:scrapy crawl job</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="📖-综合面试高频"><a href="#📖-综合面试高频" class="headerlink" title="📖 综合面试高频"></a>📖 综合面试高频</h2><h3 id="1-is-和-有什么区别"><a href="#1-is-和-有什么区别" class="headerlink" title="1. is 和 &#x3D;&#x3D; 有什么区别?"></a>1. is 和 &#x3D;&#x3D; 有什么区别?</h3><p><strong><strong><code>==</code> 比较值是否相等,<code>is</code> 比较是否是同一个对象</strong>(内存地址是否相同)。</strong></p>
+<ul>
+<li><code>==</code> 调用对象的 <code>__eq__</code> 方法比较内容;<code>is</code> 比较 <code>id()</code> 是否相同</li>
+<li><code>a = [1,2]; b = [1,2]</code>:<code>a == b</code> 为 True,<code>a is b</code> 为 False(两个不同列表)</li>
+<li>小整数池(-5~256)和字符串驻留会让个别 <code>is</code> 也返回 True,这是实现细节,<strong>不要依赖</strong></li>
+<li>判断 None 的规范写法是 <code>if x is None</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line">b = [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="built_in">print</span>(a == b, a <span class="keyword">is</span> b)   <span class="comment"># True False</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-深拷贝和浅拷贝的区别"><a href="#2-深拷贝和浅拷贝的区别" class="headerlink" title="2. 深拷贝和浅拷贝的区别?"></a>2. 深拷贝和浅拷贝的区别?</h3><p><strong>浅拷贝只复制</strong>第一层**,嵌套的可变对象仍然共享;深拷贝 <code>copy.deepcopy</code> <strong>递归复制所有层</strong>,完全独立。**</p>
+<ul>
+<li><code>copy.copy()</code>:产生新对象,第一层是新的,但里面的子对象还是<strong>引用</strong></li>
+<li><code>copy.deepcopy()</code>:递归复制每一层,拷贝后互不影响</li>
+<li><code>b = a</code> 既不是浅拷贝也不是深拷贝,只是给同一个对象起了个别名</li>
+<li>不可变元素(int&#x2F;str&#x2F;tuple)拷不拷贝都共享,不会产生副作用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> copy</span><br><span class="line">a = [<span class="number">1</span>, [<span class="number">2</span>, <span class="number">3</span>]]</span><br><span class="line">b = copy.copy(a)</span><br><span class="line">c = copy.deepcopy(a)</span><br><span class="line">a[<span class="number">1</span>].append(<span class="number">4</span>)</span><br><span class="line"><span class="built_in">print</span>(b)   <span class="comment"># [1, [2, 3, 4]] 浅拷贝内层共享</span></span><br><span class="line"><span class="built_in">print</span>(c)   <span class="comment"># [1, [2, 3]] 深拷贝完全独立</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Python-函数传参是传值还是传引用"><a href="#3-Python-函数传参是传值还是传引用" class="headerlink" title="3. Python 函数传参是传值还是传引用?"></a>3. Python 函数传参是传值还是传引用?</h3><p><strong>都不是,是</strong>传对象引用(共享传参)<strong>:函数内能修改传入的</strong>可变对象**,对<strong>不可变对象</strong>重新赋值只影响函数内部。**</p>
+<ul>
+<li>形参拿到的是实参所引对象的引用,不是复制品</li>
+<li>传 list&#x2F;dict&#x2F;set:函数内 append、修改会<strong>影响外部</strong></li>
+<li>传 int&#x2F;str&#x2F;tuple:函数内重新赋值只是让形参指向新对象,外部不变</li>
+<li>经典坑:可变默认参数 <code>def f(x, lst=[])</code> 只在定义时创建一次,多次调用共享同一个列表;推荐默认写 None 再在函数内创建</li>
+</ul>
+<h3 id="4-args-和-kwargs-是什么"><a href="#4-args-和-kwargs-是什么" class="headerlink" title="4. *args 和 **kwargs 是什么?"></a>4. *args 和 **kwargs 是什么?</h3><p><strong><code>*args</code> 把多余的位置参数打包成 <strong>tuple</strong>,<code>**kwargs</code> 把多余的关键字参数打包成 <strong>dict</strong>,让函数能接受任意参数。</strong></p>
+<ul>
+<li><code>def f(a, *args, **kwargs)</code>:调用 f(1, 2, 3, x&#x3D;4) 时 a&#x3D;1、args&#x3D;(2,3)、kwargs&#x3D;{‘x’:4}</li>
+<li>调用时 <code>*lst</code> &#x2F; <code>**d</code> 是反向操作:<strong>解包</strong>再传参</li>
+<li>装饰器的万能签名就是 <code>def wrapper(*args, **kwargs)</code></li>
+<li>参数顺序:位置参数 → <code>*args</code> → 默认&#x2F;关键字参数 → <code>**kwargs</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">a, *args, **kwargs</span>):</span><br><span class="line">    <span class="built_in">print</span>(a, args, kwargs)</span><br><span class="line"></span><br><span class="line">f(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, x=<span class="number">4</span>)   <span class="comment"># 1 (2, 3) &#123;&#x27;x&#x27;: 4&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-GIL-是什么-多线程和多进程怎么选"><a href="#5-GIL-是什么-多线程和多进程怎么选" class="headerlink" title="5. GIL 是什么?多线程和多进程怎么选?"></a>5. GIL 是什么?多线程和多进程怎么选?</h3><p><strong>GIL 是 CPython 的</strong>全局解释器锁**,同一时刻只有一个线程执行字节码;选型口诀:<strong>CPU 密集用多进程,IO 密集用多线程&#x2F;协程</strong>。**</p>
+<ul>
+<li>GIL 保证同一进程内同一时刻只有一个线程执行 Python 字节码,所以多线程<strong>无法利用多核并行计算</strong></li>
+<li>线程在等待 IO(网络、磁盘、sleep)时会<strong>释放 GIL</strong>,所以 IO 密集任务多线程依然有效</li>
+<li>CPU 密集(大量计算)→ <code>multiprocessing</code> 多进程,每个进程有独立解释器和 GIL</li>
+<li>协程(asyncio)单线程内切换,适合超高并发的网络 IO 场景</li>
+<li>面试一句话:计算多开进程,IO 多开线程&#x2F;协程</li>
+</ul>
+<h3 id="6-手写一个装饰器"><a href="#6-手写一个装饰器" class="headerlink" title="6. 手写一个装饰器"></a>6. 手写一个装饰器</h3><p><strong>装饰器本质是</strong>接收函数、返回新函数的高阶函数**,用 @ 语法在不改原函数的前提下加功能;通用模板要加 <code>functools.wraps</code>。**</p>
+<ul>
+<li>结构:外层函数接收被装饰函数,内层 wrapper 完成附加逻辑后调用原函数并返回结果</li>
+<li>装饰时机:<code>@timer</code> 在<strong>函数定义时</strong>执行,之后的函数名实际指向 wrapper</li>
+<li><code>@functools.wraps(func)</code> 保留原函数的 <code>__name__</code>、<code>__doc__</code> 等元信息</li>
+<li>常见应用:计时、日志、登录校验、缓存;带参数的装饰器再包一层(三层函数)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">timer</span>(<span class="params">func</span>):</span><br><span class="line"><span class="meta">    @functools.wraps(<span class="params">func</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">        start = time.time()</span><br><span class="line">        result = func(*args, **kwargs)</span><br><span class="line">        <span class="built_in">print</span>(func.__name__, <span class="string">&quot;耗时&quot;</span>, time.time() - start)</span><br><span class="line">        <span class="keyword">return</span> result</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@timer</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">work</span>():</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">work()</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-迭代器和生成器有什么区别"><a href="#7-迭代器和生成器有什么区别" class="headerlink" title="7. 迭代器和生成器有什么区别?"></a>7. 迭代器和生成器有什么区别?</h3><p><strong>迭代器是实现了 <strong><code>__iter__</code> 和 <code>__next__</code></strong> 的对象;生成器是</strong>用 yield 写出来的迭代器**,惰性求值、省内存。**</p>
+<ul>
+<li>可迭代对象(Iterable)有 <code>__iter__</code>,能被 for;迭代器(Iterator)还要有 <code>__next__</code>,for 的本质就是不断调 next</li>
+<li>生成器:函数里含 <code>yield</code>,调用它返回生成器对象;或写生成器表达式 <code>(x*2 for x in range(10))</code></li>
+<li>惰性求值:用一次算一次,不一次性把数据装进内存,适合大文件、大数据流</li>
+<li>生成器只能遍历一次,耗尽后再 next 会抛 StopIteration</li>
+<li><code>iter(lst)</code> 可以把列表变成迭代器;list&#x2F;str&#x2F;range 都是可迭代对象</li>
+</ul>
+<h3 id="8-Python-的内存管理与垃圾回收机制"><a href="#8-Python-的内存管理与垃圾回收机制" class="headerlink" title="8. Python 的内存管理与垃圾回收机制?"></a>8. Python 的内存管理与垃圾回收机制?</h3><p><strong>以</strong>引用计数<strong>为主,辅以</strong>标记-清除<strong>解决循环引用、</strong>分代回收<strong>提升效率;引用数归零的对象立即释放。</strong></p>
+<ul>
+<li>引用计数:每个对象记录被引用的次数,<code>del</code> 或离开作用域使计数减 1,<strong>减到 0 立刻回收</strong></li>
+<li>缺陷:循环引用(a 引用 b、b 引用 a)计数永不为 0 → <strong>标记-清除</strong>:从根对象出发标记可达对象,清除不可达的</li>
+<li><strong>分代回收</strong>:0&#x2F;1&#x2F;2 三代,新对象在 0 代,经历扫描仍存活就升代,代数越高扫描频率越低</li>
+<li>小整数池、字符串驻留(intern)减少重复创建对象</li>
+<li>查看引用计数:<code>sys.getrefcount(x)</code>(结果比实际大 1,因为传参本身临时引用了一次)</li>
+</ul>
+<h3 id="9-闭包是什么-内层函数能修改外层变量吗"><a href="#9-闭包是什么-内层函数能修改外层变量吗" class="headerlink" title="9. 闭包是什么?内层函数能修改外层变量吗?"></a>9. 闭包是什么?内层函数能修改外层变量吗?</h3><p><strong>闭包 &#x3D; <strong>内层函数引用了外层函数的变量</strong>并被打包返回;内层修改外层变量需要 <strong>nonlocal</strong>,修改全局需要 <strong>global</strong>。</strong></p>
+<ul>
+<li>闭包三要素:函数嵌套、内层引用外层变量、外层把内层函数作为返回值</li>
+<li>作用域查找顺序 <strong>LEGB</strong>:Local → Enclosing → Global → Built-in</li>
+<li>内层<strong>读取</strong>外层变量可以直接读;<strong>赋值</strong>会被 Python 当成新的局部变量 → 用 <code>nonlocal x</code> 声明才能修改</li>
+<li>经典坑:循环里创建的闭包是<strong>晚绑定</strong>,全部读到循环变量的最终值;用默认参数 <code>lambda i=i: i</code> 固定当时的值</li>
+<li>装饰器就是闭包的典型应用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">funcs = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    funcs.append(<span class="keyword">lambda</span>: i)          <span class="comment"># 闭包晚绑定</span></span><br><span class="line"><span class="built_in">print</span>([f() <span class="keyword">for</span> f <span class="keyword">in</span> funcs])          <span class="comment"># [2, 2, 2]</span></span><br><span class="line"></span><br><span class="line">funcs2 = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">    funcs2.append(<span class="keyword">lambda</span> i=i: i)     <span class="comment"># 默认参数固定当时的值</span></span><br><span class="line"><span class="built_in">print</span>([f() <span class="keyword">for</span> f <span class="keyword">in</span> funcs2])         <span class="comment"># [0, 1, 2]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="10-list-和-dict-常见操作的时间复杂度"><a href="#10-list-和-dict-常见操作的时间复杂度" class="headerlink" title="10. list 和 dict 常见操作的时间复杂度?"></a>10. list 和 dict 常见操作的时间复杂度?</h3><p>**list 按索引取、尾部增删是 <strong>O(1)</strong>,查找和中间插删是 <strong>O(n)</strong>;dict 基于哈希表,查、增、删平均都是 **O(1)<strong>。</strong></p>
+<ul>
+<li>list:<code>lst[i]</code> 取值 O(1);<code>x in lst</code> 查找、<code>insert(0, x)</code>、删除中间元素 O(n);<code>append</code> 和 <code>pop()</code> 尾部操作 O(1)</li>
+<li>dict&#x2F;set:基于<strong>哈希表</strong>,取值、赋值、<code>in</code> 判断、增删平均 O(1),哈希冲突严重时退化 O(n)</li>
+<li>优化点:频繁判断「元素在不在」用 set&#x2F;dict,别用 list——把 O(n) 变 O(1)</li>
+<li>tuple 不可变,遍历复杂度与 list 相同</li>
+</ul>
+<h3 id="11-手写列表去重-保持原顺序-与排序"><a href="#11-手写列表去重-保持原顺序-与排序" class="headerlink" title="11. 手写列表去重(保持原顺序)与排序"></a>11. 手写列表去重(保持原顺序)与排序</h3><p><strong>去重保序用「遍历 + set 记录 seen」或 <code>list(dict.fromkeys(lst))</code>;<code>list(set(lst))</code> 去重快但</strong>不保序**;<code>sorted()</code> 返回新列表,<code>lst.sort()</code> 原地排序。**</p>
+<ul>
+<li><code>list(set(lst))</code>:一行去重,但 set 无序,<strong>顺序会乱</strong></li>
+<li>保序去重:遍历原列表,用 set 记录见过的元素,没见过就追加(seen 查找 O(1),整体 O(n))</li>
+<li>一行保序写法(py3.7+ dict 保序):<code>list(dict.fromkeys(lst))</code></li>
+<li>排序:<code>sorted(lst)</code> 返回<strong>新列表</strong>,<code>lst.sort()</code> <strong>原地</strong>修改;<code>key=</code> 指定依据,如 <code>key=len</code>、<code>key=lambda x: x[1]</code>,<code>reverse=True</code> 降序</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lst = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">set</span>(lst)))            <span class="comment"># [1, 2, 3] 顺序可能乱</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">dict</span>.fromkeys(lst)))  <span class="comment"># [3, 1, 2] 保序去重</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">sorted</span>(lst, reverse=<span class="literal">True</span>)) <span class="comment"># [3, 3, 2, 1, 1]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="12-简述-TCP-三次握手和四次挥手"><a href="#12-简述-TCP-三次握手和四次挥手" class="headerlink" title="12. 简述 TCP 三次握手和四次挥手"></a>12. 简述 TCP 三次握手和四次挥手</h3><p><strong>三次握手建立连接(<strong>SYN → SYN+ACK → ACK</strong>),四次挥手断开(<strong>FIN → ACK → FIN → ACK</strong>),挥手多一次是因为 ACK 和 FIN 要分开发。</strong></p>
+<ul>
+<li>握手目的:确认双方收发能力都正常、同步初始序列号,防止失效的连接请求浪费资源</li>
+<li>握手过程:客户端发 SYN → 服务端回 SYN+ACK → 客户端再回 ACK,连接建立</li>
+<li>挥手过程:主动方发 FIN → 被动方回 ACK → 被动方数据发完再发 FIN → 主动方回 ACK</li>
+<li>为什么四次:被动方收到 FIN 时可能还有数据没发完,先回 ACK,等发完才发 FIN,两次只能分开</li>
+<li>主动方最后进入 <strong>TIME_WAIT</strong> 状态等待 2MSL,确保最后一个 ACK 丢失时还能重发</li>
+</ul>
+<h3 id="13-TCP-和-UDP-的区别"><a href="#13-TCP-和-UDP-的区别" class="headerlink" title="13. TCP 和 UDP 的区别?"></a>13. TCP 和 UDP 的区别?</h3><p><strong>TCP <strong>面向连接、可靠传输、字节流、有拥塞控制</strong>;UDP <strong>无连接、不可靠、数据报、开销小延迟低</strong>。</strong></p>
+<ul>
+<li>TCP:三次握手建立连接,有确认重传、排序、流量&#x2F;拥塞控制,适合网页(HTTP)、文件传输、邮件</li>
+<li>UDP:不握手直接发,不保证到达和顺序,头部只有 8 字节,适合视频直播、DNS、联机游戏</li>
+<li>类比:TCP 是打电话(先接通、说得清),UDP 是寄平信(扔出去就不管)</li>
+<li>两者都是<strong>传输层</strong>协议;基于 TCP 的还有 FTP&#x2F;SMTP,基于 UDP 的还有 DHCP</li>
+</ul>
+<h3 id="14-HTTP-和-HTTPS-的区别"><a href="#14-HTTP-和-HTTPS-的区别" class="headerlink" title="14. HTTP 和 HTTPS 的区别?"></a>14. HTTP 和 HTTPS 的区别?</h3><p><strong>HTTPS &#x3D; HTTP + <strong>TLS&#x2F;SSL 加密</strong>:默认端口 <strong>443</strong>(HTTP 是 80)、需要 <strong>CA 证书</strong>、内容加密防窃听防篡改。</strong></p>
+<ul>
+<li>HTTP 明文传输,可被窃听、篡改;HTTPS 对称加密传输数据,用非对称加密交换密钥</li>
+<li>证书:HTTPS 需要向 CA 申请证书,验证服务器身份,防止「中间人」冒充</li>
+<li>端口:HTTP 默认 80,HTTPS 默认 443</li>
+<li>代价:握手多几次往返、加解密消耗 CPU,但换来安全性,现代网站基本都是 HTTPS</li>
+<li>URL 前缀分别是 http:&#x2F;&#x2F; 与 https:&#x2F;&#x2F;,浏览器对 HTTPS 站点显示锁标志</li>
+</ul>
+<h3 id="15-GET-和-POST-的区别"><a href="#15-GET-和-POST-的区别" class="headerlink" title="15. GET 和 POST 的区别?"></a>15. GET 和 POST 的区别?</h3><ul>
+<li>参数位置:GET 参数在 URL 的 ? 后面;POST 参数在**请求体(body)**中</li>
+<li>安全性:HTTP 下两者都是明文,但 GET 参数会留在浏览器历史、服务器日志里,<strong>不适合传密码</strong></li>
+<li>幂等性:GET 幂等(重复请求结果一样),POST 不幂等(可能重复创建资源)</li>
+<li>本质都是 HTTP 方法,区别更多是<strong>约定俗成</strong>的规范用法而非技术强制</li>
+</ul>
+<h3 id="16-cookie、session、token-的区别"><a href="#16-cookie、session、token-的区别" class="headerlink" title="16. cookie、session、token 的区别?"></a>16. cookie、session、token 的区别?</h3><p><strong>cookie 存</strong>客户端**;session 存<strong>服务器端</strong>(浏览器只留 sessionid);token 是<strong>服务端签名的自包含凭证</strong>(如 JWT),服务端不用存状态,天然适合分布式。**</p>
+<ul>
+<li>cookie:存在浏览器,每次请求<strong>自动携带</strong>;用户可以查看和修改,别放敏感数据</li>
+<li>session:用户状态存服务器(内存&#x2F;redis),浏览器 cookie 里只存一个 sessionid,更安全但占服务器资源</li>
+<li>token(如 JWT):服务端用密钥<strong>签名</strong>后发给客户端,客户端保存,每次请求带上;服务端不存会话状态,分布式&#x2F;跨域友好</li>
+<li>分布式部署时 session 要做共享(通常存 redis),token 不需要,这是 token 流行的原因</li>
+<li>三者常配合:cookie 是「运输工具」,session&#x2F;token 是「凭证内容」</li>
+</ul>
+<h3 id="17-MySQL-索引在哪些情况下会失效"><a href="#17-MySQL-索引在哪些情况下会失效" class="headerlink" title="17. MySQL 索引在哪些情况下会失效?"></a>17. MySQL 索引在哪些情况下会失效?</h3><p><strong>高频失效场景:<strong>对索引列用函数或运算、like 以 % 开头、隐式类型转换、or 连接非索引列、违反联合索引最左前缀</strong>。</strong></p>
+<ul>
+<li>对索引列使用函数或运算:<code>where year(create_time) = 2024</code> 不走索引,应改写成范围查询</li>
+<li>like 前置 %:<code>name like &#39;%明&#39;</code> 失效;前缀匹配 <code>name like &#39;明%&#39;</code> 可以走索引</li>
+<li>隐式类型转换:phone 是 varchar 却写 <code>where phone = 13800000000</code> → 失效</li>
+<li>联合索引(a, b, c)遵守<strong>最左前缀</strong>:只查 b&#x2F;c 不走;查 a、c 只能用上 a</li>
+<li>or 两侧只要有非索引列就失效;列区分度太低(如性别)优化器也可能放弃索引</li>
+<li>排查手段:<code>explain</code> 观察 type、key、rows 等字段</li>
+</ul>
+<h3 id="18-MySQL-有哪些事务隔离级别-分别解决什么问题"><a href="#18-MySQL-有哪些事务隔离级别-分别解决什么问题" class="headerlink" title="18. MySQL 有哪些事务隔离级别?分别解决什么问题?"></a>18. MySQL 有哪些事务隔离级别?分别解决什么问题?</h3><p><strong>四个级别从低到高:<strong>读未提交 → 读已提交 → 可重复读(MySQL 默认)→ 串行化</strong>,逐级解决脏读、不可重复读、幻读。</strong></p>
+<ul>
+<li>三个并发问题:<strong>脏读</strong>&#x3D;读到别人未提交的数据;<strong>不可重复读</strong>&#x3D;两次读同一行值不同(别人 update);<strong>幻读</strong>&#x3D;两次查询行数不同(别人 insert)</li>
+<li>读未提交(RU):三个问题都不防</li>
+<li>读已提交(RC):解决脏读</li>
+<li>可重复读(RR):再解决不可重复读;InnoDB 的 RR 通过 <strong>MVCC + 间隙锁</strong>基本避免幻读,是 <strong>MySQL 默认级别</strong></li>
+<li>串行化:事务完全串行执行,最安全也最慢</li>
+</ul>
+<h3 id="19-乐观锁和悲观锁的区别"><a href="#19-乐观锁和悲观锁的区别" class="headerlink" title="19. 乐观锁和悲观锁的区别?"></a>19. 乐观锁和悲观锁的区别?</h3><p><strong>悲观锁</strong>假设冲突常发生,先加锁再操作**(如 <code>select ... for update</code>);乐观锁<strong>假设冲突少,提交时校验</strong>(版本号),失败就重试。**</p>
+<ul>
+<li>悲观锁:<code>select * from t where id = 1 for update</code> 直接锁住行,其他事务阻塞等待;适合<strong>写多、冲突激烈</strong>的场景</li>
+<li>乐观锁:不加真锁,更新时带上条件 <code>update t set stock = stock - 1, version = version + 1 where id = 1 and version = 旧版本</code></li>
+<li>乐观锁影响行数为 0 说明数据被别人改过,业务层重试即可;常用 version 字段或时间戳实现</li>
+<li>选型:悲观锁依赖数据库锁、并发低但强一致;乐观锁靠应用层逻辑,<strong>读多写少</strong>时吞吐更高</li>
+</ul>
+<h3 id="20-简述-Django-的请求生命周期"><a href="#20-简述-Django-的请求生命周期" class="headerlink" title="20. 简述 Django 的请求生命周期"></a>20. 简述 Django 的请求生命周期</h3><p>*<em><strong>wsgi 接收请求 → 中间件(process_request)→ url 路由 → 视图(ORM&#x2F;模板)→ 中间件(process_response)→ 返回响应</strong>。</em>*</p>
+<ul>
+<li>浏览器发请求,web 服务器(uwsgi&#x2F;gunicorn)按 <strong>WSGI 协议</strong>交给 Django</li>
+<li>请求先<strong>从上到下</strong>穿过每个中间件的 process_request</li>
+<li>再到 <code>urls.py</code> 匹配路径,把请求分发给对应的<strong>视图函数&#x2F;类视图</strong></li>
+<li>视图通过 <strong>ORM</strong> 操作数据库、用模板渲染页面,产出 HttpResponse</li>
+<li>响应<strong>从下到上</strong>再穿回中间件的 process_response,最后经 wsgi 返回浏览器</li>
+<li>视图抛异常会走到中间件的 process_exception 统一处理</li>
+</ul>
+<h3 id="21-Django-中间件是干什么的"><a href="#21-Django-中间件是干什么的" class="headerlink" title="21. Django 中间件是干什么的?"></a>21. Django 中间件是干什么的?</h3><p><strong>中间件是 Django 的</strong>全局钩子层**,在请求进视图前、视图执行时、异常发生、响应返回时统一加工;常用于<strong>登录校验、权限、日志、CORS</strong>。**</p>
+<ul>
+<li>process_request:请求到达视图<strong>之前</strong>(常做登录、权限拦截)</li>
+<li>process_view:路由匹配到视图之后、视图执行之前</li>
+<li>process_exception:视图抛异常时统一兜底</li>
+<li>process_response:响应返回浏览器<strong>之前</strong>(如添加响应头)</li>
+<li>执行顺序:request 阶段按 settings 里 MIDDLEWARE 列表<strong>从上到下</strong>,response 阶段<strong>从下到上</strong></li>
+<li>Django 自带中间件:SecurityMiddleware、SessionMiddleware、CsrfViewMiddleware 等</li>
+</ul>
+<h3 id="22-什么是缓存穿透、击穿、雪崩-怎么应对"><a href="#22-什么是缓存穿透、击穿、雪崩-怎么应对" class="headerlink" title="22. 什么是缓存穿透、击穿、雪崩?怎么应对?"></a>22. 什么是缓存穿透、击穿、雪崩?怎么应对?</h3><p><strong><strong>穿透</strong>&#x3D;查不存在的数据,缓存永远不命中;<strong>击穿</strong>&#x3D;单个热点 key 过期,瞬间打崩数据库;<strong>雪崩</strong>&#x3D;大批 key 同时失效或 redis 挂掉。</strong></p>
+<ul>
+<li>穿透应对:缓存空值(短过期时间)、<strong>布隆过滤器</strong>、入口参数校验(如 id&lt;0 直接拒绝)</li>
+<li>击穿应对:热点数据<strong>不过期或逻辑过期</strong>、互斥锁(只放一个请求去查库重建缓存)</li>
+<li>雪崩应对:过期时间<strong>加随机值</strong>打散、redis 高可用(哨兵&#x2F;集群)、服务限流降级、多级缓存</li>
+<li>记忆口诀:穿透是「查没有的」,击穿是「一个热点没了」,雪崩是「一大片都没了」</li>
+</ul>
+<h3 id="23-可变类型与不可变类型怎么区分"><a href="#23-可变类型与不可变类型怎么区分" class="headerlink" title="23. 可变类型与不可变类型怎么区分?"></a>23. 可变类型与不可变类型怎么区分?</h3><p><strong><strong>不可变</strong>:数字、字符串、元组——「修改」实为创建新对象,id 会变;<strong>可变</strong>:列表、字典、集合——原地修改,id 不变,所有引用同步可见。</strong></p>
+<ul>
+<li>不可变类型:int、float、bool、str、tuple——重新赋值(如 a &#x3D; a + 1、s &#x3D; s + ‘x’)是让变量指向<strong>新对象</strong>,id() 变化,原对象不受影响</li>
+<li>可变类型:list、dict、set——append、pop、update 等<strong>原地修改</strong>,对象 id 不变,所有指向它的变量(包括函数里的形参)都能看到变化</li>
+<li>自查方法:修改前后各打印一次 id(a),id 变了就是不可变类型,没变就是可变类型</li>
+<li>注意:tuple 本身不可变,但里面的可变元素仍可改——t &#x3D; (1, [2]) 后 t[1].append(3) 合法</li>
+<li>关联考点:只有不可变对象才能做 dict 的 key;函数传参、深浅拷贝的副作用差异都源于可变与不可变</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">&quot;hello&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">id</span>(a))</span><br><span class="line">a = a + <span class="string">&quot; world&quot;</span>      <span class="comment"># 不可变:创建新对象</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">id</span>(a))          <span class="comment"># id 变了</span></span><br><span class="line"></span><br><span class="line">lst = [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">id</span>(lst))</span><br><span class="line">lst.append(<span class="number">3</span>)         <span class="comment"># 可变:原地修改</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">id</span>(lst))        <span class="comment"># id 没变</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="24-字符编码-ASCII、GBK、Unicode、UTF-8-与-encode-decode"><a href="#24-字符编码-ASCII、GBK、Unicode、UTF-8-与-encode-decode" class="headerlink" title="24. 字符编码:ASCII、GBK、Unicode、UTF-8 与 encode&#x2F;decode"></a>24. 字符编码:ASCII、GBK、Unicode、UTF-8 与 encode&#x2F;decode</h3><p><strong>计算机只认字节:ASCII(英文)→ 各国自定码表(GBK 中文 2 字节,互不兼容出乱码)→ Unicode 统一「码位」→ <strong>UTF-8 是 Unicode 最常用的变长存储实现</strong>(英文 1 字节、中文 3 字节);encode 字符串转字节,decode 字节转字符串。</strong></p>
+<ul>
+<li>发展脉络:ASCII 只有英文 → 各国自己造码表(GBK、Shift_JIS)互不兼容 → Unicode 给全球字符统一编号 → UTF-8&#x2F;GBK 是把码位存成字节的<strong>编码方案</strong>,UTF-8 为 Unicode 服务</li>
+<li>Python3 的 str 在内存中按 Unicode 存;存文件、走网络必须转成 <strong>bytes</strong>,所以要 encode&#x2F;decode</li>
+<li><code>s.encode(&#39;utf-8&#39;)</code> 得到 bytes,<code>b.decode(&#39;utf-8&#39;)</code> 还原 str;<strong>用什么编码 encode 就必须用同一编码 decode</strong></li>
+<li>乱码根源:编码与解码用了不同字符集(如 utf-8 文件用 gbk 解码);Python3 源文件默认 utf-8</li>
+<li>细节:len(str) 按字符数,len(bytes) 按字节数;’人生’ 编成 utf-8 占 6 字节、编成 gbk 占 4 字节</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">&quot;人生&quot;</span></span><br><span class="line">b = s.encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(b)                     <span class="comment"># b&#x27;\xe4\xba\xba\xe7\x94\x9f&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(s), <span class="built_in">len</span>(b))        <span class="comment"># 2 6:utf-8 中文 3 字节</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(s.encode(<span class="string">&quot;gbk&quot;</span>)))  <span class="comment"># 4:gbk 中文 2 字节</span></span><br><span class="line"><span class="built_in">print</span>(b.decode(<span class="string">&quot;utf-8&quot;</span>))     <span class="comment"># 人生</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="25-常用魔法方法-双下方法-有哪些"><a href="#25-常用魔法方法-双下方法-有哪些" class="headerlink" title="25. 常用魔法方法(双下方法)有哪些?"></a>25. 常用魔法方法(双下方法)有哪些?</h3><p><strong>魔法方法是</strong>双下划线包围<strong>的特殊方法,由解释器在特定语法处</strong>自动触发**,不需要手动调用:<strong>init</strong> 初始化、<strong>str</strong> 打印、<strong>len</strong>&#x2F;<strong>getitem</strong> 让对象支持 len()、下标取值与 for 遍历。**</p>
+<ul>
+<li><strong>init</strong>:创建实例时自动调用完成初始化;<strong>str</strong>:print(对象)、str() 时调用,必须 return 字符串;<strong>del</strong>:对象被回收时触发</li>
+<li>实现 <strong>len</strong> 后 len(对象) 可用;实现 <strong>getitem</strong>(self, index) 后对象支持 obj[i] 下标取值,<strong>还能被 for 遍历和切片</strong></li>
+<li><strong>eq</strong> 定义 &#x3D;&#x3D; 的行为;<strong>call</strong> 让对象能像函数一样 obj() 调用;<strong>iter</strong>&#x2F;<strong>next</strong> 让自定义类成为迭代器;with 语句依赖 <strong>enter</strong>&#x2F;<strong>exit</strong></li>
+<li>面试常见问法:for 的本质、len() 为什么能作用于自定义对象——答案都落在对应魔法方法上</li>
+<li>魔法方法按需实现、写了才生效;不要自己发明双下方法名</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Playlist</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, songs</span>):</span><br><span class="line">        <span class="variable language_">self</span>.songs = <span class="built_in">list</span>(songs)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):              <span class="comment"># 触发:len(p)</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(<span class="variable language_">self</span>.songs)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, i</span>):       <span class="comment"># 触发:p[i]、for、切片</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.songs[i]</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__str__</span>(<span class="params">self</span>):              <span class="comment"># 触发:print(p)</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Playlist(&quot;</span> + <span class="string">&quot;, &quot;</span>.join(<span class="variable language_">self</span>.songs) + <span class="string">&quot;)&quot;</span></span><br><span class="line"></span><br><span class="line">p = Playlist([<span class="string">&quot;晴天&quot;</span>, <span class="string">&quot;稻香&quot;</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(p))     <span class="comment"># 2</span></span><br><span class="line"><span class="built_in">print</span>(p[<span class="number">0</span>])       <span class="comment"># 晴天</span></span><br><span class="line"><span class="built_in">print</span>(p[<span class="number">1</span>:])      <span class="comment"># [&#x27;稻香&#x27;]</span></span><br><span class="line"><span class="built_in">print</span>(p)          <span class="comment"># Playlist(晴天, 稻香)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="📖-课后作业（运维与面试）"><a href="#📖-课后作业（运维与面试）" class="headerlink" title="📖 课后作业（运维与面试）"></a>📖 课后作业（运维与面试）</h2><h3 id="1-就业强化与-Git-作业清单"><a href="#1-就业强化与-Git-作业清单" class="headerlink" title="1. 就业强化与 Git 作业清单"></a>1. 就业强化与 Git 作业清单</h3><p><strong>就业强化阶段以</strong>面试手写题 + Git&#x2F;Linux 高频操作<strong>为作业主线:每天 2~3 道手写代码题保持手感,Git 分支&#x2F;回退&#x2F;解决冲突要练成肌肉记忆,日志排查命令要能脱口而出。</strong></p>
+<ul>
+<li>Git 作业:add&#x2F;commit 三区流转、reset –hard 回退与 reflog 找回、分支合并解决冲突的完整流程,对应本站「Git 与 Linux」章</li>
+<li>Linux 作业:grep&#x2F;wc 统计日志、find 定位文件、kill 杀进程,排查思路「先看日志量级 → 实时盯日志 → 定位行号跳转」</li>
+<li>面试手写作业:列表交集&#x2F;并集、字符串反转单词顺序、去重、排序,每道先自己写再对答案</li>
+<li>手写题标准:能默写、能讲清时间复杂度、能说出边界情况(空列表、重复元素、多余空格)</li>
+<li>错题反复:手写题错一道,同类型加练三道,直到 5 分钟内无误写出</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">grep -c error app.log        <span class="comment"># 统计 error 出现的行数</span></span><br><span class="line">grep error app.log | wc -l   <span class="comment"># 等价写法:先匹配再数行</span></span><br><span class="line">tail -f access.log           <span class="comment"># 实时滚动看日志</span></span><br><span class="line">git reset --hard HEAD^       <span class="comment"># 回退到上一个版本</span></span><br><span class="line">git reflog                   <span class="comment"># 找回&quot;消失&quot;的提交</span></span><br></pre></td></tr></table></figure>
+
+<p><em>运维与 Git 高频命令速查</em></p>
+<h2 id="📖-并发复习包-Day38-42-考前速记"><a href="#📖-并发复习包-Day38-42-考前速记" class="headerlink" title="📖 并发复习包(Day38~42 考前速记)"></a>📖 并发复习包(Day38~42 考前速记)</h2><h3 id="1-五天知识地图-一天一条主线"><a href="#1-五天知识地图-一天一条主线" class="headerlink" title="1. 五天知识地图:一天一条主线"></a>1. 五天知识地图:一天一条主线</h3><ul>
+<li>Day38 进程(P453~P460)必会三点:①多道技术 &#x3D; <strong>空间复用 + 时间复用</strong>;②三状态图(就绪&#x2F;运行&#x2F;阻塞,<strong>阻塞不能直接回运行</strong>);③Process 两种开启方式 + Windows 必须 <code>if __name__ == &quot;__main__&quot;:</code> 保护</li>
+<li>Day39 锁与队列(P463~P470)必会三点:①join——<strong>先统一 start 再统一 join</strong>;②互斥锁 Lock 把并发改串行保数据安全;③Queue 进程间通信 + 生产者消费者(None 结束信号,几个消费者放几个)</li>
+<li>Day40 线程与 GIL(P473~P482)必会三点:①Thread 写法与 Process 几乎一致但<strong>共享内存</strong>;②守护线程 daemon 随主线程代码结束被带走;③GIL 三句话 + 口诀「计算密集用进程、IO 密集用线程」</li>
+<li>Day41 同步工具与池协程(P485~P495)必会三点:①死锁四条件与 RLock 解法;②Semaphore 限流、Event 线程间通知;③池(submit&#x2F;map)+ 协程单线程切换</li>
+<li>Day42 IO 模型(P499~P505)必会三点:①<strong>两阶段分析</strong>(等数据&#x2F;拷数据);②阻塞&#x2F;非阻塞&#x2F;多路复用&#x2F;异步一张表;③select 代表多路复用、asyncio 代表异步,高并发排序:阻塞&lt;非阻塞&lt;多路复用&lt;异步</li>
+</ul>
+<h3 id="2-进程-vs-线程对比总表-一张表背完"><a href="#2-进程-vs-线程对比总表-一张表背完" class="headerlink" title="2. 进程 vs 线程对比总表(一张表背完)"></a>2. 进程 vs 线程对比总表(一张表背完)</h3><p><strong>一张表背完进程 vs 线程:模块 multiprocessing vs threading、数据</strong>隔离 vs 共享<strong>、开销大 vs 小、计算密集 vs IO 密集——所有对比题都从这张表推。</strong></p>
+<ul>
+<li>创建方式:进程 <code>Process(target=..., args=...)</code> 或继承重写 run;线程 <code>Thread(...)</code> 写法几乎一致;关键差别:<strong>Windows 下进程必须</strong> <code>if __name__ == &quot;__main__&quot;:</code> <strong>保护,线程不需要</strong></li>
+<li>join:两者都是「主 XX <strong>阻塞</strong>等子 XX 结束再往下走」;口诀<strong>先统一 start、再统一 join</strong>——start 一个就 join 一个,并发退化成串行</li>
+<li>数据:进程<strong>隔离</strong>(子进程改全局变量父进程看不见,通信靠 Queue&#x2F;Pipe);线程<strong>共享</strong>(同一份内存,改全局变量都看得见,所以要加锁)——「进程安全但通信麻烦,线程高效但要小心竞争」</li>
+<li>开销:进程 &gt; 线程 &gt; 协程;进程要复制资源、切换要换内存空间;线程只需注册一个执行流;协程在用户态切换几乎免费</li>
+<li>适用场景口诀:<strong>计算密集用进程(多核并行绕开 GIL),IO 密集用线程&#x2F;协程(等待时切换)</strong>;稳定性:进程崩了互不影响,线程一个崩全进程陪葬</li>
+<li>一句话定位:<strong>进程是资源分配的最小单位,线程是 CPU 调度的最小单位</strong>(进程&#x3D;车间,线程&#x3D;车间里的工人)</li>
+</ul>
+<h3 id="3-三把锁一句话-Lock-RLock-Semaphore"><a href="#3-三把锁一句话-Lock-RLock-Semaphore" class="headerlink" title="3. 三把锁一句话:Lock&#x2F;RLock&#x2F;Semaphore"></a>3. 三把锁一句话:Lock&#x2F;RLock&#x2F;Semaphore</h3><p><strong>三把锁一句话:<strong>Lock 一次一个、RLock 可重入、Semaphore N 个坑</strong>;再加死锁四条件(互斥&#x2F;请求与保持&#x2F;不可剥夺&#x2F;循环等待)与预防口诀——锁家族考点一页收全。</strong></p>
+<ul>
+<li><strong>Lock 互斥锁</strong>:一次只放一个——谁抢到谁进,其余在 acquire 处阻塞;场景:抢票、计数器等并发修改同一份数据;推荐 <code>with lock:</code> 写法,防忘 release 卡死所有人</li>
+<li><strong>RLock 递归锁</strong>:同一个线程可以重复 acquire(内部计数 +1),配对 release 计数归零才真解锁;场景:「锁中锁」&#x2F;递归调用里再次抢锁——Lock 会自己锁死自己,换 RLock 即破</li>
+<li><strong>Semaphore 信号量</strong>:N 个坑——同时最多 N 个进入,第 N+1 个等;acquire 占坑、release 腾坑;场景:限流(最多 3 个爬虫同时抓)、连接池;Lock 相当于 Semaphore(1)</li>
+<li><strong>死锁四必要条件</strong>:互斥、请求与保持、不可剥夺、循环等待——四个<strong>同时成立</strong>才会死锁,破坏任意一个即可预防</li>
+<li>最常用预防:<strong>所有线程按固定顺序抢锁</strong>(破坏循环等待);「同线程重复抢锁」型死锁直接换 RLock(允许重入);一次性申请全部资源(破坏请求与保持)</li>
+<li>背法:<strong>Lock 排队一个进,RLock 同人可重进,Semaphore N 坑随便进;死锁四条件,破一即新生</strong></li>
+</ul>
+<h3 id="4-线程间通信三件套-Queue-Event-线程q"><a href="#4-线程间通信三件套-Queue-Event-线程q" class="headerlink" title="4. 线程间通信三件套:Queue&#x2F;Event&#x2F;线程q"></a>4. 线程间通信三件套:Queue&#x2F;Event&#x2F;线程q</h3><p><strong>口诀:<strong>传数据用队列,发通知用事件</strong>——queue.Queue 线程安全先进先出、Event 一 set 全唤醒、multiprocessing.Queue 跨进程专用;三件套什么时候用哪个,一页分清。</strong></p>
+<ul>
+<li><strong>queue.Queue 线程队列</strong>(线程q):<code>put()/get()</code> 线程安全,空了 get 阻塞等数据;线程间传数据首选,和 multiprocessing.Queue 用法一致</li>
+<li><strong>Event 事件</strong>:一个线程 <code>set()</code>,所有 <code>wait()</code> 的线程被唤醒;<code>is_set()</code> 查状态、<code>clear()</code> 复位;场景:红绿灯&#x2F;启动开关——等配置加载完、等信号再干活</li>
+<li><strong>multiprocessing.Queue 进程队列</strong>:进程内存隔离,普通变量传不进子进程;把队列对象通过 args 传给子进程,put&#x2F;get 背后 &#x3D; <strong>管道 + 锁 + pickle</strong>;线程的 queue.Queue 传不进子进程,跨进程必须用它</li>
+<li>生产者消费者模型:队列做<strong>缓冲</strong>(解耦&#x2F;并发&#x2F;忙闲互补);生产者做完放 <strong>None 结束信号</strong>——几个消费者放几个 None,少一个就有消费者永远阻塞在 get 上</li>
+<li>选型一行:线程间传数据 → queue.Queue;线程间发信号 → Event;跨进程传数据 → multiprocessing.Queue;保护共享数据(不是传数据)→ Lock</li>
+</ul>
+<h3 id="5-池与协程选型-谁来干活最划算"><a href="#5-池与协程选型-谁来干活最划算" class="headerlink" title="5. 池与协程选型:谁来干活最划算"></a>5. 池与协程选型:谁来干活最划算</h3><p><strong>池 &#x3D; 固定数量的工人重复利用,省去反复创建销毁;<strong>线程池治 IO 密集、进程池治计算密集</strong>;协程单线程用户态切换,开销最小、并发量最大——选型一行:进程池吃 CPU,线程池等 IO,超大量连接上协程。</strong></p>
+<ul>
+<li>为什么用池:任务多时反复创建&#x2F;销毁进程线程<strong>开销大</strong>;池预先开好 N 个工人,任务排队领、用完归还;<code>with Pool(...) as pool:</code> 结束自动关闭,不用手动 shutdown</li>
+<li><strong>submit vs map</strong>:submit 提交单个任务,立刻返回 Future,<code>future.result()</code> 阻塞拿结果;map <strong>批量</strong>提交,<strong>结果按输入顺序返回</strong>(与谁先跑完无关),最适合「一批输入一批输出」</li>
+<li><strong>ThreadPoolExecutor 线程池</strong>:适合 IO 密集(网络请求、读写文件);<strong>ProcessPoolExecutor 进程池</strong>:适合计算密集(数值计算、图像处理),多核并行绕开 GIL;Windows 下进程池同样必须 <code>if __name__ == &quot;__main__&quot;:</code> 保护</li>
+<li><strong>协程为什么省</strong>:单线程内由程序&#x2F;协程库在<strong>用户态</strong>切换——没有内核态上下文切换、没有线程栈开销,一个线程能挂成千上万协程;代价是吃不了多核</li>
+<li>协程两代表:gevent(spawn&#x2F;joinall + monkey 补丁)、asyncio(async&#x2F;await 原生);都适合 IO 密集海量并发(如 TCP 并发服务端)</li>
+<li>选型一行背:<strong>进程池吃 CPU,线程池等 IO,超大量连接上协程</strong>;开销排序:进程 &gt; 线程 &gt; 协程</li>
+</ul>
+<h3 id="6-IO-四模型一张表-两阶段谁阻塞"><a href="#6-IO-四模型一张表-两阶段谁阻塞" class="headerlink" title="6. IO 四模型一张表:两阶段谁阻塞"></a>6. IO 四模型一张表:两阶段谁阻塞</h3><p><strong>用「两阶段」背 IO 四模型:①等数据到内核缓冲区 ②数据从内核拷到用户空间——</strong>阻塞全堵、非阻塞轮询、多路复用 select 替你等、异步全不堵**;高并发排序:阻塞&lt;非阻塞&lt;多路复用&lt;异步。**</p>
+<ul>
+<li>两阶段分析框架:一次读 &#x3D; <strong>阶段① 等数据到内核缓冲区</strong> + <strong>阶段② 把数据从内核拷贝到用户空间</strong>;四个模型的差别只在「这两个阶段各自阻不阻塞」</li>
+<li><strong>阻塞 IO</strong>:①阻塞、②也阻塞——recv()&#x2F;accept() 默认形态;最简单,但一个连接要配一个线程,并发一高线程爆炸</li>
+<li><strong>非阻塞 IO</strong>:<code>setblocking(False)</code>,阶段①<strong>轮询</strong>不阻塞(没数据立刻返回&#x2F;抛 BlockingIOError,自己反复问);阶段②拷贝仍阻塞;缺点是 CPU 空转浪费</li>
+<li><strong>IO 多路复用</strong>:把一批连接交给 <strong>select&#x2F;poll&#x2F;epoll</strong> 帮你盯阶段①,谁有数据通知你,阶段②拷贝仍自己完成;一个线程管成百上千连接,代表 <code>select.select</code></li>
+<li><strong>异步 IO(asyncio)</strong>:发起后立刻返回,①②<strong>都不用你管</strong>,内核连拷贝都做完再通知你(回调&#x2F;await 直接拿结果);代表 asyncio、Windows IOCP</li>
+<li>高并发能力排序:<strong>阻塞 &lt; 非阻塞 &lt; 多路复用 &lt; 异步</strong>;口诀:<strong>select 替你等,asyncio 连等都不用</strong></li>
+</ul>
+<h3 id="7-考前自测清单-10-个能不能"><a href="#7-考前自测清单-10-个能不能" class="headerlink" title="7. 考前自测清单:10 个能不能"></a>7. 考前自测清单:10 个能不能</h3><p><strong>考前 10 连问,每条先</strong>口述 30 秒<strong>再对答案;卡壳的那条回到 rv-2~rv-6 对应速记点重背——10 条全能脱口而出,并发五天就算毕业。</strong></p>
+<ul>
+<li>①守护线程行为?——daemon&#x3D;True 且必须在 start 前设,<strong>主线程代码结束立刻被带走</strong>,别放重要收尾</li>
+<li>②GIL 三句话?——CPython 解释器级全局锁;同一时刻一个进程内只有一个线程执行字节码;IO 等待会释放,只卡 CPU 密集</li>
+<li>③死锁四条件?——互斥、请求与保持、不可剥夺、循环等待(同时成立才死锁,破一即解)</li>
+<li>④Windows 多进程坑?——spawn 靠<strong>导入父模块</strong>创建子进程,创建代码必须 <code>if __name__ == &quot;__main__&quot;:</code> 保护,否则无限递归报错</li>
+<li>⑤join 作用与正确写法?——阻塞等子进程&#x2F;线程结束;<strong>先统一 start、再统一 join</strong> 才不退化成串行</li>
+<li>⑥进程和线程在数据上的最大区别?——进程<strong>隔离</strong>(靠 Queue 通信),线程<strong>共享</strong>(靠 Lock 保护)</li>
+<li>⑦Lock&#x2F;RLock&#x2F;Semaphore 一句话?——一次一个 &#x2F; 同线程可重入 &#x2F; N 个坑</li>
+<li>⑧线程池和进程池怎么选?——IO 密集线程池,计算密集进程池(绕开 GIL 吃多核)</li>
+<li>⑨协程为什么省?——单线程<strong>用户态</strong>切换,无系统上下文切换与线程栈开销,但吃不了多核</li>
+<li>⑩IO 四模型两阶段谁阻塞?——阻塞全堵、非阻塞轮询(拷贝仍堵)、多路复用 select 替你等(拷贝仍自己做)、异步两阶段都不管</li>
+</ul>
+<hr>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/13/python-13/">https://ln996.github.io/2026/11/13/python-13/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BF%90%E7%BB%B4/">运维</a><a class="post-meta__tags" href="/tags/%E9%9D%A2%E8%AF%95/">面试</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/14/python-14/" title="代码精选 51 段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">代码精选 51 段</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。   本文整理视频里老师敲的重点课堂代码,每段标注对应集数与练习要点。建议:先遮住代码自己写,写完对照;改参数看变化。   ⌨️ 变量引用与 id &#x2F; is &#x2F; &#x3D;&#x3D;(第一周必敲)🎯 这段练什么: 变量存的是引用不是值本身;b &#x3D; a 后两个名字共用对象;is 比地址、== 比值。敲完这段,后面所有”改了a怎么b也变了”的问题都能自己推导。 12345678910a = [1, 2, 3]b = a              # b 和 a 指向同一个列表b.append(4)print(a)           # [1, 2, 3, 4]  改b即改aprint(a is b)      # True 同一个对象c = [1, 2, 3, 4]print(a == c)      # True 值相等print(a is c)      # False 但不是同一个对象print(id(a), id(c))  # 两个不同的内存地址   ⌨️ 可变 &#x2F; 不可变 类型行为实验🎯 ...</div></div></div></a><a class="pagination-related" href="/2026/11/12/python-12/" title="项目实战"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">项目实战</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 选课系统项目(面向对象综合)1. 项目概览与角色设计选课系统是面向对象思想的综合练习**:管理员&#x2F;学生&#x2F;老师三种角色,围绕 学校→班级→课程 的层级组织数据。**  三种角色功能:管理员(创建学校&#x2F;课程&#x2F;老师)、学生(注册&#x2F;选课&#x2F;查看分数)、老师(选择教授课程&#x2F;查看学生&#x2F;修改分数) 核心类:School(学校)、Classes(班级)、Course(课程)、Teacher(老师)、Student(学生)、Admin(管理员) 关系:学校与班级一对多、班级与课程关联、老师与课程多对多、学生选课程后产生分数记录 这个阶段还没有数据库,数据持久化用 json&#x2F;pickle 文件保存对象状态  2. 登录认证装饰器每种角色登录后,后续功能都要先校验身份——用认证装饰器统一包裹,避免每个功能里重复写判断。  装饰器内校验当前登录状态(全局字典&#x2F;文件里是否保存了已登录角色),未登录则强制先登录 用 functools.wraps 保留被装饰函数的元...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-Git-%E4%B8%8E-Linux"><span class="toc-number">1.</span> <span class="toc-text">📖 Git 与 Linux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Git-%E4%B8%89%E5%8C%BA%E6%A8%A1%E5%9E%8B%E3%80%81%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4%E4%B8%8E%E7%89%88%E6%9C%AC%E5%9B%9E%E9%80%80"><span class="toc-number">1.1.</span> <span class="toc-text">1. Git 三区模型、基础命令与版本回退</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6%E5%86%B2%E7%AA%81"><span class="toc-number">1.2.</span> <span class="toc-text">2. 分支与合并冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%BF%9C%E7%A8%8B%E5%8D%8F%E4%BD%9C%E4%B8%8E-gitignore"><span class="toc-number">1.3.</span> <span class="toc-text">3. 远程协作与 .gitignore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Linux-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E4%B8%8E%E6%9D%83%E9%99%90"><span class="toc-number">1.4.</span> <span class="toc-text">4. Linux 常用命令与权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-vim-%E4%B8%89%E7%A7%8D%E6%A8%A1%E5%BC%8F%E4%B8%8E%E9%83%A8%E7%BD%B2%E5%9F%BA%E7%A1%80"><span class="toc-number">1.5.</span> <span class="toc-text">5. vim 三种模式与部署基础</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E7%88%AC%E8%99%AB%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">📖 爬虫基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%88%AC%E8%99%AB%E6%B5%81%E7%A8%8B%E4%B8%8E-requests-%E5%8F%91%E8%AF%B7%E6%B1%82"><span class="toc-number">2.1.</span> <span class="toc-text">1. 爬虫流程与 requests 发请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BC%9A%E8%AF%9D%E4%BF%9D%E6%8C%81-Session-%E4%B8%8E-cookie"><span class="toc-number">2.2.</span> <span class="toc-text">2. 会话保持:Session 与 cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%A7%A3%E6%9E%90%E6%96%B9%E5%BC%8F-bs4-xpath-%E6%AD%A3%E5%88%99-json"><span class="toc-number">2.3.</span> <span class="toc-text">3. 解析方式:bs4 &#x2F; xpath &#x2F; 正则 &#x2F; json</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%8F%8D%E7%88%AC%E6%89%8B%E6%AE%B5%E4%B8%8E%E5%BA%94%E5%AF%B9%E7%AD%96%E7%95%A5"><span class="toc-number">2.4.</span> <span class="toc-text">4. 反爬手段与应对策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-scrapy-%E6%A1%86%E6%9E%B6-%E6%9E%B6%E6%9E%84%E4%B8%8E%E8%BF%90%E8%A1%8C"><span class="toc-number">2.5.</span> <span class="toc-text">5. scrapy 框架:架构与运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E7%BB%BC%E5%90%88%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91"><span class="toc-number">3.</span> <span class="toc-text">📖 综合面试高频</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-is-%E5%92%8C-%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">3.1.</span> <span class="toc-text">1. is 和 &#x3D;&#x3D; 有什么区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.2.</span> <span class="toc-text">2. 深拷贝和浅拷贝的区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Python-%E5%87%BD%E6%95%B0%E4%BC%A0%E5%8F%82%E6%98%AF%E4%BC%A0%E5%80%BC%E8%BF%98%E6%98%AF%E4%BC%A0%E5%BC%95%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">3. Python 函数传参是传值还是传引用?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-args-%E5%92%8C-kwargs-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">3.4.</span> <span class="toc-text">4. *args 和 **kwargs 是什么?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-GIL-%E6%98%AF%E4%BB%80%E4%B9%88-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%80%8E%E4%B9%88%E9%80%89"><span class="toc-number">3.5.</span> <span class="toc-text">5. GIL 是什么?多线程和多进程怎么选?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%89%8B%E5%86%99%E4%B8%80%E4%B8%AA%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="toc-number">3.6.</span> <span class="toc-text">6. 手写一个装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E7%94%9F%E6%88%90%E5%99%A8%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">3.7.</span> <span class="toc-text">7. 迭代器和生成器有什么区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-Python-%E7%9A%84%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">3.8.</span> <span class="toc-text">8. Python 的内存管理与垃圾回收机制?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E9%97%AD%E5%8C%85%E6%98%AF%E4%BB%80%E4%B9%88-%E5%86%85%E5%B1%82%E5%87%BD%E6%95%B0%E8%83%BD%E4%BF%AE%E6%94%B9%E5%A4%96%E5%B1%82%E5%8F%98%E9%87%8F%E5%90%97"><span class="toc-number">3.9.</span> <span class="toc-text">9. 闭包是什么?内层函数能修改外层变量吗?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-list-%E5%92%8C-dict-%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">3.10.</span> <span class="toc-text">10. list 和 dict 常见操作的时间复杂度?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E6%89%8B%E5%86%99%E5%88%97%E8%A1%A8%E5%8E%BB%E9%87%8D-%E4%BF%9D%E6%8C%81%E5%8E%9F%E9%A1%BA%E5%BA%8F-%E4%B8%8E%E6%8E%92%E5%BA%8F"><span class="toc-number">3.11.</span> <span class="toc-text">11. 手写列表去重(保持原顺序)与排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E7%AE%80%E8%BF%B0-TCP-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="toc-number">3.12.</span> <span class="toc-text">12. 简述 TCP 三次握手和四次挥手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-TCP-%E5%92%8C-UDP-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.13.</span> <span class="toc-text">13. TCP 和 UDP 的区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-HTTP-%E5%92%8C-HTTPS-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.14.</span> <span class="toc-text">14. HTTP 和 HTTPS 的区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-GET-%E5%92%8C-POST-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.15.</span> <span class="toc-text">15. GET 和 POST 的区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-cookie%E3%80%81session%E3%80%81token-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.16.</span> <span class="toc-text">16. cookie、session、token 的区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-MySQL-%E7%B4%A2%E5%BC%95%E5%9C%A8%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E4%BC%9A%E5%A4%B1%E6%95%88"><span class="toc-number">3.17.</span> <span class="toc-text">17. MySQL 索引在哪些情况下会失效?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-MySQL-%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB-%E5%88%86%E5%88%AB%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="toc-number">3.18.</span> <span class="toc-text">18. MySQL 有哪些事务隔离级别?分别解决什么问题?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-%E4%B9%90%E8%A7%82%E9%94%81%E5%92%8C%E6%82%B2%E8%A7%82%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.19.</span> <span class="toc-text">19. 乐观锁和悲观锁的区别?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#20-%E7%AE%80%E8%BF%B0-Django-%E7%9A%84%E8%AF%B7%E6%B1%82%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.20.</span> <span class="toc-text">20. 简述 Django 的请求生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-Django-%E4%B8%AD%E9%97%B4%E4%BB%B6%E6%98%AF%E5%B9%B2%E4%BB%80%E4%B9%88%E7%9A%84"><span class="toc-number">3.21.</span> <span class="toc-text">21. Django 中间件是干什么的?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-%E4%BB%80%E4%B9%88%E6%98%AF%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%E3%80%81%E5%87%BB%E7%A9%BF%E3%80%81%E9%9B%AA%E5%B4%A9-%E6%80%8E%E4%B9%88%E5%BA%94%E5%AF%B9"><span class="toc-number">3.22.</span> <span class="toc-text">22. 什么是缓存穿透、击穿、雪崩?怎么应对?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-%E5%8F%AF%E5%8F%98%E7%B1%BB%E5%9E%8B%E4%B8%8E%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%B1%BB%E5%9E%8B%E6%80%8E%E4%B9%88%E5%8C%BA%E5%88%86"><span class="toc-number">3.23.</span> <span class="toc-text">23. 可变类型与不可变类型怎么区分?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81-ASCII%E3%80%81GBK%E3%80%81Unicode%E3%80%81UTF-8-%E4%B8%8E-encode-decode"><span class="toc-number">3.24.</span> <span class="toc-text">24. 字符编码:ASCII、GBK、Unicode、UTF-8 与 encode&#x2F;decode</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#25-%E5%B8%B8%E7%94%A8%E9%AD%94%E6%B3%95%E6%96%B9%E6%B3%95-%E5%8F%8C%E4%B8%8B%E6%96%B9%E6%B3%95-%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">3.25.</span> <span class="toc-text">25. 常用魔法方法(双下方法)有哪些?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A%EF%BC%88%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">📖 课后作业（运维与面试）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B0%B1%E4%B8%9A%E5%BC%BA%E5%8C%96%E4%B8%8E-Git-%E4%BD%9C%E4%B8%9A%E6%B8%85%E5%8D%95"><span class="toc-number">4.1.</span> <span class="toc-text">1. 就业强化与 Git 作业清单</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E5%B9%B6%E5%8F%91%E5%A4%8D%E4%B9%A0%E5%8C%85-Day38-42-%E8%80%83%E5%89%8D%E9%80%9F%E8%AE%B0"><span class="toc-number">5.</span> <span class="toc-text">📖 并发复习包(Day38~42 考前速记)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BA%94%E5%A4%A9%E7%9F%A5%E8%AF%86%E5%9C%B0%E5%9B%BE-%E4%B8%80%E5%A4%A9%E4%B8%80%E6%9D%A1%E4%B8%BB%E7%BA%BF"><span class="toc-number">5.1.</span> <span class="toc-text">1. 五天知识地图:一天一条主线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%BF%9B%E7%A8%8B-vs-%E7%BA%BF%E7%A8%8B%E5%AF%B9%E6%AF%94%E6%80%BB%E8%A1%A8-%E4%B8%80%E5%BC%A0%E8%A1%A8%E8%83%8C%E5%AE%8C"><span class="toc-number">5.2.</span> <span class="toc-text">2. 进程 vs 线程对比总表(一张表背完)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%89%E6%8A%8A%E9%94%81%E4%B8%80%E5%8F%A5%E8%AF%9D-Lock-RLock-Semaphore"><span class="toc-number">5.3.</span> <span class="toc-text">3. 三把锁一句话:Lock&#x2F;RLock&#x2F;Semaphore</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E4%B8%89%E4%BB%B6%E5%A5%97-Queue-Event-%E7%BA%BF%E7%A8%8Bq"><span class="toc-number">5.4.</span> <span class="toc-text">4. 线程间通信三件套:Queue&#x2F;Event&#x2F;线程q</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%B1%A0%E4%B8%8E%E5%8D%8F%E7%A8%8B%E9%80%89%E5%9E%8B-%E8%B0%81%E6%9D%A5%E5%B9%B2%E6%B4%BB%E6%9C%80%E5%88%92%E7%AE%97"><span class="toc-number">5.5.</span> <span class="toc-text">5. 池与协程选型:谁来干活最划算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-IO-%E5%9B%9B%E6%A8%A1%E5%9E%8B%E4%B8%80%E5%BC%A0%E8%A1%A8-%E4%B8%A4%E9%98%B6%E6%AE%B5%E8%B0%81%E9%98%BB%E5%A1%9E"><span class="toc-number">5.6.</span> <span class="toc-text">6. IO 四模型一张表:两阶段谁阻塞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%80%83%E5%89%8D%E8%87%AA%E6%B5%8B%E6%B8%85%E5%8D%95-10-%E4%B8%AA%E8%83%BD%E4%B8%8D%E8%83%BD"><span class="toc-number">5.7.</span> <span class="toc-text">7. 考前自测清单:10 个能不能</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-04/" title="MySQL学习笔记 04:表关系设计(一对一·一对多·多对多)">MySQL学习笔记 04:表关系设计(一对一·一对多·多对多)</a><time datetime="2026-11-17T05:00:00.000Z" title="发表于 2026-11-17 13:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-03/" title="MySQL学习笔记 03:进阶查询(having·去重·排序·分页·多表联查·ORM)">MySQL学习笔记 03:进阶查询(having·去重·排序·分页·多表联查·ORM)</a><time datetime="2026-11-17T04:00:00.000Z" title="发表于 2026-11-17 12:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-02/" title="MySQL学习笔记 02:分组统计与聚合函数(含 where + group by 组合)">MySQL学习笔记 02:分组统计与聚合函数(含 where + group by 组合)</a><time datetime="2026-11-17T03:00:00.000Z" title="发表于 2026-11-17 11:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-01/" title="MySQL学习笔记 01:基础查询与 where 条件筛选">MySQL学习笔记 01:基础查询与 where 条件筛选</a><time datetime="2026-11-17T02:00:00.000Z" title="发表于 2026-11-17 10:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-00/" title="MySQL学习笔记 00:数据库增删改查(CRUD)大全【库·表·数据】">MySQL学习笔记 00:数据库增删改查(CRUD)大全【库·表·数据】</a><time datetime="2026-11-17T01:00:00.000Z" title="发表于 2026-11-17 09:00:00">2026-11-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

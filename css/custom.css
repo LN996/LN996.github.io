@@ -1,0 +1,80 @@
+/* ===== 玻璃拟态定制(李宁的博客)===== */
+/* 配合 Butterfly 主题使用,思路参考视频里"Starhiroの小站"风格:
+   磨砂玻璃卡片 + 模糊彩色背景 + 半透明导航 */
+
+:root {
+  --glass-bg: rgba(255, 255, 255, .62);
+  --glass-bg-soft: rgba(255, 255, 255, .45);
+  --glass-border: rgba(255, 255, 255, .6);
+  --glass-shadow: 0 8px 32px rgba(70, 80, 160, .16);
+}
+
+/* ---------- 主内容容器:毛玻璃大卡片 ---------- */
+.layout > #post,
+.layout > #page,
+.layout > #archive,
+.layout > #tag,
+.layout > #category {
+  background: var(--glass-bg) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---------- 首页文章卡片 ---------- */
+.recent-post-item {
+  background: var(--glass-bg) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px !important;
+  box-shadow: var(--glass-shadow);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.recent-post-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(70, 80, 160, .22);
+}
+
+/* ---------- 侧栏卡片 ---------- */
+#aside-content .card-widget {
+  background: var(--glass-bg) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---------- 顶部导航玻璃化 ---------- */
+#nav {
+  background: rgba(255, 255, 255, .3) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+  border-bottom: 1px solid rgba(255, 255, 255, .4);
+}
+/* 往下滚动后吸附的导航稍实一些,保证可读 */
+#page-header.nav-fixed > #nav,
+#page-header.nav-visible > #nav {
+  background: rgba(255, 255, 255, .78) !important;
+}
+
+/* ---------- 首屏 banner:矮一点更像视频里那种"头图" ---------- */
+#page-header.full_page { height: 58vh; }
+
+/* banner 上文字加投影,防止浅色背景看不清 */
+#site-info,
+#site-title,
+#site-subtitle {
+  text-shadow: 0 2px 14px rgba(30, 40, 90, .35);
+}
+
+/* ---------- 归档/分类时间轴小卡片 ---------- */
+.article-sort-item-info {
+  background: rgba(255, 255, 255, .35);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: .6rem 1rem;
+}

@@ -1,0 +1,533 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>网络编程 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="我的学习笔记,边学边记,持续修订。  📖 网络编程1. 网络基础(IP、端口、子网掩码)网络通信三要素:IP 定位主机、端口定位程序、协议约定数据格式;子网掩码用来区分 IP 的网络位与主机位。  局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网 IP 地址:标识网络中的一台主机,如 192.168.1.10;127.0.0.1 是本机回环地址,永远代表自己,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络编程">
+<meta property="og:url" content="https://ln996.github.io/2026/11/05/python-05/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="我的学习笔记,边学边记,持续修订。  📖 网络编程1. 网络基础(IP、端口、子网掩码)网络通信三要素:IP 定位主机、端口定位程序、协议约定数据格式;子网掩码用来区分 IP 的网络位与主机位。  局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网 IP 地址:标识网络中的一台主机,如 192.168.1.10;127.0.0.1 是本机回环地址,永远代表自己,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-05T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T09:06:59.492Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "网络编程",
+  "url": "https://ln996.github.io/2026/11/05/python-05/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-05T01:00:00.000Z",
+  "dateModified": "2026-11-17T09:06:59.492Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/05/python-05/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '网络编程',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Python%E5%9F%BA%E7%A1%80/"><i class="fa-fw fas fa-code"></i><span> Python基础</span></a></li><li><a class="site-page child" href="/categories/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"><i class="fa-fw fas fa-cubes"></i><span> 面向对象</span></a></li><li><a class="site-page child" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-network-wired"></i><span> 网络编程</span></a></li><li><a class="site-page child" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-layer-group"></i><span> 并发编程</span></a></li><li><a class="site-page child" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><i class="fa-fw fas fa-database"></i><span> 数据库</span></a></li><li><a class="site-page child" href="/categories/%E5%89%8D%E7%AB%AF/"><i class="fa-fw fas fa-html5"></i><span> 前端</span></a></li><li><a class="site-page child" href="/categories/Django/"><i class="fa-fw fas fa-rocket"></i><span> Django</span></a></li><li><a class="site-page child" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/"><i class="fa-fw fas fa-hammer"></i><span> 项目实战</span></a></li><li><a class="site-page child" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/"><i class="fa-fw fas fa-server"></i><span> 运维与面试</span></a></li><li><a class="site-page child" href="/categories/%E7%BB%83%E4%B9%A0%E4%B8%8E%E4%BB%A3%E7%A0%81/"><i class="fa-fw fas fa-keyboard"></i><span> 练习与代码</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">网络编程</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><span> 笔记</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/categories/Python%E5%9F%BA%E7%A1%80/"><i class="fa-fw fas fa-code"></i><span> Python基础</span></a></li><li><a class="site-page child" href="/categories/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"><i class="fa-fw fas fa-cubes"></i><span> 面向对象</span></a></li><li><a class="site-page child" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-network-wired"></i><span> 网络编程</span></a></li><li><a class="site-page child" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><i class="fa-fw fas fa-layer-group"></i><span> 并发编程</span></a></li><li><a class="site-page child" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><i class="fa-fw fas fa-database"></i><span> 数据库</span></a></li><li><a class="site-page child" href="/categories/%E5%89%8D%E7%AB%AF/"><i class="fa-fw fas fa-html5"></i><span> 前端</span></a></li><li><a class="site-page child" href="/categories/Django/"><i class="fa-fw fas fa-rocket"></i><span> Django</span></a></li><li><a class="site-page child" href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/"><i class="fa-fw fas fa-hammer"></i><span> 项目实战</span></a></li><li><a class="site-page child" href="/categories/%E8%BF%90%E7%BB%B4%E4%B8%8E%E9%9D%A2%E8%AF%95/"><i class="fa-fw fas fa-server"></i><span> 运维与面试</span></a></li><li><a class="site-page child" href="/categories/%E7%BB%83%E4%B9%A0%E4%B8%8E%E4%BB%A3%E7%A0%81/"><i class="fa-fw fas fa-keyboard"></i><span> 练习与代码</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">网络编程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-11-05T01:00:00.000Z" title="发表于 2026-11-05 09:00:00">2026-11-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>我的学习笔记,边学边记,持续修订。</p>
+</blockquote>
+<h2 id="📖-网络编程"><a href="#📖-网络编程" class="headerlink" title="📖 网络编程"></a>📖 网络编程</h2><h3 id="1-网络基础-IP、端口、子网掩码"><a href="#1-网络基础-IP、端口、子网掩码" class="headerlink" title="1. 网络基础(IP、端口、子网掩码)"></a>1. 网络基础(IP、端口、子网掩码)</h3><p><strong>网络通信三要素:<strong>IP 定位主机、端口定位程序、协议约定数据格式</strong>;子网掩码用来区分 IP 的网络位与主机位。</strong></p>
+<ul>
+<li>局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网</li>
+<li>IP 地址:标识网络中的一台主机,如 192.168.1.10;<code>127.0.0.1</code> 是<strong>本机回环地址</strong>,永远代表自己,常用于本机测试</li>
+<li>端口:范围 <strong>0~65535</strong>,标识主机上的一个应用程序;0~1023 是知名端口(80 HTTP、443 HTTPS、3306 MySQL),自写程序避开</li>
+<li>子网掩码:如 255.255.255.0,与 IP 做按位与运算,得到网络位,用来判断两台机器是否<strong>在同一网段</strong></li>
+<li>MAC 地址:网卡的物理地址,用于局域网内定位设备;发送数据实际是 IP 找主机、MAC 找网卡、端口找程序</li>
+</ul>
+<h3 id="2-网络分层模型-OSI七层与TCP-IP五层"><a href="#2-网络分层模型-OSI七层与TCP-IP五层" class="headerlink" title="2. 网络分层模型(OSI七层与TCP&#x2F;IP五层)"></a>2. 网络分层模型(OSI七层与TCP&#x2F;IP五层)</h3><p><strong>OSI 分</strong>七层**;实际教学常用 TCP&#x2F;IP <strong>五层</strong>:物理层、数据链路层、网络层、传输层、应用层,<code>socket</code> 工作在传输层与应用层之间。**</p>
+<ul>
+<li>物理层:传输电信号(比特流),如网线、光纤</li>
+<li>数据链路层:以太网协议 + MAC 地址,负责<strong>相邻设备</strong>之间的数据帧传输</li>
+<li>网络层:IP 协议,负责<strong>主机到主机</strong>的寻址和路由</li>
+<li>传输层:TCP &#x2F; UDP,负责**端口到端口(应用之间)**的通信</li>
+<li>应用层:HTTP、FTP、SMTP 等,约定数据的内容格式</li>
+<li>socket 本身不是协议,是操作系统提供的<strong>应用层与传输层之间的抽象接口</strong>,用它就能收发数据</li>
+</ul>
+<h3 id="3-TCP-与-UDP-及握手挥手"><a href="#3-TCP-与-UDP-及握手挥手" class="headerlink" title="3. TCP 与 UDP 及握手挥手"></a>3. TCP 与 UDP 及握手挥手</h3><p><strong><strong>TCP 面向连接、可靠、流式</strong>,像打电话;<strong>UDP 无连接、不可靠、数据报</strong>,像寄快递。三次握手建连、四次挥手断开。</strong></p>
+<ul>
+<li>三次握手:客户端发 SYN → 服务端回 SYN+ACK → 客户端再回 ACK,目的是<strong>确认双方收发能力都正常</strong></li>
+<li>四次挥手:FIN → ACK → FIN → ACK;因为 TCP 是<strong>双向通信</strong>,两个方向要分别关闭,服务端收到 FIN 后可能还有数据没发完,所以 ACK 和 FIN 分开发</li>
+<li>TCP 可靠的机制:确认应答、超时重传、按序重组</li>
+<li>UDP:不用握手直接 <code>sendto</code>,速度快、开销小,但不保证送达、不保证顺序</li>
+<li>场景:网页、文件传输、远程登录用 TCP;DNS 解析、视频直播、即时消息常用 UDP</li>
+</ul>
+<h3 id="4-socket-TCP-编程流程"><a href="#4-socket-TCP-编程流程" class="headerlink" title="4. socket TCP 编程流程"></a>4. socket TCP 编程流程</h3><p><strong>服务端五步:<code>socket → bind → listen → accept → recv/send</code>,客户端两步:<code>socket → connect</code>,之后进入</strong>通信循环<strong>。</strong></p>
+<ul>
+<li><code>socket.socket()</code> 默认参数就是 AF_INET + SOCK_STREAM,即 <strong>TCP</strong>;<code>bind((&quot;ip&quot;, 端口))</code> 绑定;<code>listen(n)</code> 监听,n 是等待队列大小</li>
+<li><code>conn, addr = server.accept()</code> <strong>阻塞</strong>等待客户端,conn 是与该客户端一对一通信的套接字,addr 是客户端地址</li>
+<li>客户端用 <code>client.connect((&quot;服务器IP&quot;, 端口))</code> 主动发起连接</li>
+<li>收发的都是 <strong>bytes</strong>:<code>conn.recv(1024)</code> 收(参数是最多收多少字节),<code>conn.send(b&quot;...&quot;)</code> 发,str 与 bytes 之间用 encode &#x2F; decode 转换</li>
+<li>客户端正常断开后,服务端 <code>recv</code> 会拿到<strong>空 bytes(b””)</strong>,可以据此判断下线、退出通信循环</li>
+<li>两个循环要分清:<strong>连接循环</strong>(不断接新客户端)套在<strong>通信循环</strong>(和同一个客户端反复收发)外面</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">server = socket.socket()            <span class="comment"># 1.创建套接字</span></span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8000</span>))    <span class="comment"># 2.绑定 IP 和端口</span></span><br><span class="line">server.listen(<span class="number">5</span>)                    <span class="comment"># 3.监听</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:                         <span class="comment"># 连接循环:不断接新客户端</span></span><br><span class="line">    conn, addr = server.accept()    <span class="comment"># 4.阻塞等待连接</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:                     <span class="comment"># 通信循环</span></span><br><span class="line">        data = conn.recv(<span class="number">1024</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">            <span class="keyword">break</span>                   <span class="comment"># 客户端已断开</span></span><br><span class="line">        <span class="built_in">print</span>(data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">        conn.send(data.upper())     <span class="comment"># 5.收发数据(bytes)</span></span><br><span class="line">    conn.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>TCP 服务端模板(连接循环 + 通信循环)</em></p>
+<h3 id="5-黏包问题与-struct-自定义报头"><a href="#5-黏包问题与-struct-自定义报头" class="headerlink" title="5. 黏包问题与 struct 自定义报头"></a>5. 黏包问题与 struct 自定义报头</h3><p><strong>黏包的根源是 <strong>TCP 流式传输 + 收发缓冲区</strong>导致数据没有边界;解决思路:<strong>用 struct 打包报头,先发数据长度,再发数据</strong>。</strong></p>
+<ul>
+<li>现象:连续 send 多条小数据,接收端一次 recv 可能把几条粘在一起;或一条大数据一次收不全</li>
+<li>根源:①发送端——多条小数据间隔短,会被缓冲区<strong>合并</strong>后一起发出;②接收端——网络传输慢于 CPU 处理,数据在接收缓冲区堆积,没来得及逐条取</li>
+<li>UDP <strong>不会黏包</strong>:一次 sendto 对应一次 recvfrom,数据报有边界(但报文太长会被截断丢失)</li>
+<li>解决流程:发送端 <code>struct.pack(&quot;i&quot;, len(data))</code> 打出 4 字节报头先发,再发数据;接收端先 recv 4 字节,<code>struct.unpack(&quot;i&quot;, head)[0]</code> 算出长度,再按长度精准 recv</li>
+<li>经典案例:<strong>远程执行命令</strong>——<code>subprocess.Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)</code> 执行命令,把 stdout&#x2F;stderr 的结果按报头协议回传给客户端</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket, struct, subprocess</span><br><span class="line"></span><br><span class="line">server = socket.socket()</span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8001</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line">conn, addr = server.accept()</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    cmd = conn.recv(<span class="number">1024</span>).decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cmd:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    res = subprocess.Popen(cmd, shell=<span class="literal">True</span>,</span><br><span class="line">                           stdout=subprocess.PIPE,</span><br><span class="line">                           stderr=subprocess.PIPE)</span><br><span class="line">    out = res.stdout.read() + res.stderr.read()</span><br><span class="line">    conn.send(struct.pack(<span class="string">&quot;i&quot;</span>, <span class="built_in">len</span>(out)))   <span class="comment"># 先发 4 字节报头(数据长度)</span></span><br><span class="line">    conn.send(out)                          <span class="comment"># 再发真实数据</span></span><br><span class="line"></span><br><span class="line">conn.close()</span><br><span class="line">server.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>struct 自定义报头解决黏包(远程执行命令)</em></p>
+<h3 id="6-UDP-编程与-socketserver-并发"><a href="#6-UDP-编程与-socketserver-并发" class="headerlink" title="6. UDP 编程与 socketserver 并发"></a>6. UDP 编程与 socketserver 并发</h3><p><strong>UDP 用 <code>SOCK_DGRAM</code> 创建套接字,收发用 <code>recvfrom / sendto</code>;<code>socketserver</code> 模块封装好服务端流程,<strong>每个连接开一个线程</strong>实现并发。</strong></p>
+<ul>
+<li>UDP 服务端:<code>s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</code> + bind 即可,<strong>没有 listen &#x2F; accept</strong></li>
+<li>UDP 收发:<code>data, addr = s.recvfrom(1024)</code> 收到数据和对方地址,回信 <code>s.sendto(data, addr)</code>,客户端也不需要 connect</li>
+<li>socketserver:继承 <code>BaseRequestHandler</code> 重写 <code>handle(self)</code> 方法写业务逻辑,<code>ThreadingTCPServer((ip, port), 类).serve_forever()</code> 启动</li>
+<li>socketserver 里 <code>self.request</code> 相当于手写时的 conn;Threading 版本<strong>每来一个连接就开一个线程</strong>,互不阻塞</li>
+<li>并发方案对比:多进程——稳定但开销大;多线程——共享数据、切换快;协程——单线程内切换,IO 密集场景资源最省</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socketserver</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyServer</span>(socketserver.BaseRequestHandler):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">handle</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            data = <span class="variable language_">self</span>.request.recv(<span class="number">1024</span>)   <span class="comment"># self.request 相当于 conn</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> data:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="variable language_">self</span>.request.send(data.upper())</span><br><span class="line"></span><br><span class="line">server = socketserver.ThreadingTCPServer((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8002</span>), MyServer)</span><br><span class="line">server.serve_forever()   <span class="comment"># 每个客户端连接分配一个线程,支持并发</span></span><br></pre></td></tr></table></figure>
+
+<p><em>socketserver 实现并发服务端</em></p>
+<h3 id="7-C-S-与-B-S-架构"><a href="#7-C-S-与-B-S-架构" class="headerlink" title="7. C&#x2F;S 与 B&#x2F;S 架构"></a>7. C&#x2F;S 与 B&#x2F;S 架构</h3><p><strong>网络程序分 <strong>C&#x2F;S(需安装专用客户端)</strong> 与 <strong>B&#x2F;S(浏览器即客户端)</strong> 两大架构;B&#x2F;S 本质是客户端被统一成浏览器的特殊 C&#x2F;S。</strong></p>
+<ul>
+<li>C&#x2F;S &#x3D; Client&#x2F;Server:客户端 + 服务端,如 QQ、微信、网游客户端;交互体验好、能调用本地资源,但每个平台都要开发安装包,升级要重新发版</li>
+<li>B&#x2F;S &#x3D; Browser&#x2F;Server:浏览器就是客户端,只需开发服务端;免安装、跨平台、升级只要改服务端,但受浏览器能力限制,服务端压力更大</li>
+<li>B&#x2F;S 并没有脱离 C&#x2F;S:<strong>浏览器本身就是一个客户端程序</strong>,只是大家共用同一个标准客户端,它把’连谁、发什么’都交给了网址和网页</li>
+<li>课程主线:socket 阶段写的是通用 C&#x2F;S;后面 Web 阶段(HTML、HTTP、Django&#x2F;Flask)写的都是 B&#x2F;S</li>
+<li>两种架构通信本质一样:请求-响应模型,数据都走完整的网络协议栈,所以 socket、TCP&#x2F;UDP 的知识两边通用</li>
+</ul>
+<h3 id="8-以太网、IP-与-ARP-协议-一次数据是怎么送达的"><a href="#8-以太网、IP-与-ARP-协议-一次数据是怎么送达的" class="headerlink" title="8. 以太网、IP 与 ARP 协议:一次数据是怎么送达的"></a>8. 以太网、IP 与 ARP 协议:一次数据是怎么送达的</h3><p><strong>一次跨网发送靠三层接力:<strong>以太网协议用 MAC 管相邻设备、IP 协议管跨网段寻路、ARP 协议负责把 IP 解析成 MAC</strong>。</strong></p>
+<ul>
+<li>以太网协议:数据链路层的帧 &#x3D; 头(目的 MAC + 源 MAC + 上层协议类型)+ 数据(通常装的是 IP 包)+ 尾部校验;数据部分有长度上限(MTU),超过要先在 IP 层分片</li>
+<li>MAC 地址是网卡的物理地址(48 位);<strong>以太网帧只负责相邻设备之间的一跳</strong>——每经过一个路由器,帧的源&#x2F;目的 MAC 都换成这一跳的地址,交换机只按 MAC 查表转发、不改帧</li>
+<li>IP 协议:IP 头里最重要的是源 IP、目的 IP 和 <strong>TTL</strong>(每过一个路由器减 1,减到 0 就丢弃,防止数据包在网络里永远打转)</li>
+<li><strong>跨网段时 IP 地址全程不变,MAC 地址一跳一换</strong>;同网段则直接把帧发到对方 MAC</li>
+<li>ARP 协议:把 IP 解析成 MAC——缓存里没有就<strong>广播</strong> ARP 请求(‘谁是 x.x.x.x,请回应’),对方<strong>单播</strong>回应自己的 MAC;目标是外网 IP 时,ARP 解析的是<strong>网关</strong>的 MAC,把包先交给路由器转发</li>
+<li>完整链路串一遍:应用数据 → TCP 加端口信息 → IP 加源&#x2F;目的地址 → 以太网加 MAC → 变成电信号;接收方再从下往上逐层拆包还原</li>
+</ul>
+<h3 id="9-TCP-报文与握手挥手的状态详解"><a href="#9-TCP-报文与握手挥手的状态详解" class="headerlink" title="9. TCP 报文与握手挥手的状态详解"></a>9. TCP 报文与握手挥手的状态详解</h3><p><strong>TCP 头核心字段:<strong>源&#x2F;目的端口、序号 seq、确认号 ack、标志位(SYN&#x2F;ACK&#x2F;FIN&#x2F;RST)</strong>;握手挥手的每一步对应一个状态,主动关闭方最后要等 <strong>2MSL</strong>。</strong></p>
+<ul>
+<li>TCP 报文头关键字段:源端口&#x2F;目的端口(各 16 位)、seq(本次发送数据的第一个字节的编号)、ack(期望对方下一个字节的编号)、标志位 SYN(请求建连)、FIN(请求断开)、ACK(确认号有效)、RST(强制重置)</li>
+<li>三次握手的状态:客户端 CLOSED →发 SYN→ <strong>SYN_SENT</strong> →收到 SYN+ACK 回 ACK→ <strong>ESTABLISHED</strong>;服务端 LISTEN →收 SYN→ <strong>SYN_RCVD</strong> →收 ACK→ ESTABLISHED</li>
+<li>四次挥手的状态(主动方):ESTABLISHED →发 FIN→ FIN_WAIT_1 →收 ACK→ FIN_WAIT_2 →收对方 FIN 回 ACK→ <strong>TIME_WAIT</strong> →等 2MSL→ CLOSED;被动方:ESTABLISHED → CLOSE_WAIT →发 FIN→ LAST_ACK → CLOSED</li>
+<li><strong>TIME_WAIT 要等 2MSL(两倍报文最大生存时间)</strong>:①保证最后一个 ACK 丢失后还能在对方重传 FIN 时补发;②让这条连接的旧报文在网络中消亡,不影响之后复用该端口的新连接</li>
+<li>为什么握手三次、挥手四次:握手时服务端的 SYN+ACK 可以合并成一步发;挥手时被动方收到 FIN 后<strong>可能还有数据没发完</strong>,只能先 ACK,等数据发完再单独发 FIN</li>
+</ul>
+<h3 id="10-半链接池与-listen-的-backlog"><a href="#10-半链接池与-listen-的-backlog" class="headerlink" title="10. 半链接池与 listen 的 backlog"></a>10. 半链接池与 listen 的 backlog</h3><p><strong><code>listen(n)</code> 的 n 就是</strong>等待队列(俗称半链接池)的大小**:已完成握手但还没被 accept 的连接先在这里排队,排满后新客户端的连接会受影响。**</p>
+<ul>
+<li>三次握手由操作系统内核完成:<strong>connect 成功 ≠ 服务端已经 accept</strong>;握手完成的连接先进队列等服务端来取,accept() 每次从队头取一个</li>
+<li><code>listen(n)</code> 里的 n 限定这个等待队列的长度;服务端一直不 accept,队列堆满后,新客户端的 connect 会长时间卡住甚至被拒绝</li>
+<li>验证方法:服务端 listen(2) 后不写 accept,连续开 3 个以上客户端 connect——能马上连上的最多 2 个左右,其余要等很久(不同系统的具体行为略有差异)</li>
+<li>严格说 Linux 内核分<strong>半链接队列</strong>(收到 SYN、还没握完手,防 SYN 洪泛攻击)和<strong>全链接队列</strong>(握手完成、等 accept),教学里常把 listen 的等待队列统称半链接池</li>
+<li>工程意义:单线程服务端处理一个客户端时,其他客户端先靠队列暂存;队列太小会拒客、太大让排队者久等——真正的并发要靠 socketserver、线程池等方案</li>
+</ul>
+<h3 id="11-Nagle-算法与-TCP-收发缓冲区"><a href="#11-Nagle-算法与-TCP-收发缓冲区" class="headerlink" title="11. Nagle 算法与 TCP 收发缓冲区"></a>11. Nagle 算法与 TCP 收发缓冲区</h3><p><strong>TCP 为合并小包设计了 <strong>Nagle 算法</strong>:小数据先攒在发送缓冲区,凑够一批或收到 ACK 才发出——这是发送端黏包的直接根源;接收端缓冲区来不及取则造成接收端黏包。</strong></p>
+<ul>
+<li>收发缓冲区:send 不是把数据直接甩到网络,而是先拷进内核的<strong>发送缓冲区</strong>;recv 也是从<strong>接收缓冲区</strong>里取数据——缓冲区就是黏包问题的物理载体</li>
+<li>Nagle 算法:一条 TCP 连接上<strong>最多只允许一个未被确认的小分组</strong>在途中,后续小数据会先攒在发送缓冲区,等上一个分组的 ACK 回来(或攒够一批)再一起发——用延迟换网络利用率</li>
+<li>后果:两次紧挨着的 send,可能被 Nagle 合并成一次网络传输,接收端一次 recv 就把两条数据收在了一起</li>
+<li>关闭 Nagle:<code>sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)</code> 可禁用 Nagle 让小包立即发出(实时性场景常用),但 TCP 流式传输<strong>没有边界</strong>,该黏包还是黏包,报头协议不能省</li>
+<li>UDP 没有这套机制:一次 sendto 就是一个独立数据报,边界清晰,所以 UDP 不黏包(但报文太长会被截断丢失)</li>
+</ul>
+<h3 id="12-终极大招-struct-json-双层报头传输文件"><a href="#12-终极大招-struct-json-双层报头传输文件" class="headerlink" title="12. 终极大招:struct + json 双层报头传输文件"></a>12. 终极大招:struct + json 双层报头传输文件</h3><p><strong>先用 struct 发</strong>字典报头的长度**,再发 json 字典报头(文件名、大小、md5),最后发真实数据——三层收发顺序严格对应,理论上可以传任意大小的文件。**</p>
+<ul>
+<li>进化:报头只含数据长度,够传字符串;要传文件还得告诉对方<strong>文件名、文件大小、md5 校验值</strong>——把这些信息打包成 json 字典当报头</li>
+<li>发送端三步:① <code>struct.pack(&quot;i&quot;, len(head_bytes))</code> 发 4 字节报头长度;② 发字典报头(json.dumps 后 encode 的 bytes);③ 循环读文件 <code>f.read(4096)</code> 分段 send 直到发完</li>
+<li>接收端三步:① 先 recv 4 字节,unpack 得到<strong>报头长度</strong>;② 按报头长度 recv 出 json 字典,decode + loads 拿到文件名和大小;③ 循环 recv 并拼接,直到收满 filesize 字节,写文件</li>
+<li>为什么两层:报头本身也是数据,接收端必须先知道<strong>报头多长</strong>才能精准 recv——struct 解决报头的黏包,json 解决报头的内容描述,各司其职</li>
+<li>按 filesize 循环接收是关键:recv(1024) 不保证一次收满,要 <code>while len(received) &lt; filesize</code> 累计,收多少写多少</li>
+</ul>
+<h3 id="13-阿里云服务器-把服务端部署到公网"><a href="#13-阿里云服务器-把服务端部署到公网" class="headerlink" title="13. 阿里云服务器:把服务端部署到公网"></a>13. 阿里云服务器:把服务端部署到公网</h3><p><strong>把 socket 服务端跑在云服务器上,<strong>bind 0.0.0.0</strong> 监听所有网卡,再在云平台</strong>安全组放行端口**,本地客户端连服务器公网 IP 即可真正走互联网通信。**</p>
+<ul>
+<li><p>本机自测用 127.0.0.1:数据不出网卡;要让别人连上,服务端必须跑在一台<strong>有公网 IP 的机器</strong>上,阿里云 ECS 等云服务器是最常用的选择</p>
+</li>
+<li><p>服务端 bind 要写 <code>(&quot;0.0.0.0&quot;, 端口)</code>:0.0.0.0 表示监听本机<strong>所有网卡</strong>;写 127.0.0.1 只有本机能连,写内网 IP 外网进不来</p>
+</li>
+<li><p>云平台<strong>安全组&#x2F;防火墙</strong>默认只放行 22(ssh)等少量端口:自选端口(如 8000)要在控制台安全组里添加入方向规则,否则客户端 connect 直接超时——新手部署失败大多是这一步</p>
+</li>
+<li><p>操作流程:<code>ssh root@公网IP</code> 登录 → 用 scp &#x2F; git 把代码传上去 → <code>python3 server.py</code> 运行;断开 ssh 还想继续跑,用 <code>nohup python3 server.py &amp;</code> 或 tmux&#x2F;screen</p>
+</li>
+<li><p>客户端把 connect 的地址从 127.0.0.1 换成<strong>服务器公网 IP</strong>,数据就真正经过互联网了;socket 代码一行不用改,只改 IP</p>
+</li>
+<li><p>覆盖范围:Day34<del>37 共 23 个内容小节(P421</del>P448),上节课复习、今日内容、答疑等行政小节不收录;每集一个知识点,summary 是该集核心结论,details 是该集的概念、原理、代码要点与坑点</p>
+</li>
+<li><p>内容主线:<strong>Day34~35 打理论地基</strong>(CS&#x2F;BS 架构 → 五层协议 → 以太网&#x2F;ip&#x2F;ARP → TCP 三次握手四次挥手 → UDP → socket)→ <strong>Day36 动手写套接字</strong>(简单通信 → 通信循环 → 修 bug → 链接循环 → 半链接池 → UDP 版)→ <strong>Day37 解决工程问题</strong>(远程命令与黏包 → struct 报头 → socketserver 并发 → 部署云服务器)</p>
+</li>
+<li><p>使用方法:看视频遇到不懂的,按集数标题(如 Day36-10 链接循环)在本章搜索;代码片段都可直接复制到本机跑——<strong>先启动服务端、再启动客户端</strong>,本机测试地址用 127.0.0.1</p>
+</li>
+</ul>
+<h3 id="2-Day34-06-CS与BS架构以及网络介绍"><a href="#2-Day34-06-CS与BS架构以及网络介绍" class="headerlink" title="2. Day34-06 CS与BS架构以及网络介绍"></a>2. Day34-06 CS与BS架构以及网络介绍</h3><p><strong>软件架构分 <strong>C&#x2F;S(客户端&#x2F;服务端)</strong> 与 <strong>B&#x2F;S(浏览器&#x2F;服务端)</strong>,B&#x2F;S 本质是特殊的 C&#x2F;S;网络编程的目标就是让</strong>不同计算机上的程序互相通信**,靠物理连接介质 + 互联网通信协议实现。**</p>
+<ul>
+<li>C&#x2F;S 架构:用户要安装专门的客户端软件,如 QQ、微信、网游客户端;优点是能充分利用本地资源、性能强,缺点是每次升级都要重新下载安装、维护麻烦</li>
+<li>B&#x2F;S 架构:浏览器充当客户端,打开网址就能用,如淘宝、知乎;优点是零安装、跨平台、升级只需更新服务端,缺点是受浏览器能力限制、交互体验弱一些</li>
+<li>B&#x2F;S 本质上也属于 C&#x2F;S:<strong>浏览器本身就是一款客户端软件</strong>,所以 B&#x2F;S 是 C&#x2F;S 的特例;现实中没有绝对的优劣,选型看业务(重交互选 C&#x2F;S,广传播选 B&#x2F;S)</li>
+<li>两大角色:任何网络程序都分<strong>服务端</strong>(一直运行、被动等待别人来连)与<strong>客户端</strong>(主动发起连接的一方);必须先有服务端,客户端才连得上</li>
+<li>网络介绍:单机上的程序谈不上通信,要让数据跨计算机流动,必须有<strong>物理连接介质</strong>(网线、光纤、路由器)+ <strong>互联网通信协议</strong>(双方都听得懂的语言),这套”介质 + 协议”就是互联网的地基</li>
+</ul>
+<h3 id="3-Day34-07-互联网通信协议的工作原理"><a href="#3-Day34-07-互联网通信协议的工作原理" class="headerlink" title="3. Day34-07 互联网通信协议的工作原理"></a>3. Day34-07 互联网通信协议的工作原理</h3><p><strong>网络通信遵循 <strong>OSI 七层(教学中常用五层)<strong>模型:发数据自上而下</strong>逐层加报头封装</strong>,收数据自下而上</strong>逐层拆包**,每层各司其职、靠协议配合。**</p>
+<ul>
+<li>协议的本质:一整套<strong>约定</strong>——报文长什么样、先说什么后说什么,让不同厂商、不同系统的机器互相听得懂;一份协议数据 &#x3D; <strong>报头(元信息)+ 数据</strong>两部分</li>
+<li>五层模型(自上而下):<strong>应用层</strong>(产生数据,如 HTTP、自定义协议)→ <strong>传输层</strong>(TCP&#x2F;UDP,加源端口&#x2F;目标端口)→ <strong>网络层</strong>(IP 协议,加源&#x2F;目标 IP 地址)→ <strong>数据链路层</strong>(以太网协议,加源&#x2F;目标 MAC 地址)→ <strong>物理层</strong>(把数据变成电信号&#x2F;光信号发出去)</li>
+<li>OSI 七层 &#x3D; 把五层的应用层再细分成<strong>应用层、表示层、会话层</strong>三层;讲原理用五层足够,面试常问七层,能对上即可</li>
+<li>发送方<strong>封装</strong>(自上而下逐层加报头,像套娃)→ 物理层传输 → 接收方<strong>解封装</strong>(自下而上逐层剥报头),最终拿到原始数据;每一层的报头只有对应层才看得懂、负责处理</li>
+<li>分层的好处:<strong>解耦</strong>——每层只管自己的职责,某一层换协议不影响其他层(比如 HTTP 不关心底下走的是网线还是 WiFi),出现问题也好定位是哪一层的锅</li>
+</ul>
+<h3 id="4-Day34-08-以太网协议、ip协议、ARP协议"><a href="#4-Day34-08-以太网协议、ip协议、ARP协议" class="headerlink" title="4. Day34-08 以太网协议、ip协议、ARP协议"></a>4. Day34-08 以太网协议、ip协议、ARP协议</h3><p><strong>数据链路层用</strong>以太网协议<strong>、靠 <strong>MAC 地址</strong>在局域网内</strong>广播<strong>传帧;网络层用 <strong>ip 协议</strong>划分子网、定位主机;<strong>ARP 协议</strong>负责”已知 ip 求 MAC”。</strong></p>
+<ul>
+<li>以太网协议(数据链路层):规定一组电信号为一个<strong>帧(frame)</strong>,帧 &#x3D; 报头 + 数据;报头里是<strong>源 MAC、目标 MAC</strong>(各 6 字节),MAC 地址共 48 位、网卡出厂时全球唯一</li>
+<li>早期以太网靠<strong>广播</strong>通信:同一局域网内,帧发给所有人,不是目标 MAC 的机器收到就丢弃;广播范围一大规模就爆炸(“广播风暴”),所以才需要 ip 协议来分层划片</li>
+<li>ip 协议(网络层):IPv4 地址 <strong>32 位</strong>、点分十进制表示(如 192.168.1.10);把源&#x2F;目标 ip 加进数据包,全世界的网络靠它跨网段转发</li>
+<li><strong>子网掩码</strong>判断两台机器是否同一子网:双方 ip 分别与子网掩码做<strong>按位与</strong>运算,结果相同 &#x3D; 同网段;同一子网可以广播直达,不同子网必须交给<strong>网关&#x2F;路由器</strong>一层层转发</li>
+<li>ARP 协议:已知对方 ip、求对方 MAC——在局域网内发 ARP <strong>广播</strong>(谁的 ip 是这个,请回话),目标机器单播回应自己的 MAC,结果会缓存起来(arp -a 可查看);跨网段时 ARP 求的是<strong>网关</strong>的 MAC,把帧先发给网关</li>
+</ul>
+<h3 id="5-Day35-03-tcp协议上"><a href="#5-Day35-03-tcp协议上" class="headerlink" title="5. Day35-03 tcp协议上"></a>5. Day35-03 tcp协议上</h3><p><strong>传输层用</strong>端口<strong>标识一台机器上的具体程序,<strong>ip + 端口</strong>才能唯一定位一次通信;<strong>TCP 面向连接、可靠传输、字节流</strong>,是 socket 编程的主角。</strong></p>
+<ul>
+<li>端口(port):0<del>65535 的数字,标识一台计算机上的<strong>应用程序</strong>;0</del>1024 多为知名服务保留(HTTP 80、HTTPS 443、SSH 22、FTP 21),自己写程序用大端口,且不能和本机已占用的冲突</li>
+<li>ip 地址找到<strong>哪台机器</strong>,端口找到<strong>机器上的哪个程序</strong>,ip + 端口合起来才能定位一次通信的两端——这就是后面 bind&#x2F;connect 都要传 (“ip”, 端口) 元组的原因</li>
+<li>TCP 三大特点:<strong>面向连接</strong>(通信前先握手建立连接)、<strong>可靠</strong>(不丢、不重、不乱序)、<strong>流式协议</strong>(数据像水流一样连续、没有消息边界——黏包问题的根源);另外是全双工,建立连接后双方都能随时收发</li>
+<li>TCP 报头关键字段:源端口、目标端口、**序号(seq)<strong>、</strong>确认号(ack)**、标志位(SYN&#x2F;ACK&#x2F;FIN 等);可靠传输正是靠”序号 + 确认应答 + 超时重传”这套机制实现的</li>
+<li>与 UDP 的对比先立个框架:UDP 无连接、不可靠、数据报、支持一对多;详细对比与适用场景见 Day35-11,UDP 套接字编程见 Day36-12</li>
+</ul>
+<h3 id="6-Day35-04-tcp协议下"><a href="#6-Day35-04-tcp协议下" class="headerlink" title="6. Day35-04 tcp协议下"></a>6. Day35-04 tcp协议下</h3><p><strong>TCP 用</strong>三次握手<strong>建立连接(让双方都确认彼此的收发能力),用</strong>四次挥手<strong>断开连接(主动方要 TIME_WAIT 等 2MSL);可靠是有代价的。</strong></p>
+<ul>
+<li>三次握手:客户端发 <strong>SYN</strong> → 服务端回 <strong>SYN+ACK</strong> → 客户端再回 <strong>ACK</strong>,连接建立;握手过程中双方交换各自的初始序号,为后续可靠传输做铺垫</li>
+<li>为什么恰好三次:一次不行(客户端单方面表态),两次不够(服务端无法确认”客户端能收到自己的消息”),四次浪费;三次刚好让<strong>双方都确认了:自己能发能收、对方也能发能收</strong></li>
+<li>四次挥手:主动方发 <strong>FIN</strong> → 对方回 <strong>ACK</strong>(此时对方可能还有数据没发完,所以 ACK 和 FIN 要分开,这也是为什么是四次而不是三次)→ 对方发完数据后发 <strong>FIN</strong> → 主动方回 <strong>ACK</strong>,进入 <strong>TIME_WAIT</strong> 状态等 2MSL 才真正关闭</li>
+<li>TIME_WAIT 的意义:① 最后一个 ACK 若丢失,对方重发的 FIN 还能被响应 ② 让本连接的旧报文在网络中自然消亡,避免干扰之后复用同端口的新连接</li>
+<li>可靠性手段(了解):确认应答 + 超时重传、序号去重与排序、<strong>滑动窗口</strong>流量控制;攻击面:<strong>SYN 洪水攻击</strong>用大量假 SYN 占满服务端的半连接队列,让正常用户连不上(呼应 Day36-11 半链接池)</li>
+</ul>
+<h3 id="7-Day35-06-应用层与socket介绍"><a href="#7-Day35-06-应用层与socket介绍" class="headerlink" title="7. Day35-06 应用层与socket介绍"></a>7. Day35-06 应用层与socket介绍</h3><p><strong>应用层协议要由</strong>程序开发者自己约定**(HTTP、FTP 只是前人约定好的例子);<strong>socket 是应用层与传输层之间的抽象层</strong>,把复杂的 TCP&#x2F;IP 协议族封装成几个简单函数。**</p>
+<ul>
+<li>物理层、数据链路层、网络层、传输层都由<strong>操作系统内核 + 网卡硬件</strong>替你实现了,<strong>应用层必须开发者自己定协议</strong>:先发什么、后发什么、数据怎么解析,完全由程序约定</li>
+<li>常见应用层协议都是约定:HTTP 约定了”请求报文 &#x3D; 请求头 + 空行 + 请求体”,FTP 约定了文件传输指令格式;学会<strong>自定义应用层协议</strong>是后面解决黏包的关键(Day37-04)</li>
+<li>socket(套接字)&#x3D; <strong>ip + 端口</strong>,是网络通信的”端点”;socket 模块把下面几层的所有细节(组包、握手、重传、路由)全部封装,开发者只调 socket&#x2F;bind&#x2F;listen&#x2F;accept&#x2F;connect&#x2F;send&#x2F;recv 这几个函数</li>
+<li>socket 起源于 UNIX “一切皆文件”的思想:对套接字读写就像读写文件一样;套接字分<strong>文件套接字 AF_UNIX</strong>(同一台机器的进程间通信)与<strong>网络套接字 AF_INET</strong>(跨主机通信,网络编程只用它)</li>
+<li>反过来想 socket 的价值:没有它,你得自己填 TCP 报头、算校验和、管确认重传;有了它,一行 connect() 底层就自动完成三次握手</li>
+</ul>
+<h3 id="8-Day35-11-其他协议补充"><a href="#8-Day35-11-其他协议补充" class="headerlink" title="8. Day35-11 其他协议补充"></a>8. Day35-11 其他协议补充</h3><p><strong>传输层除了 TCP 还有 <strong>UDP</strong>(无连接、不可靠、数据报);应用层常见协议 <strong>DNS&#x2F;HTTP&#x2F;HTTPS&#x2F;FTP&#x2F;SMTP</strong> 各司其职,记住常用</strong>知名端口<strong>即可。</strong></p>
+<ul>
+<li>UDP 特点:<strong>无连接</strong>(发之前不握手,拿起就发)、<strong>不可靠</strong>(不确认、不重传,丢了就丢了)、<strong>数据报协议</strong>(一条消息一个独立包,有边界、不黏包)、效率高、支持一对多(广播&#x2F;组播);适合直播、语音、DNS 查询、游戏心跳这类”快比全更重要”的场景</li>
+<li>DNS 协议:把域名解析成 ip 的服务,默认走 53 端口;浏览器访问网站前一般先问 DNS 拿到 ip,才能建立 TCP 连接</li>
+<li>常见应用层协议与知名端口(建议记住):<strong>HTTP 80、HTTPS 443、FTP 21、SSH 22、Telnet 23、SMTP 25(发邮件)、DNS 53</strong>;配环境&#x2F;开防火墙时天天要用</li>
+<li>再了解两个:ICMP 是 ping 命令用的协议(探测主机是否可达),DHCP 用于入网时自动分配 ip 地址</li>
+<li>重要性排序:TCP、UDP、HTTP 必须熟练,其余混个脸熟即可;写 Python 网络程序时,真正打交道的就是 socket 这一层,协议知识用来理解底层发生了什么</li>
+</ul>
+<h3 id="9-Day36-02-储备知识"><a href="#9-Day36-02-储备知识" class="headerlink" title="9. Day36-02 储备知识"></a>9. Day36-02 储备知识</h3><p><strong>动手写套接字前必须储备四件事:<strong>str 与 bytes 的编解码、recv(n) 的真实含义、127.0.0.1 与端口占用问题、服务端&#x2F;客户端谁先启动</strong>。</strong></p>
+<ul>
+<li>网络上传输的是<strong>字节(bytes)</strong>:str 必须 encode(“utf-8”) 才能发,收到的 bytes 必须 decode(“utf-8”) 才能看;两端编码不一致就会乱码或报错(错误编码细节见 Day36-08)</li>
+<li><code>recv(1024)</code> 的 1024 指<strong>本次最多收 1024 个字节</strong>,不是”必须收满”;对方一次发 3000 字节,你 recv(1024) 只能拿到开头一段,剩下的还躺在接收缓冲区里(黏包问题的伏笔)</li>
+<li><code>127.0.0.1</code> 是<strong>本机回环地址</strong>:数据不出网卡、自己发给自己,单机测试服务端 + 客户端全靠它;要局域网测试就用本机真实 ip(ipconfig&#x2F;ifconfig 查看);<code>0.0.0.0</code> 表示绑定本机所有网卡(部署到服务器时用)</li>
+<li>端口占用:服务端刚关就重启,可能报 <strong>Address already in use</strong>(旧连接还在 TIME_WAIT);解决办法是换端口,或 <code>server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)</code> 允许复用</li>
+<li>启动顺序:<strong>先启动服务端、再启动客户端</strong>;反过来客户端 connect 时没人监听,会直接报 <strong>ConnectionRefusedError</strong>(拒绝连接)</li>
+</ul>
+<h3 id="10-Day36-03-套接字介绍"><a href="#10-Day36-03-套接字介绍" class="headerlink" title="10. Day36-03 套接字介绍"></a>10. Day36-03 套接字介绍</h3><p><strong>套接字分</strong>文件套接字(AF_UNIX)<strong>与</strong>网络套接字(AF_INET)<strong>;网络套接字又分</strong>流式 SOCK_STREAM(TCP)<strong>与</strong>数据报 SOCK_DGRAM(UDP)<strong>,<code>socket.socket()</code> 默认参数就是 TCP。</strong></p>
+<ul>
+<li>两个家族(第一个参数):<code>socket.AF_UNIX</code> 基于文件系统,用于<strong>同一台机器</strong>上进程间通信;<code>socket.AF_INET</code>(IPv4)基于网络,<strong>写网络程序只用它</strong></li>
+<li>两种类型(第二个参数):<code>SOCK_STREAM</code> 流式套接字 &#x3D; <strong>TCP</strong>(可靠、字节流);<code>SOCK_DGRAM</code> 数据报套接字 &#x3D; <strong>UDP</strong>(不可靠、有消息边界)</li>
+<li><code>socket.socket(socket.AF_INET, socket.SOCK_STREAM)</code> 的<strong>默认参数</strong>就是 AF_INET + SOCK_STREAM,所以 <code>socket.socket()</code> 一行创建的就是 TCP 套接字;要 UDP 得显式写 <code>socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</code></li>
+<li>服务端方法链:<code>bind()</code> 绑地址 → <code>listen()</code> 监听 → <code>accept()</code> 接连接(<strong>返回 conn 和 addr</strong>)→ <code>recv()</code>&#x2F;<code>send()</code> 收发 → <code>close()</code> 关闭</li>
+<li>客户端方法链:<code>connect()</code> 连服务端 → <code>send()</code>&#x2F;<code>recv()</code> 收发 → <code>close()</code>;注意数据收发走的是 <strong>conn</strong>(服务端侧)&#x2F;客户端自己的套接字,不是 server 本身,server 只负责”接客”</li>
+</ul>
+<h3 id="11-Day36-04-基于tcp协议的套接字通信流程介绍"><a href="#11-Day36-04-基于tcp协议的套接字通信流程介绍" class="headerlink" title="11. Day36-04 基于tcp协议的套接字通信流程介绍"></a>11. Day36-04 基于tcp协议的套接字通信流程介绍</h3><p><strong>TCP 服务端固定五步 <strong>socket→bind→listen→accept→recv&#x2F;send</strong>,客户端两步 <strong>socket→connect→recv&#x2F;send</strong>;三次握手发生在 connect 与 accept 之间,由内核自动完成。</strong></p>
+<ul>
+<li>服务端流程:① <code>socket.socket()</code> 买电话机 ② <code>bind((&quot;127.0.0.1&quot;, 8080))</code> 给电话装卡(绑 ip + 端口) ③ <code>listen(5)</code> 开机等待 ④ <code>conn, addr = server.accept()</code> 拿起听筒(阻塞) ⑤ 用 conn 收发数据,完事 close</li>
+<li>客户端流程:① <code>socket.socket()</code> ② <code>connect((&quot;127.0.0.1&quot;, 8080))</code> 拨号(<strong>此行触发三次握手</strong>) ③ <code>send</code>&#x2F;<code>recv</code> 收发 ④ <code>close()</code> 挂断</li>
+<li><code>accept()</code> 返回两个值:<strong>conn</strong> 是与这个客户端一对一的通信套接字(以后收发都走它),<strong>addr</strong> 是客户端的 (“ip”, 端口) 元组</li>
+<li>三次握手由底层自动完成:客户端 connect 发起、服务端 accept 返回时连接已经建好;四次挥手发生在任一方 close 或连接断开时——<strong>代码里看不见握手,但要知道它发生了</strong></li>
+<li>两个必须知道的报错:先启动客户端 → <strong>ConnectionRefusedError</strong>(没人监听);服务端没 bind 端口就 listen → 客户端永远找不到你</li>
+</ul>
+<h3 id="12-Day36-05-基于tcp协议的简单套接字通信"><a href="#12-Day36-05-基于tcp协议的简单套接字通信" class="headerlink" title="12. Day36-05 基于tcp协议的简单套接字通信"></a>12. Day36-05 基于tcp协议的简单套接字通信</h3><p><strong>最小可跑的 TCP”一问一答”程序:服务端 socket→bind→listen→accept→recv→send,客户端 socket→connect→send→recv;先启动服务端,再启动客户端。</strong></p>
+<ul>
+<li>运行顺序与效果:先跑 server.py(卡在 accept 等人),再跑 client.py,双方各收发一次就结束;这是后面一切版本的原型</li>
+<li>收发的只能是 <strong>bytes</strong>:str 用 encode 变字节再发,bytes 用 decode 变回字符串再看;两边编码一致(这里统一 utf-8)才不会乱码</li>
+<li><code>conn.recv(1024)</code> 表示最多收 1024 字节;此时程序只通信<strong>一轮</strong>就退出了,想持续聊天要加循环(下一节通信循环)</li>
+<li>可以观察的现象:服务端 accept 之前客户端就能 connect 成功(握手由内核完成,连接在队列里排队,呼应 Day36-11 半链接池);只跑客户端 → ConnectionRefusedError</li>
+<li>这个版本还不健壮:客户端中途退出,服务端要么报错要么卡住——Day36-08、09 两节专门修这些 bug</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== 服务端 server.py =====</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">server = socket.socket()                 <span class="comment"># 1.创建套接字(默认 TCP)</span></span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))         <span class="comment"># 2.绑定 ip 和端口</span></span><br><span class="line">server.listen(<span class="number">5</span>)                         <span class="comment"># 3.监听(半连接池大小)</span></span><br><span class="line">conn, addr = server.accept()             <span class="comment"># 4.阻塞等客户端连接</span></span><br><span class="line">data = conn.recv(<span class="number">1024</span>)                   <span class="comment"># 5.收(bytes)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;收到客户端:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">conn.send(<span class="string">b&quot;hello client&quot;</span>)               <span class="comment"># 6.发(bytes)</span></span><br><span class="line">conn.close()</span><br><span class="line">server.close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== 客户端 client.py =====</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">client = socket.socket()                 <span class="comment"># 1.创建套接字</span></span><br><span class="line">client.connect((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))      <span class="comment"># 2.连接服务端(触发三次握手)</span></span><br><span class="line">client.send(<span class="string">b&quot;hello server&quot;</span>)             <span class="comment"># 3.发</span></span><br><span class="line">data = client.recv(<span class="number">1024</span>)                 <span class="comment"># 4.收</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;收到服务端:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">client.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>基于 TCP 的简单套接字通信(先启动服务端,再启动客户端)</em></p>
+<h3 id="13-Day36-07-通信循环"><a href="#13-Day36-07-通信循环" class="headerlink" title="13. Day36-07 通信循环"></a>13. Day36-07 通信循环</h3><p><strong>在 accept 之后、双方各自的收发逻辑外面套一层 <strong>while True</strong>,就把”一问一答”变成”持续聊天”——这就是</strong>通信循环<strong>。</strong></p>
+<ul>
+<li>通信循环 &#x3D; 与<strong>同一个客户端</strong>反复收发的循环,套在 <code>conn.recv</code>&#x2F;<code>conn.send</code> 外面;服务端和客户端两边都要加,缺一边就”单方聊天”</li>
+<li>每轮的节奏要错开:服务端 recv(等客户端说)→ send(回话),客户端 send(说话)→ recv(等回复);<strong>不能双方同时 recv</strong>,否则都阻塞、互相干等</li>
+<li>send 的必须是 bytes:<code>msg.encode(&quot;utf-8&quot;)</code>,直接 send 字符串会报 <strong>TypeError: a bytes-like object is required</strong></li>
+<li>此时的退出方式只有客户端 Ctrl+C 强制断开——服务端会卡死或报错,这正是下一节 bug修正 要解决的问题</li>
+<li>一个客户端聊着,第二个客户端连上来也只能<strong>排队</strong>:accept 在通信循环外面,要等当前连接断开后才能回到 accept 接下一个(链接循环 Day36-10 才解决)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== 服务端(核心部分,创建/绑定/监听同上) =====</span></span><br><span class="line">conn, addr = server.accept()             <span class="comment"># 等客户端</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:                              <span class="comment"># 通信循环:和同一个客户端反复收发</span></span><br><span class="line">    data = conn.recv(<span class="number">1024</span>)               <span class="comment"># 收客户端的话</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;客户端说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    msg = <span class="built_in">input</span>(<span class="string">&quot;服务端说&gt;&gt;: &quot;</span>).strip()</span><br><span class="line">    conn.send(msg.encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== 客户端(核心部分) =====</span></span><br><span class="line">client = socket.socket()</span><br><span class="line">client.connect((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = <span class="built_in">input</span>(<span class="string">&quot;客户端说&gt;&gt;: &quot;</span>).strip()</span><br><span class="line">    client.send(msg.encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    data = client.recv(<span class="number">1024</span>)             <span class="comment"># 等服务端回复</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;服务端说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p><em>通信循环:accept 之后双方各加一层 while True</em></p>
+<h3 id="14-Day36-08-bug修正1"><a href="#14-Day36-08-bug修正1" class="headerlink" title="14. Day36-08 bug修正1"></a>14. Day36-08 bug修正1</h3><p><strong>两个高频 bug:<strong>① 客户端发空消息 → 服务端 recv 永远收不到,双方互相等待”卡死”;② 两端编码不一致 → 中文乱码或 UnicodeDecodeError</strong>。修复:空消息不发 + 两端统一 utf-8。</strong></p>
+<ul>
+<li>现象一:客户端直接回车,send 的是 <strong>b””</strong>,而 TCP <strong>不发送空数据段</strong>——服务端的 recv 收不到任何东西、继续阻塞;客户端却已经进入下一轮等服务端回复 → 双方互等,程序看起来”死机”</li>
+<li>修复一:客户端发送前判空——<code>if not msg: continue</code>;经验法则:<strong>空消息永远不要 send</strong>,这是自己程序能避免的坑</li>
+<li>现象二:客户端 <code>msg.encode(&quot;gbk&quot;)</code> 发中文,服务端 <code>data.decode(&quot;utf-8&quot;)</code> 来解 → 轻则乱码,重则抛 <strong>UnicodeDecodeError</strong>(gbk 一个汉字 2 字节、utf-8 一个汉字 3 字节,用错解码方案字节就对不上)</li>
+<li>修复二:收发两端<strong>约定同一种编码</strong>,程序内部统一用 utf-8;唯一例外是 Windows 命令行的执行结果(subprocess 输出)本身是 gbk,解它才用 gbk(Day37-02 会遇到)</li>
+<li>本质认识:TCP 只负责搬运字节、<strong>不解释内容</strong>——怎么编码、消息怎么断句(黏包)全是应用层自己的事,协议要自己定</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== 客户端通信循环(带修复) =====</span></span><br><span class="line"><span class="comment"># 现象1:直接回车发空消息 → send(b&#x27;&#x27;) → 服务端 recv 永远收不到,双方&quot;卡死&quot;</span></span><br><span class="line"><span class="comment"># 现象2:若这里用 gbk 编码、服务端用 utf-8 解码 → 中文乱码或 UnicodeDecodeError</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = <span class="built_in">input</span>(<span class="string">&quot;&gt;&gt;: &quot;</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> msg:                          <span class="comment"># 修复1:空消息不发,直接下一轮</span></span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    client.send(msg.encode(<span class="string">&quot;utf-8&quot;</span>))     <span class="comment"># 修复2:两端统一 utf-8</span></span><br><span class="line">    data = client.recv(<span class="number">1024</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;服务端说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p><em>bug修正1:空消息卡死与中文乱码</em></p>
+<h3 id="15-Day36-09-bug修正2"><a href="#15-Day36-09-bug修正2" class="headerlink" title="15. Day36-09 bug修正2"></a>15. Day36-09 bug修正2</h3><p><strong>第三个 bug:客户端</strong>断开连接<strong>——Windows 下服务端 recv 抛 <strong>ConnectionResetError</strong> 直接崩掉,Linux 下 recv 永远返回空 bytes 造成死循环。修复:<strong>判空 break + try&#x2F;except</strong>,让服务端活得下来。</strong></p>
+<ul>
+<li>现象一(Windows 常见):客户端被强杀&#x2F;异常退出,服务端正在 <code>conn.recv</code> 时抛出 <strong>ConnectionResetError([WinError 10054] 远方主机强迫关闭了一个现有的连接)</strong>,整个服务端程序崩溃</li>
+<li>现象二(Linux 常见):客户端正常断开后,服务端的 recv <strong>不再阻塞、每次都返回空 bytes b””</strong>,代码没判断就死循环打印空行</li>
+<li>关键语义:**TCP 连接被对方正常关闭时,recv 返回空 bytes b””(不报错、不阻塞)**——这是判断”对方下线了”的标准信号;异常断开才抛 ConnectionResetError</li>
+<li>修复:<code>if not data: break</code> 处理正常断开;<code>except ConnectionResetError: break</code> 兜住异常断开;两者都只是<strong>结束与这个客户端的通信循环</strong>,服务端进程本身不崩</li>
+<li>修完这版,服务端面对客户端”正常走”和”暴毙”都能从容处理,为 Day36-10 链接循环(接下一个客户端)打好基础</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== 服务端通信循环的健壮版 =====</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        data = conn.recv(<span class="number">1024</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:                     <span class="comment"># 客户端正常断开:recv 返回空 bytes(Linux 常见)</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;客户端说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">        conn.send(data.upper())</span><br><span class="line">    <span class="keyword">except</span> ConnectionResetError:         <span class="comment"># 客户端异常断开(Windows 常见)</span></span><br><span class="line">        <span class="keyword">break</span>                            <span class="comment"># 只结束和这个客户端的通信,服务端不崩</span></span><br><span class="line">conn.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>bug修正2:客户端断开的两种现象与统一修复</em></p>
+<h3 id="16-Day36-10-链接循环"><a href="#16-Day36-10-链接循环" class="headerlink" title="16. Day36-10 链接循环"></a>16. Day36-10 链接循环</h3><p><strong>把 <code>accept</code> 放进</strong>外层 while True** 就是<strong>链接循环</strong>:一个客户端断开后,服务端回头接下一个;最终结构 &#x3D; **链接循环(外)套通信循环(内)<strong>。</strong></p>
+<ul>
+<li>两层循环的分工:外层 while True 负责<strong>不断 accept 新客户端</strong>(链接循环);内层 while True 负责与当前客户端反复收发(通信循环);<code>conn.close()</code> 放在两层循环之间,只关当前连接</li>
+<li>完整流转:客户端 A 连上 → 通信循环服务 A → A 断开(判空或异常 break)→ close 掉 A 的 conn → 回到 accept → 等客户端 B……服务端从此不再”服务完一个就死”</li>
+<li><code>server</code> 与 <code>conn</code> 的生命周期不同:<strong>server 创建一个就够</strong>(整个程序期间不关),<strong>conn 一客一个、用完即关</strong>;打印 addr 可以看到每个客户端的上线</li>
+<li>这依然是<strong>串行</strong>服务:同一时刻只服务一个客户端,第二个连上了也要排队等第一个断开;想同时服务多个客户端,要用多线程&#x2F;多进程,Day37-06 的 socketserver 就是现成方案</li>
+<li>客户端退出建议:输入 q 时主动 <code>client.close()</code> 再退出,比强杀优雅——服务端能收到空 bytes、走正常 break 分支,日志也干净</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">server = socket.socket()</span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:                              <span class="comment"># 链接循环:不断接新客户端</span></span><br><span class="line">    conn, addr = server.accept()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;新客户端上线:&quot;</span>, addr)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:                          <span class="comment"># 通信循环:与当前客户端反复通信</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            data = conn.recv(<span class="number">1024</span>)</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> data:                 <span class="comment"># 客户端正常断开</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="built_in">print</span>(addr, <span class="string">&quot;说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">            conn.send(data.upper())</span><br><span class="line">        <span class="keyword">except</span> ConnectionResetError:     <span class="comment"># 客户端异常断开</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    conn.close()                         <span class="comment"># 只关当前连接,回到 accept 等下一个</span></span><br><span class="line">server.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>链接循环(外层)套通信循环(内层)</em></p>
+<h3 id="17-Day36-11-半链接池"><a href="#17-Day36-11-半链接池" class="headerlink" title="17. Day36-11 半链接池"></a>17. Day36-11 半链接池</h3><p><strong><code>listen(n)</code> 里的 n 是</strong>半链接池(未处理连接的等待队列)的大小**,不是最大连接数;SYN 洪水攻击正是靠塞满半链接池让正常用户连不上。**</p>
+<ul>
+<li>概念:客户端 connect 发起三次握手后、还没被服务端 accept 取走的连接,由<strong>内核</strong>放进一个等待队列;<code>listen(n)</code> 的 n 就是这个队列的容量,形象叫法”半链接池”</li>
+<li>实验现象:listen(2) 时同时开很多个客户端,只有<strong>正在 accept 处理的一个 + 队列里排队的 n 个</strong>能 connect 成功,再多的客户端 connect 会一直卡住(连不上也拒不掉);服务端 accept 取走一个,才腾出位置给后来者</li>
+<li>为什么叫”半”链接:三次握手只完成一部分(收到 SYN 还没握完)的连接叫半连接;Linux 内核实际维护半连接队列与全连接队列两段,握手完成的连接等待 accept(细节了解即可)</li>
+<li>SYN 洪水攻击(DoS&#x2F;DDoS 经典手法):攻击者大量伪造 SYN 却不回第三次握手,半链接池被垃圾连接占满 → <strong>正常用户再也连不进来</strong>;所以服务暴露公网要做防护</li>
+<li>写程序的经验:演示用 n &#x3D; 5 就够;生产上高并发绝不能只靠调大 backlog,要靠并发模型(多线程、多进程、IO 多路复用)</li>
+</ul>
+<h3 id="18-Day36-12-基于udp协议的套接字通信"><a href="#18-Day36-12-基于udp协议的套接字通信" class="headerlink" title="18. Day36-12 基于udp协议的套接字通信"></a>18. Day36-12 基于udp协议的套接字通信</h3><p><strong>UDP 套接字 &#x3D; <code>socket(AF_INET, SOCK_DGRAM)</code>:<strong>没有 listen&#x2F;accept&#x2F;connect</strong>,直接 <code>sendto(数据, 地址)</code> &#x2F; <code>recvfrom(1024)</code>,一条消息就是一条消息、天然不黏包。</strong></p>
+<ul>
+<li>流程与 TCP 的差异:UDP <strong>无连接</strong>,所以服务端不需要 listen 和 accept、客户端不需要 connect;服务端 <code>socket(AF_INET, SOCK_DGRAM)</code> → <code>bind</code> → 循环 recvfrom&#x2F;sendto 就能干活</li>
+<li><code>data, addr = server.recvfrom(1024)</code>:UDP 每收一条消息都<strong>自带发送方地址 addr</strong>;回复必须指名道姓 <code>server.sendto(回复, addr)</code>,因为没有”连接”帮你记住对方是谁</li>
+<li>UDP 是<strong>数据报</strong>协议:sendto 一次 &#x3D; 一条独立消息,recvfrom 一次收一条,<strong>消息边界保留、不黏包</strong>;但单条消息超过 recvfrom 的 n 会被<strong>截断</strong>(多余部分直接丢掉)</li>
+<li>UDP 不可靠:不握手、不确认、不重传,可能丢包、可能乱序;实验:客户端先 sendto、服务端后启动,之前那条消息不会补投——丢了就是丢了,换来的是快和轻</li>
+<li>适用场景与坑:直播、语音、游戏心跳、DNS 查询;代码上 encode&#x2F;decode 与 TCP 完全相同,唯一区别就是 SOCK_DGRAM 和 sendto&#x2F;recvfrom;服务端<strong>必须 bind</strong>,否则收不到消息</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== UDP 服务端 =====</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  <span class="comment"># 数据报套接字</span></span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data, addr = server.recvfrom(<span class="number">1024</span>)   <span class="comment"># 收消息 + 对方地址</span></span><br><span class="line">    <span class="built_in">print</span>(addr, <span class="string">&quot;说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    server.sendto(data.upper(), addr)    <span class="comment"># 回消息必须指定发给谁</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== UDP 客户端 =====</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg = <span class="built_in">input</span>(<span class="string">&quot;&gt;&gt;: &quot;</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> msg:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    client.sendto(msg.encode(<span class="string">&quot;utf-8&quot;</span>), (<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))  <span class="comment"># 无需 connect</span></span><br><span class="line">    data, addr = client.recvfrom(<span class="number">1024</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;服务端说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p><em>基于 UDP 协议的套接字通信(无连接,sendto&#x2F;recvfrom)</em></p>
+<h3 id="19-Day37-02-远程执行命令程序与粘包问题介绍"><a href="#19-Day37-02-远程执行命令程序与粘包问题介绍" class="headerlink" title="19. Day37-02 远程执行命令程序与粘包问题介绍"></a>19. Day37-02 远程执行命令程序与粘包问题介绍</h3><p><strong>用 <strong>subprocess</strong> 执行客户端发来的命令并回传结果,就是一个远程执行命令程序;但结果超过 recv(1024) 会</strong>收不全**,先发长度再发数据又会<strong>黏包</strong>——两个坑都源于 TCP 字节流没有边界。**</p>
+<ul>
+<li>服务端思路:recv 拿到命令字符串 → <code>subprocess.Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)</code> 执行 → <code>obj.stdout.read() + obj.stderr.read()</code> 把正确输出和报错都拿到 → send 回客户端</li>
+<li>编码细节:Windows 下命令结果的编码是 <strong>gbk</strong>,客户端要 <code>data.decode(&quot;gbk&quot;)</code> 才不乱码&#x2F;不报错;自己程序里写的消息仍然统一 utf-8,两者别搞混</li>
+<li>坑一(收不全):执行 <code>dir /s</code> 这类命令,结果可能有几万字节,一次 <code>recv(1024)</code> 只拿到开头一截,<strong>剩余字节还躺在接收缓冲区里</strong>;下一条命令一发,recv 先收到的是上次的残留 → 结果串台</li>
+<li>坑二(黏包):服务端先 send 长度、紧接着 send 结果,两条小数据间隔极短,TCP 会把它们<strong>合成一段</strong>发出去,客户端一次 recv 收到”长度和结果黏在一起”的数据,没法解析</li>
+<li>结论与出路:根源 &#x3D; <strong>TCP 是字节流、没有消息边界</strong> + 接收方不知道该收多少字节;解决思路 &#x3D; 收发双方约定”先说长度、再发数据”,下一节开始实现</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== 服务端 =====</span></span><br><span class="line"><span class="keyword">import</span> socket, subprocess</span><br><span class="line"></span><br><span class="line">server = socket.socket()</span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line">conn, addr = server.accept()</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    cmd = conn.recv(<span class="number">1024</span>).decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cmd:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    obj = subprocess.Popen(cmd, shell=<span class="literal">True</span>,</span><br><span class="line">                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line">    res = obj.stdout.read() + obj.stderr.read()   <span class="comment"># 正确输出 + 错误输出</span></span><br><span class="line">    conn.send(res)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== 客户端 =====</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line">client = socket.socket()</span><br><span class="line">client.connect((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    cmd = <span class="built_in">input</span>(<span class="string">&quot;请输入命令&gt;&gt;: &quot;</span>).strip()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cmd:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    client.send(cmd.encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    data = client.recv(<span class="number">1024</span>)             <span class="comment"># 坑:结果超过 1024 只收到一小部分</span></span><br><span class="line">    <span class="built_in">print</span>(data.decode(<span class="string">&quot;gbk&quot;</span>))            <span class="comment"># Windows 命令结果是 gbk 编码</span></span><br></pre></td></tr></table></figure>
+
+<p><em>远程执行命令(存在收不全与黏包问题的原始版)</em></p>
+<h3 id="20-Day37-03-tcp协议nagle算法介绍与udp介绍"><a href="#20-Day37-03-tcp协议nagle算法介绍与udp介绍" class="headerlink" title="20. Day37-03 tcp协议nagle算法介绍与udp介绍"></a>20. Day37-03 tcp协议nagle算法介绍与udp介绍</h3><p><strong>黏包的两大成因:<strong>发送端 Nagle 算法攒小包</strong>、</strong>接收端不及时取导致数据在缓冲区堆叠**,本质都是 TCP 字节流不保留消息边界;UDP 是数据报协议,<strong>永不黏包</strong>(但会丢包)。**</p>
+<ul>
+<li>Nagle 算法:为提高网络利用率,TCP 发送端会把<strong>多个小的发送请求攒成一个大包</strong>再发(等上一包被确认或攒够一定量);于是连续 send 三次小数据,对方可能一次 recv 就全收到了</li>
+<li>接收端视角:应用层没及时 recv,数据先堆在<strong>接收缓冲区</strong>;<code>recv(n)</code> 只是从缓冲区搬走 n 个字节,<strong>不区分这些字节来自几次 send</strong>——两次 send 一次 recv,自然黏成一条</li>
+<li>所以黏包只发生在 <strong>TCP(流式协议)<strong>上:它保证字节按序到达,但</strong>不保留 send 的次数和边界</strong>;两条消息是分开收到还是黏着收到,取决于缓冲区状态,行为不稳定、必须靠协议解决</li>
+<li>UDP 不黏包:每条消息独立打包、有明确边界,recvfrom 一次收一条,发几次收几次;代价是不可靠(丢包不补)且单个数据报不能太大(理论上限 64KB,实践要远小于此)</li>
+<li>顺着想就明白:解决黏包 &#x3D; <strong>应用层自己造边界</strong>(先收长度、再按长度收),而不是去关 Nagle——就算关了,接收缓冲区照样能把两次 send 的数据黏在一起</li>
+</ul>
+<h3 id="21-Day37-04-自定义协议解决粘包问题"><a href="#21-Day37-04-自定义协议解决粘包问题" class="headerlink" title="21. Day37-04 自定义协议解决粘包问题"></a>21. Day37-04 自定义协议解决粘包问题</h3><p><strong>自定义应用层协议解黏包:发送方</strong>先发数据长度**(并等对方确认),接收方<strong>先收长度、再循环收够指定字节数</strong>;长度已知,字节流就被切出了边界。**</p>
+<ul>
+<li>协议内容(双方约定好就行):第一条消息 &#x3D; 真实数据的<strong>长度</strong>(字符串形式),第二条消息 &#x3D; 真实数据;接收方收到长度后回一个确认(如 b”ready”),把两次 send 隔开,避免”长度”和”数据”黏在一起</li>
+<li>接收方必须<strong>循环收</strong>:<code>while len(res) &lt; data_len: res += client.recv(1024)</code>——大数据一次 recv 收不完,必须收够指定字节数为止;这是解决”收不全”的关键动作</li>
+<li>这就是<strong>应用层自定义协议</strong>:TCP 只管搬字节,”消息怎么切分”由我们自己约定;HTTP 报文头里的 Content-Length 就是同一个思路的工业版</li>
+<li>局限:长度用 str 发送本身仍是变长数据,靠确认应答隔开不够优雅;更标准的做法是用 <strong>struct 把长度打成固定 4 字节</strong>(下一节终极大招)</li>
+<li>修复验证:再执行 dir &#x2F;s 这类大结果命令,能完整收全;连续执行多条命令也不会串台、不会把上一条的残留当新结果</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ===== 服务端 =====</span></span><br><span class="line">res = obj.stdout.read() + obj.stderr.read()      <span class="comment"># 命令结果(bytes)</span></span><br><span class="line">conn.send(<span class="built_in">str</span>(<span class="built_in">len</span>(res)).encode(<span class="string">&quot;utf-8&quot;</span>))         <span class="comment"># 1.先发数据长度</span></span><br><span class="line">conn.recv(<span class="number">1024</span>)                                  <span class="comment"># 2.等客户端确认,隔开两次 send</span></span><br><span class="line">conn.send(res)                                   <span class="comment"># 3.再发真实数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== 客户端 =====</span></span><br><span class="line">data_len = <span class="built_in">int</span>(client.recv(<span class="number">1024</span>).decode(<span class="string">&quot;utf-8&quot;</span>))  <span class="comment"># 1.先收长度</span></span><br><span class="line">client.send(<span class="string">b&quot;ready&quot;</span>)                              <span class="comment"># 2.回确认</span></span><br><span class="line">res = <span class="string">b&quot;&quot;</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">len</span>(res) &lt; data_len:                         <span class="comment"># 3.循环收,直到收够</span></span><br><span class="line">    res += client.recv(<span class="number">1024</span>)</span><br><span class="line"><span class="built_in">print</span>(res.decode(<span class="string">&quot;gbk&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p><em>自定义协议:先发长度,再循环收数据</em></p>
+<h3 id="22-Day37-05-解决粘包问题终极大招"><a href="#22-Day37-05-解决粘包问题终极大招" class="headerlink" title="22. Day37-05 解决粘包问题终极大招"></a>22. Day37-05 解决粘包问题终极大招</h3><p><strong>终极大招 &#x3D; <strong>struct 固定 4 字节报头 + json 报头</strong>:先发 4 字节的”报头长度”,再发 json 报头(描述数据元信息),最后发真实数据;三段式收发,任意大的数据都能完整收。</strong></p>
+<ul>
+<li>三步发送:① <code>struct.pack(&quot;i&quot;, len(head_json))</code> 把报头长度压成<strong>固定 4 字节</strong>(变长问题变定长) ② 发报头 <code>head_json = json.dumps({...}).encode()</code> ③ 发真实数据</li>
+<li>三步接收:① <code>recv(4)</code> 收定长报头,<code>struct.unpack(&quot;i&quot;, ...)[0]</code> 解出报头长度——固定收 4 字节,这一步永远不黏不缺 ② 按长度收报头、<code>json.loads</code> 解析(报头很小,一次 recv 即可收全) ③ 按报头里的 size <strong>循环收</strong>真实数据直到收够</li>
+<li>报头里放什么自己定:数据大小 size、命令&#x2F;文件名、md5 校验值……json 能描述任意结构,比”只发一个数字的长度”灵活得多;struct 的 “i” 表示 4 字节整数</li>
+<li>完整演示:用三段式改造远程执行命令程序,任意长度的命令结果都能一次收全、不串台;同样的套路直接套在<strong>文件传输</strong>上——先收报头拿到文件名和大小,再循环把字节写进文件</li>
+<li>精髓一句话:<strong>定长的部分先收</strong>(4 字节报头长度),<strong>不定长的部分靠报头里的 size 循环收</strong>——记住这句,黏包问题通杀</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket, struct, json, subprocess</span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== 服务端(发送方) =====</span></span><br><span class="line">obj = subprocess.Popen(cmd, shell=<span class="literal">True</span>,</span><br><span class="line">                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line">res = obj.stdout.read() + obj.stderr.read()</span><br><span class="line">head_dic = &#123;<span class="string">&quot;cmd&quot;</span>: cmd, <span class="string">&quot;size&quot;</span>: <span class="built_in">len</span>(res)&#125;            <span class="comment"># 报头:描述真实数据</span></span><br><span class="line">head_json = json.dumps(head_dic).encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">conn.send(struct.pack(<span class="string">&quot;i&quot;</span>, <span class="built_in">len</span>(head_json)))          <span class="comment"># ① 4 字节定长:报头长度</span></span><br><span class="line">conn.send(head_json)                                 <span class="comment"># ② 报头(json)</span></span><br><span class="line">conn.send(res)                                       <span class="comment"># ③ 真实数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ===== 客户端(接收方) =====</span></span><br><span class="line">head_len = struct.unpack(<span class="string">&quot;i&quot;</span>, client.recv(<span class="number">4</span>))[<span class="number">0</span>]     <span class="comment"># ① 先收固定 4 字节</span></span><br><span class="line">head_dic = json.loads(client.recv(head_len).decode(<span class="string">&quot;utf-8&quot;</span>))  <span class="comment"># ② 再收报头</span></span><br><span class="line">total, res = head_dic[<span class="string">&quot;size&quot;</span>], <span class="string">b&quot;&quot;</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">len</span>(res) &lt; total:                              <span class="comment"># ③ 按 size 循环收真实数据</span></span><br><span class="line">    res += client.recv(<span class="number">1024</span>)</span><br><span class="line"><span class="built_in">print</span>(res.decode(<span class="string">&quot;gbk&quot;</span>))</span><br></pre></td></tr></table></figure>
+
+<p><em>struct + json 三段式:黏包终极解决方案</em></p>
+<h3 id="23-Day37-06-socketserver模块"><a href="#23-Day37-06-socketserver模块" class="headerlink" title="23. Day37-06 socketserver模块"></a>23. Day37-06 socketserver模块</h3><p><strong>socketserver 把”链接循环 + 并发”封装好了:自定义类继承 <strong>BaseRequestHandler</strong>、服务逻辑写进 <strong>handle</strong> 方法,用 <strong>ThreadingTCPServer</strong> 起服务——一个客户端一个线程,serve_forever() 常驻。</strong></p>
+<ul>
+<li>三步用法:① 写类继承 <code>socketserver.BaseRequestHandler</code>,把服务逻辑写进 <strong>handle(self)</strong>:其中 <code>self.request</code> 相当于 conn、<code>self.client_address</code> 相当于 addr ② <code>ThreadingTCPServer((&quot;127.0.0.1&quot;, 8080), MyHandler)</code> 实例化 ③ <code>s.serve_forever()</code> 无限循环接客</li>
+<li>并发与串行:<code>TCPServer</code> 是<strong>串行</strong>的,同一时刻只服务一个客户端;<code>ThreadingTCPServer</code> 为<strong>每个客户端开一个线程</strong>并发处理,客户端代码完全不用改</li>
+<li>handle 里该有的还是要有:通信循环、判空 break、try&#x2F;except ConnectionResetError——前面修的 bug 一个不少;socketserver 只帮你管”接入 + 并发”,<strong>不管”怎么聊”</strong></li>
+<li>原理:serve_forever 内部就是帮你做了 accept 的链接循环,每来一个连接就起一个线程去调 handle;本质 &#x3D; 链接循环 + 多线程的封装,Day36 手写的两层循环就是它的”手搓版”</li>
+<li>改造实战:把远程执行命令程序的服务端换成 socketserver 后,多个客户端可以同时连上、各跑各的命令互不干扰;课程先手写再引库,正是为了看清它替你封装掉了什么</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socketserver</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyHandler</span>(socketserver.BaseRequestHandler):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">handle</span>(<span class="params">self</span>):                        <span class="comment"># self.request 相当于 conn</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                data = <span class="variable language_">self</span>.request.recv(<span class="number">1024</span>)</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> data:                 <span class="comment"># 客户端正常断开</span></span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                <span class="built_in">print</span>(<span class="variable language_">self</span>.client_address, <span class="string">&quot;说:&quot;</span>, data.decode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">                <span class="variable language_">self</span>.request.send(data.upper())</span><br><span class="line">            <span class="keyword">except</span> ConnectionResetError:     <span class="comment"># 客户端异常断开</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="comment"># s = socketserver.TCPServer((&quot;127.0.0.1&quot;, 8080), MyHandler)          # 串行版</span></span><br><span class="line">    s = socketserver.ThreadingTCPServer((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>), MyHandler)  <span class="comment"># 并发版</span></span><br><span class="line">    s.serve_forever()                        <span class="comment"># 一个客户端一个线程</span></span><br></pre></td></tr></table></figure>
+
+<p><em>socketserver 并发服务端(客户端代码与之前完全相同)</em></p>
+<h3 id="24-Day37-07-阿里云服务器的使用"><a href="#24-Day37-07-阿里云服务器的使用" class="headerlink" title="24. Day37-07 阿里云服务器的使用"></a>24. Day37-07 阿里云服务器的使用</h3><p><strong>把 socket 程序部署到阿里云 ECS:<strong>买服务器 → 安全组放行端口 → ssh 远程登录 → 服务端 bind(“0.0.0.0”, 端口)</strong>,客户端连公网 ip,全世界就都能访问你的程序了。</strong></p>
+<ul>
+<li>云服务器是什么:机房里一台 24 小时开机的 Linux 虚拟机(阿里云叫 ECS);购买时选操作系统(如 CentOS&#x2F;Ubuntu),拿到<strong>公网 ip</strong> 和 root 密码,从此程序不再依赖你自己的电脑开机</li>
+<li><strong>安全组</strong>是云平台层面的防火墙:想让人连 8080 端口,必须先在控制台的<strong>安全组里添加入方向规则放行该端口</strong>——初学者部署后”连不上&#x2F;一直超时”,十有八九是忘开安全组</li>
+<li>远程操作:Windows 用 xshell 或自带的 ssh 命令登录(<code>ssh root@公网ip</code>),把 server.py 上传到服务器,<code>python3 server.py</code> 跑起来;常用 Linux 命令(cd&#x2F;ls&#x2F;vim 等)这一集会顺带演示</li>
+<li>关键一行:服务端要 <code>bind((&quot;0.0.0.0&quot;, 8080))</code>,表示监听本机<strong>所有网卡</strong>;如果 bind(“127.0.0.1”),只有服务器自己能连,公网永远访问不通</li>
+<li>客户端只需把连接地址换成 <code>(&quot;公网ip&quot;, 8080)</code>;这就是”部署上线”的最小体验——流程和后面 Web 阶段上线 Django 项目完全同理</li>
+</ul>
+<hr>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/05/python-05/">https://ln996.github.io/2026/11/05/python-05/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E7%BD%91%E7%BB%9C/">网络</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/06/python-06/" title="并发编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">并发编程</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 并发编程1. 进程与线程基本概念进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配资源(内存、文件句柄)的基本单位,进程之间相互独立 线程:进程内部的执行单元,共享所在进程的全局变量和内存,创建、切换开销比进程小 一个进程至少有一个主线程;某线程崩溃可能拖垮整个进程,而一个进程崩溃不影响其他进程 并行:多个 CPU 核心真正同时执行;并发:单核(或同一核)时间片轮转,看起来同时执行 Python 实践:计算密集用多进程,IO 密集用多线程或协程  2. multiprocessing 多进程Process(target=函数, args=(参数,)) 创建子进程,start() 启动、join() 等待;进程间数据默认隔离,通信要用 Queue。  创建后必须调 p.start() 才真正开出子进程;p.join() 让父进程等待子进程结束后再继续 p.daemon = True 设为守护进程(必须在 start 之前):父进程结束,守护子进程立即终...</div></div></div></a><a class="pagination-related" href="/2026/11/04/python-04/" title="面向对象编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">面向对象编程</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 面向对象1. 类与对象(类属性 vs 实例属性)类是模板**,对象是实例;__init__ 在实例化时自动执行;类属性所有实例共享,实例属性每个对象独有一份。**  定义:class 类名:(大驼峰命名);实例化 p = 类名(参数) 自动触发 __init__ 实例方法的第一个参数 self 就是当前实例,实例属性靠 self.x = ... 绑定在对象上 类属性写在类里方法外,所有实例共享;实例属性只属于一个对象 取值先找实例属性,找不到再找类属性;实例.属性 = 值 是给实例新增属性,不会改类属性 对象属性可以动态增删:p.age = 18、del p.age  12345678class Student:    def __init__(self, name):        self.name = name   # 实例属性,每个对象独有s1 = Student(&quot;alex&quot;)s2 = Student(&quot;wusir&quot;)s1.school = &quot;AA&quot;   # 给 s...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/11/08/python-08/" title="经典练习题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-08</div><div class="info-item-2">经典练习题</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 课堂经典练习(视频例题)1. 编程题四步法读题 → 想思路(先写注释伪代码) → 写代码 → 测边界,视频里反复强调:先想清楚再动手。  读题:把题面要求逐句圈出来,明确输入是什么、输出是什么 想思路:用中文注释把步骤写下来,再逐行翻译成代码 写代码:小步走,每写一小段就运行验证 测边界:空输入、错误输入(如数字位置输入了字母)、极端值(0、负数)  12345# 例:购物车思路伪代码# 1. 输入工资# 2. 循环:展示商品 -&gt; 输入编号# 3. 判断余额够不够 -&gt; 够:扣钱加入购物车# 4. 输入 q 退出,打印购物清单和余额  2. 经典练习与考点对照每个经典练习都对应固定的知识点,练一题等于复习一片。  九九乘法表:双层for + end参数;斐波那契:多重赋值 a, b &#x3D; b, a+b 猜年龄 &#x2F; 登录锁定:while循环 + break + while-else 购物车 &#x2F; 三级菜单:循环 + 字典&#x2F;列表操作 + 标志变量 字符统计:dict.get(key, 默认...</div></div></div></a><a class="pagination-related" href="/2026/11/06/python-06/" title="并发编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-06</div><div class="info-item-2">并发编程</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 并发编程1. 进程与线程基本概念进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配资源(内存、文件句柄)的基本单位,进程之间相互独立 线程:进程内部的执行单元,共享所在进程的全局变量和内存,创建、切换开销比进程小 一个进程至少有一个主线程;某线程崩溃可能拖垮整个进程,而一个进程崩溃不影响其他进程 并行:多个 CPU 核心真正同时执行;并发:单核(或同一核)时间片轮转,看起来同时执行 Python 实践:计算密集用多进程,IO 密集用多线程或协程  2. multiprocessing 多进程Process(target=函数, args=(参数,)) 创建子进程,start() 启动、join() 等待;进程间数据默认隔离,通信要用 Queue。  创建后必须调 p.start() 才真正开出子进程;p.join() 让父进程等待子进程结束后再继续 p.daemon = True 设为守护进程(必须在 start 之前):父进程结束,守护子进程立即终...</div></div></div></a><a class="pagination-related" href="/2026/11/04/python-04/" title="面向对象编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-04</div><div class="info-item-2">面向对象编程</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 面向对象1. 类与对象(类属性 vs 实例属性)类是模板**,对象是实例;__init__ 在实例化时自动执行;类属性所有实例共享,实例属性每个对象独有一份。**  定义:class 类名:(大驼峰命名);实例化 p = 类名(参数) 自动触发 __init__ 实例方法的第一个参数 self 就是当前实例,实例属性靠 self.x = ... 绑定在对象上 类属性写在类里方法外,所有实例共享;实例属性只属于一个对象 取值先找实例属性,找不到再找类属性;实例.属性 = 值 是给实例新增属性,不会改类属性 对象属性可以动态增删:p.age = 18、del p.age  12345678class Student:    def __init__(self, name):        self.name = name   # 实例属性,每个对象独有s1 = Student(&quot;alex&quot;)s2 = Student(&quot;wusir&quot;)s1.school = &quot;AA&quot;   # 给 s...</div></div></div></a><a class="pagination-related" href="/2026/11/02/python-02/" title="流程控制与文件操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-02</div><div class="info-item-2">流程控制与文件操作</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 流程控制(if &#x2F; while &#x2F; for)1. if 分支结构Python 用缩进**(推荐4空格)表示代码块,if / elif / else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写 90 &gt; score &gt;= 80 elif 可以有多个,else 最多一个且可不写 三元表达式:值1 if 条件 else 值2  12345678score = 85if score &gt;= 90:    print(&quot;A&quot;)elif score &gt;= 80:    print(&quot;B&quot;)else:    print(&quot;C&quot;)level = &quot;及格&quot; if score &gt;= 60 else &quot;不及格&quot;  2. while 循环与 break &#x2F; co...</div></div></div></a><a class="pagination-related" href="/2026/11/07/python-07/" title="异常处理与代码模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-07</div><div class="info-item-2">异常处理与代码模板</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。  📖 异常处理1. 为什么要处理异常异常就是程序运行时发生的错误,不处理程序会当场崩溃,处理了就能给出友好提示并继续运行。  异常发生后若不捕获,程序立即终止,并打印异常类型、位置和描述(堆栈信息) Python 中一切异常都是异常类的实例,不同错误对应不同类型 崩溃是不可接受的,尤其是服务端程序:一个用户请求出错不能拖垮整个服务  2. try &#x2F; except &#x2F; else &#x2F; finally 完整结构try 包可能出错的代码,except 捕获并处理,else 在没异常时执行,finally 无论如何都执行。  except 可以写多个,从上到下匹配,子类异常要写在父类前面 except 后不写类型 &#x3D; 捕获所有异常(方便但危险,不推荐用于生产) except XxxError as e 可以拿到异常对象,print(e) 看错误信息 else:try 块没有发生异常时才执行,常用来放“成功后的收尾逻辑” finally:无论是否异常、甚至 try 里 return 了都会执行,放资源释放(关文...</div></div></div></a><a class="pagination-related" href="/2026/11/14/python-14/" title="代码精选 51 段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-14</div><div class="info-item-2">代码精选 51 段</div></div><div class="info-2"><div class="info-item-1"> 我的学习笔记,边学边记,持续修订。   本文整理视频里老师敲的重点课堂代码,每段标注对应集数与练习要点。建议:先遮住代码自己写,写完对照;改参数看变化。   ⌨️ 变量引用与 id &#x2F; is &#x2F; &#x3D;&#x3D;(第一周必敲)🎯 这段练什么: 变量存的是引用不是值本身;b &#x3D; a 后两个名字共用对象;is 比地址、== 比值。敲完这段,后面所有”改了a怎么b也变了”的问题都能自己推导。 12345678910a = [1, 2, 3]b = a              # b 和 a 指向同一个列表b.append(4)print(a)           # [1, 2, 3, 4]  改b即改aprint(a is b)      # True 同一个对象c = [1, 2, 3, 4]print(a == c)      # True 值相等print(a is c)      # False 但不是同一个对象print(id(a), id(c))  # 两个不同的内存地址   ⌨️ 可变 &#x2F; 不可变 类型行为实验🎯 ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">📖 网络编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80-IP%E3%80%81%E7%AB%AF%E5%8F%A3%E3%80%81%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="toc-number">1.1.</span> <span class="toc-text">1. 网络基础(IP、端口、子网掩码)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B-OSI%E4%B8%83%E5%B1%82%E4%B8%8ETCP-IP%E4%BA%94%E5%B1%82"><span class="toc-number">1.2.</span> <span class="toc-text">2. 网络分层模型(OSI七层与TCP&#x2F;IP五层)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-TCP-%E4%B8%8E-UDP-%E5%8F%8A%E6%8F%A1%E6%89%8B%E6%8C%A5%E6%89%8B"><span class="toc-number">1.3.</span> <span class="toc-text">3. TCP 与 UDP 及握手挥手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-socket-TCP-%E7%BC%96%E7%A8%8B%E6%B5%81%E7%A8%8B"><span class="toc-number">1.4.</span> <span class="toc-text">4. socket TCP 编程流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%BB%8F%E5%8C%85%E9%97%AE%E9%A2%98%E4%B8%8E-struct-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8A%A5%E5%A4%B4"><span class="toc-number">1.5.</span> <span class="toc-text">5. 黏包问题与 struct 自定义报头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-UDP-%E7%BC%96%E7%A8%8B%E4%B8%8E-socketserver-%E5%B9%B6%E5%8F%91"><span class="toc-number">1.6.</span> <span class="toc-text">6. UDP 编程与 socketserver 并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-C-S-%E4%B8%8E-B-S-%E6%9E%B6%E6%9E%84"><span class="toc-number">1.7.</span> <span class="toc-text">7. C&#x2F;S 与 B&#x2F;S 架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E4%BB%A5%E5%A4%AA%E7%BD%91%E3%80%81IP-%E4%B8%8E-ARP-%E5%8D%8F%E8%AE%AE-%E4%B8%80%E6%AC%A1%E6%95%B0%E6%8D%AE%E6%98%AF%E6%80%8E%E4%B9%88%E9%80%81%E8%BE%BE%E7%9A%84"><span class="toc-number">1.8.</span> <span class="toc-text">8. 以太网、IP 与 ARP 协议:一次数据是怎么送达的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-TCP-%E6%8A%A5%E6%96%87%E4%B8%8E%E6%8F%A1%E6%89%8B%E6%8C%A5%E6%89%8B%E7%9A%84%E7%8A%B6%E6%80%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.9.</span> <span class="toc-text">9. TCP 报文与握手挥手的状态详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E5%8D%8A%E9%93%BE%E6%8E%A5%E6%B1%A0%E4%B8%8E-listen-%E7%9A%84-backlog"><span class="toc-number">1.10.</span> <span class="toc-text">10. 半链接池与 listen 的 backlog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Nagle-%E7%AE%97%E6%B3%95%E4%B8%8E-TCP-%E6%94%B6%E5%8F%91%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="toc-number">1.11.</span> <span class="toc-text">11. Nagle 算法与 TCP 收发缓冲区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E7%BB%88%E6%9E%81%E5%A4%A7%E6%8B%9B-struct-json-%E5%8F%8C%E5%B1%82%E6%8A%A5%E5%A4%B4%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6"><span class="toc-number">1.12.</span> <span class="toc-text">12. 终极大招:struct + json 双层报头传输文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8-%E6%8A%8A%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E5%88%B0%E5%85%AC%E7%BD%91"><span class="toc-number">1.13.</span> <span class="toc-text">13. 阿里云服务器:把服务端部署到公网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Day34-06-CS%E4%B8%8EBS%E6%9E%B6%E6%9E%84%E4%BB%A5%E5%8F%8A%E7%BD%91%E7%BB%9C%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.14.</span> <span class="toc-text">2. Day34-06 CS与BS架构以及网络介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Day34-07-%E4%BA%92%E8%81%94%E7%BD%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.15.</span> <span class="toc-text">3. Day34-07 互联网通信协议的工作原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Day34-08-%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%8F%E8%AE%AE%E3%80%81ip%E5%8D%8F%E8%AE%AE%E3%80%81ARP%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.16.</span> <span class="toc-text">4. Day34-08 以太网协议、ip协议、ARP协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Day35-03-tcp%E5%8D%8F%E8%AE%AE%E4%B8%8A"><span class="toc-number">1.17.</span> <span class="toc-text">5. Day35-03 tcp协议上</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Day35-04-tcp%E5%8D%8F%E8%AE%AE%E4%B8%8B"><span class="toc-number">1.18.</span> <span class="toc-text">6. Day35-04 tcp协议下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Day35-06-%E5%BA%94%E7%94%A8%E5%B1%82%E4%B8%8Esocket%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.19.</span> <span class="toc-text">7. Day35-06 应用层与socket介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-Day35-11-%E5%85%B6%E4%BB%96%E5%8D%8F%E8%AE%AE%E8%A1%A5%E5%85%85"><span class="toc-number">1.20.</span> <span class="toc-text">8. Day35-11 其他协议补充</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-Day36-02-%E5%82%A8%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-number">1.21.</span> <span class="toc-text">9. Day36-02 储备知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-Day36-03-%E5%A5%97%E6%8E%A5%E5%AD%97%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.22.</span> <span class="toc-text">10. Day36-03 套接字介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Day36-04-%E5%9F%BA%E4%BA%8Etcp%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%A5%97%E6%8E%A5%E5%AD%97%E9%80%9A%E4%BF%A1%E6%B5%81%E7%A8%8B%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.23.</span> <span class="toc-text">11. Day36-04 基于tcp协议的套接字通信流程介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-Day36-05-%E5%9F%BA%E4%BA%8Etcp%E5%8D%8F%E8%AE%AE%E7%9A%84%E7%AE%80%E5%8D%95%E5%A5%97%E6%8E%A5%E5%AD%97%E9%80%9A%E4%BF%A1"><span class="toc-number">1.24.</span> <span class="toc-text">12. Day36-05 基于tcp协议的简单套接字通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-Day36-07-%E9%80%9A%E4%BF%A1%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.25.</span> <span class="toc-text">13. Day36-07 通信循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-Day36-08-bug%E4%BF%AE%E6%AD%A31"><span class="toc-number">1.26.</span> <span class="toc-text">14. Day36-08 bug修正1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-Day36-09-bug%E4%BF%AE%E6%AD%A32"><span class="toc-number">1.27.</span> <span class="toc-text">15. Day36-09 bug修正2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-Day36-10-%E9%93%BE%E6%8E%A5%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.28.</span> <span class="toc-text">16. Day36-10 链接循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-Day36-11-%E5%8D%8A%E9%93%BE%E6%8E%A5%E6%B1%A0"><span class="toc-number">1.29.</span> <span class="toc-text">17. Day36-11 半链接池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-Day36-12-%E5%9F%BA%E4%BA%8Eudp%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%A5%97%E6%8E%A5%E5%AD%97%E9%80%9A%E4%BF%A1"><span class="toc-number">1.30.</span> <span class="toc-text">18. Day36-12 基于udp协议的套接字通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-Day37-02-%E8%BF%9C%E7%A8%8B%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4%E7%A8%8B%E5%BA%8F%E4%B8%8E%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.31.</span> <span class="toc-text">19. Day37-02 远程执行命令程序与粘包问题介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#20-Day37-03-tcp%E5%8D%8F%E8%AE%AEnagle%E7%AE%97%E6%B3%95%E4%BB%8B%E7%BB%8D%E4%B8%8Eudp%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.32.</span> <span class="toc-text">20. Day37-03 tcp协议nagle算法介绍与udp介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-Day37-04-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8D%8F%E8%AE%AE%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98"><span class="toc-number">1.33.</span> <span class="toc-text">21. Day37-04 自定义协议解决粘包问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-Day37-05-%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E9%97%AE%E9%A2%98%E7%BB%88%E6%9E%81%E5%A4%A7%E6%8B%9B"><span class="toc-number">1.34.</span> <span class="toc-text">22. Day37-05 解决粘包问题终极大招</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-Day37-06-socketserver%E6%A8%A1%E5%9D%97"><span class="toc-number">1.35.</span> <span class="toc-text">23. Day37-06 socketserver模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-Day37-07-%E9%98%BF%E9%87%8C%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.36.</span> <span class="toc-text">24. Day37-07 阿里云服务器的使用</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-04/" title="MySQL学习笔记 04:表关系设计(一对一·一对多·多对多)">MySQL学习笔记 04:表关系设计(一对一·一对多·多对多)</a><time datetime="2026-11-17T05:00:00.000Z" title="发表于 2026-11-17 13:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-03/" title="MySQL学习笔记 03:进阶查询(having·去重·排序·分页·多表联查·ORM)">MySQL学习笔记 03:进阶查询(having·去重·排序·分页·多表联查·ORM)</a><time datetime="2026-11-17T04:00:00.000Z" title="发表于 2026-11-17 12:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-02/" title="MySQL学习笔记 02:分组统计与聚合函数(含 where + group by 组合)">MySQL学习笔记 02:分组统计与聚合函数(含 where + group by 组合)</a><time datetime="2026-11-17T03:00:00.000Z" title="发表于 2026-11-17 11:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-01/" title="MySQL学习笔记 01:基础查询与 where 条件筛选">MySQL学习笔记 01:基础查询与 where 条件筛选</a><time datetime="2026-11-17T02:00:00.000Z" title="发表于 2026-11-17 10:00:00">2026-11-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/17/mysql-00/" title="MySQL学习笔记 00:数据库增删改查(CRUD)大全【库·表·数据】">MySQL学习笔记 00:数据库增删改查(CRUD)大全【库·表·数据】</a><time datetime="2026-11-17T01:00:00.000Z" title="发表于 2026-11-17 09:00:00">2026-11-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
