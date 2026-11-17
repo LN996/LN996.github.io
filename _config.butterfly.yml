@@ -11,6 +11,15 @@ index_img: /img/banner.svg
 # 其他页面(归档/分类/标签页)顶部横幅
 default_top_img: /img/banner.svg
 
+# 文章只显示发表时间,不显示更新时间
+post_meta:
+  page:
+    date_type: created
+    date_format: date
+  post:
+    date_type: created
+    date_format: date
+
 # 注入自定义玻璃拟态样式
 inject:
   head:

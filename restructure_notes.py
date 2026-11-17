@@ -41,7 +41,7 @@ DROP_PATTERNS = [
 # 从这种标题开始到下一个同级标题为止整段删除
 SECTION_CUT = re.compile(r"^#{2,3}\s*(获取方式|配套工具|获取笔记|完整版).*$", re.M)
 
-INTRO = "> 我的学习笔记,边学边记,持续修订。最后更新:2026-11。"
+INTRO = "> 我的学习笔记,边学边记,持续修订。"
 
 
 def clean_body(text: str) -> str:
