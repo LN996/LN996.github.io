@@ -1,0 +1,511 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MySQL数据库 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 MySQL基础与进阶 🎬 对应课程:数据库阶段(MySQL安装、库表操作、增删改查、连表、pymysql、事务、索引)  1. 库表操作与常用数据类型 🎬 对应视频:P527~P528、P538、P550  用 create&#x2F;drop&#x2F;alter 管理库和表;字符串定长用 char、变长用 v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL数据库">
+<meta property="og:url" content="https://ln996.github.io/2026/11/09/python-09/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 MySQL基础与进阶 🎬 对应课程:数据库阶段(MySQL安装、库表操作、增删改查、连表、pymysql、事务、索引)  1. 库表操作与常用数据类型 🎬 对应视频:P527~P528、P538、P550  用 create&#x2F;drop&#x2F;alter 管理库和表;字符串定长用 char、变长用 v">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-09T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T06:53:34.880Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MySQL数据库",
+  "url": "https://ln996.github.io/2026/11/09/python-09/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-09T01:00:00.000Z",
+  "dateModified": "2026-11-17T06:53:34.880Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/09/python-09/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL数据库',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">MySQL数据库</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">MySQL数据库</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-09T01:00:00.000Z" title="发表于 2026-11-09 09:00:00">2026-11-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-17T06:53:34.880Z" title="更新于 2026-11-17 14:53:34">2026-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。</p>
+</blockquote>
+<hr>
+<h2 id="📖-MySQL基础与进阶"><a href="#📖-MySQL基础与进阶" class="headerlink" title="📖 MySQL基础与进阶"></a>📖 MySQL基础与进阶</h2><blockquote>
+<p>🎬 对应课程:数据库阶段(MySQL安装、库表操作、增删改查、连表、pymysql、事务、索引)</p>
+</blockquote>
+<h3 id="1-库表操作与常用数据类型"><a href="#1-库表操作与常用数据类型" class="headerlink" title="1. 库表操作与常用数据类型"></a>1. 库表操作与常用数据类型</h3><blockquote>
+<p>🎬 对应视频:P527~P528、P538、P550</p>
+</blockquote>
+<p><strong>用 <code>create/drop/alter</code> 管理库和表;字符串</strong>定长用 char、变长用 varchar**,区别是空间和速度的取舍。**</p>
+<ul>
+<li>库操作:<code>create database db1 charset utf8mb4;</code>、<code>drop database db1;</code>、<code>show databases;</code>、<code>use db1;</code></li>
+<li>表操作:<code>create table t(id int, name varchar(16));</code>、<code>drop table t;</code>、<code>show tables;</code>、<code>desc t;</code> 查看表结构</li>
+<li>改表:<code>alter table t add 列名 类型;</code> 加列、<code>alter table t drop 列名;</code> 删列、<code>alter table t modify 列名 新类型;</code> 改类型</li>
+<li>常用类型:<code>int</code>&#x2F;<code>bigint</code> 整数、<code>float</code>&#x2F;<code>double</code> 小数、<code>datetime</code> 日期时间、<code>enum(&#39;男&#39;,&#39;女&#39;)</code> 枚举单选</li>
+<li><strong>varchar 与 char</strong>:char(10) 定长,不足 10 个字符用空格补齐,存取快但费空间;varchar(10) 变长,按实际长度存,省空间、稍慢;括号里的 n 都是<strong>字符数</strong>不是字节数</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> database school charset utf8mb4;</span><br><span class="line"><span class="keyword">create table</span> student(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary key</span> auto_increment,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">16</span>),</span><br><span class="line">    gender enum(<span class="string">&#x27;男&#x27;</span>,<span class="string">&#x27;女&#x27;</span>),</span><br><span class="line">    birthday datetime</span><br><span class="line">);</span><br><span class="line"><span class="keyword">alter table</span> student <span class="keyword">add</span> age <span class="type">int</span>;</span><br><span class="line"><span class="keyword">desc</span> student;</span><br></pre></td></tr></table></figure>
+
+<p><em>建库建表与修改表结构</em></p>
+<h3 id="2-约束与外键级联"><a href="#2-约束与外键级联" class="headerlink" title="2. 约束与外键级联"></a>2. 约束与外键级联</h3><blockquote>
+<p>🎬 对应视频:P544~P549</p>
+</blockquote>
+<p><strong>约束限制列的取值:<strong>primary key 唯一且非空</strong>、<code>auto_increment</code> 自增、<code>foreign key</code> 建立表间关系并可级联更新删除。</strong></p>
+<ul>
+<li><code>primary key</code> 主键:唯一 + 非空,一张表只能有一个,常和 <code>auto_increment</code>(自增)搭配使用</li>
+<li><code>not null</code> 非空、<code>unique</code> 唯一(允许 NULL)、<code>default 值</code> 默认值,建表时写在字段类型后面</li>
+<li><code>foreign key(从表列) references 主表(列)</code>:从表该列的值必须能在主表里找到,否则插入报错</li>
+<li>级联:<code>on update cascade</code> 主表更新、从表跟着更新;<code>on delete cascade</code> 主表删除、从表对应行<strong>一起删除</strong>(会连带删数据,慎用)</li>
+<li>表关系:一对多在“多”的一方建外键;多对多建一张中间表,拆成两个一对多</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> dept(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary key</span> auto_increment,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">16</span>) <span class="keyword">not null</span> <span class="keyword">unique</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">create table</span> emp(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary key</span> auto_increment,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">16</span>) <span class="keyword">not null</span>,</span><br><span class="line">    salary <span class="type">int</span> <span class="keyword">default</span> <span class="number">0</span>,</span><br><span class="line">    dept_id <span class="type">int</span>,</span><br><span class="line">    <span class="keyword">foreign key</span>(dept_id) <span class="keyword">references</span> dept(id)</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">update</span> cascade <span class="keyword">on</span> <span class="keyword">delete</span> cascade</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><em>外键与级联更新删除</em></p>
+<h3 id="3-增删改查与查询执行顺序"><a href="#3-增删改查与查询执行顺序" class="headerlink" title="3. 增删改查与查询执行顺序"></a>3. 增删改查与查询执行顺序</h3><blockquote>
+<p>🎬 对应视频:P529、P556~P562</p>
+</blockquote>
+<p><strong>增删改记牢 <code>insert/update/delete</code>;select 的关键字按 <strong>from → where → group by → having → select → distinct → order by → limit</strong> 的顺序执行。</strong></p>
+<ul>
+<li>增:<code>insert into t(列1,列2) values(值1,值2),(值1,值2);</code> 一次可以插多行</li>
+<li>改&#x2F;删:<code>update t set 列=值 where 条件;</code>、<code>delete from t where 条件;</code>——<strong>不写 where 会波及全表</strong>,动手前先想清楚</li>
+<li>执行顺序:<strong>from → where → group by → having → select → distinct → order by → limit</strong>;where 在分组前执行,所以 where 里不能用聚合函数,也不能用 select 起的别名</li>
+<li>聚合函数:<code>count(*)</code> 数行数、<code>count(列)</code> 不统计该列为 NULL 的行,还有 <code>sum/avg/max/min</code></li>
+<li><code>group by</code> 分组后,select 里只能出现<strong>分组字段和聚合函数</strong>;过滤组要用 <code>having</code>(where 过滤的是行)</li>
+<li><code>distinct</code> 去重、<code>order by 列 desc/asc</code> 排序、<code>limit 5</code> 取前 5 条、<code>limit 5,5</code> 跳过 5 条再取 5 条(分页)</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> gender, <span class="built_in">count</span>(<span class="operator">*</span>) <span class="keyword">as</span> cnt, <span class="built_in">avg</span>(salary) <span class="keyword">as</span> avg_sal</span><br><span class="line"><span class="keyword">from</span> emp</span><br><span class="line"><span class="keyword">where</span> salary <span class="operator">&gt;</span> <span class="number">1000</span>      <span class="comment">-- 分组前过滤行</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> gender</span><br><span class="line"><span class="keyword">having</span> <span class="built_in">count</span>(<span class="operator">*</span>) <span class="operator">&gt;=</span> <span class="number">2</span>     <span class="comment">-- 分组后过滤组</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> cnt <span class="keyword">desc</span>        <span class="comment">-- 排序(可以用别名)</span></span><br><span class="line">limit <span class="number">2</span>;                 <span class="comment">-- 只取前 2 条</span></span><br></pre></td></tr></table></figure>
+
+<p><em>分组聚合完整示例</em></p>
+<h3 id="4-多表连接与子查询"><a href="#4-多表连接与子查询" class="headerlink" title="4. 多表连接与子查询"></a>4. 多表连接与子查询</h3><blockquote>
+<p>🎬 对应视频:P564~P565</p>
+</blockquote>
+<p><strong><strong>inner join 只留两表都匹配的行,left join 保留左表全部</strong>;右表匹配不上的列补 NULL;子查询把一条 select 的结果当条件用。</strong></p>
+<ul>
+<li>不带连接条件的多表查询是<strong>笛卡尔积</strong>(两表行数相乘),连表必须写 <code>on</code> 连接条件</li>
+<li><code>inner join ... on</code>:只有两表都匹配上的行才保留</li>
+<li><code>left join ... on</code>:左表全部保留,右表匹配不上的位置补 <strong>NULL</strong>;<code>right join</code> 与之相反</li>
+<li>经典题:找没有部门的员工 → <code>select e.* from emp e left join dept d on e.dept_id=d.id where d.id is null;</code></li>
+<li>子查询:内层 select 的结果给外层当条件,如 <code>where dept_id in (select id from dept where name=&#39;技术部&#39;)</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> e.name <span class="keyword">as</span> emp_name, d.name <span class="keyword">as</span> dept_name</span><br><span class="line"><span class="keyword">from</span> emp <span class="keyword">as</span> e</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">join</span> dept <span class="keyword">as</span> d <span class="keyword">on</span> e.dept_id <span class="operator">=</span> d.id;</span><br><span class="line"><span class="comment">-- 左表 emp 全部保留,没有部门的员工 dept_name 显示 NULL</span></span><br></pre></td></tr></table></figure>
+
+<p><em>left join 连表示例</em></p>
+<h3 id="5-pymysql-与事务"><a href="#5-pymysql-与事务" class="headerlink" title="5. pymysql 与事务"></a>5. pymysql 与事务</h3><blockquote>
+<p>🎬 对应视频:P571~P572、P575、P579</p>
+</blockquote>
+<p><strong>pymysql 增删改后</strong>必须 <code>conn.commit()</code>** 才生效;查询参数用 <strong><code>%s</code> 占位传参</strong>防 SQL 注入;事务靠 <code>commit / rollback</code> 控制。**</p>
+<ul>
+<li>连接:<code>pymysql.connect(host=..., port=3306, user=..., password=..., database=..., charset=&#39;utf8mb4&#39;)</code>,记得指定编码</li>
+<li><code>cursor = conn.cursor()</code>,<code>cursor.execute(sql, 参数)</code> 返回受影响行数;<code>fetchone()</code> 取一条、<code>fetchall()</code> 取全部(元组套元组)、<code>fetchmany(n)</code> 取 n 条</li>
+<li><strong>SQL 注入</strong>:把用户输入直接拼进 SQL,可被 <code>&#39; or 1=1 --</code> 之类的输入绕过登录;正确做法是 <code>execute(sql, [参数])</code> 传参,pymysql 会自动转义</li>
+<li>增删改必须 <code>conn.commit()</code> 才真正写入(pymysql 默认开启事务);查询语句不需要 commit</li>
+<li>事务 <strong>ACID</strong>:原子性(要么全成功要么全失败)、一致性、隔离性、持久性;<code>conn.rollback()</code> 可以撤销尚未提交的修改</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line"></span><br><span class="line">conn = pymysql.connect(host=<span class="string">&quot;127.0.0.1&quot;</span>, port=<span class="number">3306</span>,</span><br><span class="line">                       user=<span class="string">&quot;root&quot;</span>, password=<span class="string">&quot;123456&quot;</span>,</span><br><span class="line">                       database=<span class="string">&quot;school&quot;</span>, charset=<span class="string">&quot;utf8mb4&quot;</span>)</span><br><span class="line">cursor = conn.cursor()</span><br><span class="line"></span><br><span class="line"><span class="comment"># ✅ 参数化传参,pymysql 会转义,防 SQL 注入</span></span><br><span class="line">name = <span class="string">&quot;&#x27; or 1=1 --&quot;</span></span><br><span class="line">cursor.execute(<span class="string">&quot;select * from user where name=%s and pwd=%s&quot;</span>, [name, <span class="string">&quot;123&quot;</span>])</span><br><span class="line"><span class="built_in">print</span>(cursor.fetchall())</span><br><span class="line"></span><br><span class="line"><span class="comment"># ❌ 危险写法:把用户输入直接拼进 SQL</span></span><br><span class="line"><span class="comment"># sql = &quot;select * from user where name=&#x27;%s&#x27; and pwd=&#x27;%s&#x27;&quot; % (name, pwd)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 增删改必须 commit 才真正写入</span></span><br><span class="line">cursor.execute(<span class="string">&quot;update user set age=%s where id=%s&quot;</span>, [<span class="number">20</span>, <span class="number">1</span>])</span><br><span class="line">conn.commit()</span><br><span class="line">cursor.close()</span><br><span class="line">conn.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>pymysql 参数化与提交</em></p>
+<h3 id="6-索引-原理、最左前缀与失效"><a href="#6-索引-原理、最左前缀与失效" class="headerlink" title="6. 索引:原理、最左前缀与失效"></a>6. 索引:原理、最左前缀与失效</h3><blockquote>
+<p>🎬 对应视频:P583</p>
+</blockquote>
+<p><strong>索引是</strong>用空间换时间<strong>的有序数据结构,InnoDB 用 <strong>B+树</strong>;联合索引遵循</strong>最左前缀原则**,对列做运算、<code>like &#39;%x&#39;</code> 会让索引失效。**</p>
+<ul>
+<li>常见索引:主键索引(建表自带)、唯一索引、普通索引、联合索引(多列合建)</li>
+<li><code>create index idx_name on emp(name);</code> 建索引、<code>show index from emp;</code> 查看已有索引</li>
+<li><strong>B+树</strong>:非叶子节点只存索引,数据全部在叶子节点且叶子节点之间有链表相连;树很矮,磁盘 IO 次数少,所以查询快</li>
+<li><strong>最左前缀原则</strong>:联合索引 (a,b,c) 必须从 a 开始连续命中才走索引:<code>where a=1 and b=2</code> ✅,<code>where b=2</code> ❌</li>
+<li>索引失效场景:对索引列做<strong>运算或函数</strong>(<code>where id+1=10</code>)、like <strong>以 % 开头</strong>(<code>like &#39;%x&#39;</code>)、<strong>类型不匹配</strong>(字符串列传数字)等</li>
+<li>索引不是越多越好:占磁盘空间,而且每次增删改都要维护索引,写入会变慢</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index idx_salary <span class="keyword">on</span> emp(salary);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> index idx_name <span class="keyword">on</span> emp(name);</span><br><span class="line"><span class="keyword">create</span> index idx_name_salary <span class="keyword">on</span> emp(name, salary);  <span class="comment">-- 联合索引</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- ✅ 从最左列 name 开始,能走索引</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> name<span class="operator">=</span><span class="string">&#x27;alex&#x27;</span> <span class="keyword">and</span> salary <span class="operator">&gt;</span> <span class="number">3000</span>;</span><br><span class="line"><span class="comment">-- ❌ 对列做运算,失效</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> salary <span class="operator">+</span> <span class="number">1</span> <span class="operator">&gt;</span> <span class="number">3000</span>;</span><br><span class="line"><span class="comment">-- ❌ like 以 % 开头,失效</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">&#x27;%x&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><em>索引创建与失效场景</em></p>
+<h3 id="7-存储引擎-InnoDB-与-MyISAM"><a href="#7-存储引擎-InnoDB-与-MyISAM" class="headerlink" title="7. 存储引擎:InnoDB 与 MyISAM"></a>7. 存储引擎:InnoDB 与 MyISAM</h3><blockquote>
+<p>🎬 对应视频:P533</p>
+</blockquote>
+<p><strong>存储引擎决定表的存取方式:<strong>InnoDB 支持事务、行级锁、外键,5.5 起是默认引擎;MyISAM 不支持事务、只有表级锁</strong>,胜在读快、文件小。</strong></p>
+<ul>
+<li>存储引擎是’表数据的存取实现’,建表时按表指定:<code>create table t(id int) engine=InnoDB;</code>;<code>show engines;</code> 查看全部;<strong>MySQL 5.5 起默认 InnoDB</strong></li>
+<li>InnoDB:支持<strong>事务</strong>、<strong>行级锁</strong>(并发写不互相挡)、外键,崩溃后可恢复,适合订单、账户等核心表;5.x 下一张表对应 .frm(表结构)+ .ibd(数据+索引)两个文件</li>
+<li>MyISAM:不支持事务和外键,只到<strong>表级锁</strong>(一人写、全表等),但结构简单、纯读速度快,适合读多写少的场景;一张表对应 .frm(结构)&#x2F;.MYD(数据)&#x2F;.MYI(索引)三个文件</li>
+<li><code>show create table t\G</code> 能看到表的引擎和字符集;<code>alter table t engine=MyISAM;</code> 可以切换引擎(会重建表,大表慎用)</li>
+<li>一句话选型:要事务、要高并发写 → InnoDB;纯读、兼容老系统 → MyISAM;新项目无脑 InnoDB</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> engines;                          <span class="comment">-- 查看支持的存储引擎</span></span><br><span class="line"><span class="keyword">create table</span> t1(id <span class="type">int</span>) engine<span class="operator">=</span>InnoDB; <span class="comment">-- 默认:事务/行锁/外键</span></span><br><span class="line"><span class="keyword">create table</span> t2(id <span class="type">int</span>) engine<span class="operator">=</span>MyISAM; <span class="comment">-- 无事务:表级锁</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">create table</span> t1;                  <span class="comment">-- 查看引擎与字符集</span></span><br><span class="line"><span class="keyword">alter table</span> t2 engine<span class="operator">=</span>InnoDB;          <span class="comment">-- 修改存储引擎</span></span><br></pre></td></tr></table></figure>
+
+<p><em>存储引擎的查看与指定</em></p>
+<h3 id="8-建表完整语法与字段类型详解"><a href="#8-建表完整语法与字段类型详解" class="headerlink" title="8. 建表完整语法与字段类型详解"></a>8. 建表完整语法与字段类型详解</h3><blockquote>
+<p>🎬 对应视频:P534~P540</p>
+</blockquote>
+<p><strong>建表语法 <code>create table 表名(字段 类型[(宽度)] 约束,...) charset=xx engine=xx;</code>——</strong>整型宽度只管显示、金额用 decimal、常用 datetime、enum 单选 set 多选<strong>。</strong></p>
+<ul>
+<li>完整语法:<code>create table 表名(字段名 类型[(宽度)] [约束...], ...) charset=utf8mb4 engine=InnoDB;</code>;宽度可省略,约束可以叠加多个</li>
+<li>整型(tinyint&#x2F;int&#x2F;bigint):<strong>宽度只是显示宽度</strong>,配合 zerofill 不足位左补 0,不影响能存的数值范围;<code>unsigned</code> 无符号、范围翻倍(tinyint:-128<del>127 → 0</del>255)</li>
+<li>浮点:float&#x2F;double 是近似值、有精度误差;<strong>decimal(m,d) 是定点小数</strong>(m 总位数、d 小数位)没有误差,<strong>金额字段必用</strong>,如 decimal(8,2)</li>
+<li>日期时间:date 只有日期、time 只有时间、<strong>datetime 年月日时分秒(范围到 9999 年,最常用)</strong>;timestamp 也带时间但受时区影响、上限 2038 年</li>
+<li>枚举与集合:<code>enum(&#39;男&#39;,&#39;女&#39;)</code> <strong>单选</strong>,只能取列表中的值;<code>set(&#39;唱&#39;,&#39;跳&#39;,&#39;rap&#39;)</code> <strong>多选</strong>,存 ‘唱,rap’ 这样的逗号组合</li>
+<li>严格模式:5.7+ 默认开启,插入超长字符串、超范围数字、非法枚举值会<strong>直接报错</strong>;非严格模式则悄悄截断或改成最接近的值、埋下脏数据;<code>show variables like &#39;%sql_mode%&#39;;</code> 查看</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> t(</span><br><span class="line">    id <span class="type">int</span> unsigned auto_increment <span class="keyword">primary key</span>,</span><br><span class="line">    sno <span class="type">int</span>(<span class="number">6</span>) zerofill,             <span class="comment">-- 显示宽度:42 存成 000042</span></span><br><span class="line">    price <span class="type">decimal</span>(<span class="number">8</span>,<span class="number">2</span>) <span class="keyword">not null</span>,     <span class="comment">-- 金额:定点无误差</span></span><br><span class="line">    birth <span class="type">date</span>,                      <span class="comment">-- 只有日期</span></span><br><span class="line">    login_at datetime,               <span class="comment">-- 年月日时分秒</span></span><br><span class="line">    gender enum(<span class="string">&#x27;男&#x27;</span>,<span class="string">&#x27;女&#x27;</span>) <span class="keyword">default</span> <span class="string">&#x27;男&#x27;</span>,</span><br><span class="line">    hobbies <span class="keyword">set</span>(<span class="string">&#x27;篮球&#x27;</span>,<span class="string">&#x27;足球&#x27;</span>,<span class="string">&#x27;音乐&#x27;</span>)   <span class="comment">-- 多选:&#x27;篮球,音乐&#x27;</span></span><br><span class="line">) charset<span class="operator">=</span>utf8mb4 engine<span class="operator">=</span>InnoDB;</span><br></pre></td></tr></table></figure>
+
+<p><em>建表完整语法与类型综合示例</em></p>
+<h3 id="9-修改表进阶与复制表"><a href="#9-修改表进阶与复制表" class="headerlink" title="9. 修改表进阶与复制表"></a>9. 修改表进阶与复制表</h3><blockquote>
+<p>🎬 对应视频:P550~P551</p>
+</blockquote>
+<p><strong>改表:<code>rename</code> 改表名、<code>change</code> 改列名、<code>add ... after/first</code> 控制位置;复制表:</strong><code>like</code> 只复制结构(含主键索引)、<code>select *</code> 连数据复制但不带主键索引<strong>。</strong></p>
+<ul>
+<li>改表名:<code>alter table t rename to t2;</code>;改列名要带新类型:<code>alter table t change 旧名 新名 类型;</code>——<strong>change 改名,modify 只改类型不改名</strong></li>
+<li>控制新列位置:<code>alter table t add age int after name;</code> 加在 name 后面,<code>add age int first;</code> 放到第一列</li>
+<li>复制结构:<code>create table t2 like t;</code> 得到一张<strong>空表</strong>,但字段类型、主键、索引、自增等完整结构都会复制过来</li>
+<li>复制数据:<code>create table t2 as select * from t;</code> <strong>连数据一起复制</strong>,但只有字段和默认值,<strong>主键、索引不会带过去</strong></li>
+<li>实用组合:想’结构+数据’都要,先 <code>like</code> 建出结构,再 <code>insert into t2 select * from t;</code> 灌数据</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter table</span> stu rename <span class="keyword">to</span> student;                <span class="comment">-- 改表名</span></span><br><span class="line"><span class="keyword">alter table</span> student change name sname <span class="type">varchar</span>(<span class="number">16</span>); <span class="comment">-- 改列名</span></span><br><span class="line"><span class="keyword">alter table</span> student <span class="keyword">add</span> tel <span class="type">char</span>(<span class="number">11</span>) after sname;  <span class="comment">-- 指定新列位置</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">create table</span> stu_bak <span class="keyword">like</span> student;                 <span class="comment">-- 只复制结构(空表)</span></span><br><span class="line"><span class="keyword">create table</span> stu_copy <span class="keyword">as</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;    <span class="comment">-- 结构+数据,但无主键索引</span></span><br><span class="line"><span class="keyword">insert into</span> stu_bak <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;         <span class="comment">-- 往空结构里灌数据</span></span><br></pre></td></tr></table></figure>
+
+<p><em>修改表与两种复制方式</em></p>
+<h3 id="10-SQL-查询练习思路-拆题五步法"><a href="#10-SQL-查询练习思路-拆题五步法" class="headerlink" title="10. SQL 查询练习思路:拆题五步法"></a>10. SQL 查询练习思路:拆题五步法</h3><blockquote>
+<p>🎬 对应视频:P554~P555、P570</p>
+</blockquote>
+<p><strong>复杂查询别硬写,按 <strong>‘选表 → 过滤 → 分组聚合 → 连接&#x2F;子查询 → 排序分页’</strong> 拆步骤;先想清楚结果长什么样,再倒推 SQL。</strong></p>
+<ul>
+<li>第 1 步选表:结果里需要的字段涉及哪几张表;第 2 步过滤:哪些行不要(写 where)——最好先在纸上画出’最终结果有几列、大概几行’</li>
+<li>题干出现’每个&#x2F;各&#x2F;按…统计’→ 一定 group by;出现’最高&#x2F;平均&#x2F;总数’→ 用聚合函数;对’组’再筛选(如人数超过 2 的组)→ 用 having</li>
+<li>涉及两张表 → 选 join 类型:两表都要有效用 inner;要保留某一方全量(典型:找’没有xx’的记录)用 left join + <code>where 右表.列 is null</code></li>
+<li>连表还是子查询:<strong>结果要展示另一张表的列 → 连表;只用另一张表的值当条件 → 子查询</strong></li>
+<li>收尾三件套:distinct 去重、order by 排序、limit 分页;写完按执行顺序自检:from → where → group by → having → select → order by → limit</li>
+<li>验算技巧:拿一两个具体值代入走一遍(如’假如 gender&#x3D;男’),看每一步结果对不对;复杂题先把内层子查询单独跑通,再套外层</li>
+</ul>
+<h3 id="11-数据库由来、重要概念与-MySQL-安装管理"><a href="#11-数据库由来、重要概念与-MySQL-安装管理" class="headerlink" title="11. 数据库由来、重要概念与 MySQL 安装管理"></a>11. 数据库由来、重要概念与 MySQL 安装管理</h3><blockquote>
+<p>🎬 对应视频:P517~P526</p>
+</blockquote>
+<p><strong>文件存数据的种种不便催生了</strong>数据库管理系统**;MySQL 是 <strong>C&#x2F;S 架构</strong>——先启动服务端 mysqld,再用客户端 mysql 命令连接;忘记密码可以用 <code>--skip-grant-tables</code> 跳过授权表免密进入后重置。**</p>
+<ul>
+<li>为什么需要数据库:全用文件保存数据的弊端——路径不统一、格式五花八门、多程序同时读写容易冲突也不安全,于是出现了统一管理数据的数据库管理系统(DBMS)</li>
+<li>SQL(结构化查询语言)是操作关系型数据库的<strong>通用语言</strong>,MySQL、Oracle 等都遵循它;MySQL 采用 C&#x2F;S 架构:服务端 <strong>mysqld</strong> 真正管理数据,客户端 <strong>mysql</strong> 负责发指令</li>
+<li>重要概念对照:database(库)≈ 文件夹、table(表)≈ Excel 文件、row(记录)≈ 一行数据、column(字段)≈ 一列;库下建表、表里存记录</li>
+<li>连接服务端:<code>mysql -h 127.0.0.1 -P 3306 -u root -p</code>(本机可省略 -h;引号里的密码回车后再输入)</li>
+<li>Windows 服务化:把 bin 目录加入环境变量后,<code>mysqld --install</code> 注册系统服务、<code>net start mysql</code> 启动、<code>net stop mysql</code> 停止,不必每次手动跑 mysqld</li>
+<li>修改密码:知道旧密码时用 <code>set password = password(&#39;新密码&#39;);</code>(8.0 用 <code>alter user &#39;root&#39;@&#39;localhost&#39; identified by &#39;新密码&#39;;</code>)</li>
+<li><strong>忘记密码</strong>:先以 <code>mysqld --skip-grant-tables</code> 启动(跳过授权表、免密),连上后 update mysql.user 表重置密码,再 <code>flush privileges;</code> 生效</li>
+<li>配置文件 my.ini(Windows)&#x2F; my.cnf(Linux):<code>[mysqld]</code> 下是服务端配置、<code>[client]</code> 下是客户端配置,常用来统一字符集(如 utf8mb4),改完要重启服务端才生效</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 忘记 root 密码:先 mysqld --skip-grant-tables 启动服务端,免密登录后执行</span></span><br><span class="line"><span class="comment">-- MySQL 5.7 写法(5.6 的字段名是 password,8.0 用 alter user)</span></span><br><span class="line"><span class="keyword">update</span> mysql.user <span class="keyword">set</span> authentication_string<span class="operator">=</span>password(<span class="string">&#x27;newpwd123&#x27;</span>)</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">user</span><span class="operator">=</span><span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">flush privileges;   <span class="comment">-- 刷新授权,让新密码立即生效</span></span><br></pre></td></tr></table></figure>
+
+<p><em>跳过授权表重置密码</em></p>
+<h3 id="12-where-进阶-正则匹配-regexp"><a href="#12-where-进阶-正则匹配-regexp" class="headerlink" title="12. where 进阶:正则匹配 regexp"></a>12. where 进阶:正则匹配 regexp</h3><blockquote>
+<p>🎬 对应视频:P563</p>
+</blockquote>
+<p><strong>MySQL 支持 <code>where 列 regexp &#39;模式&#39;</code> 做正则匹配:<code>^</code> 开头、<code>$</code> 结尾、<code>.</code> 任意一个字符、<code>[abc]</code> 取其一;比 like 的 % _ 更灵活。</strong></p>
+<ul>
+<li><code>where name regexp &#39;^a&#39;</code>:匹配以 a 开头的值;like ‘a%’ 也能做前后缀,但复杂模式(开头+中间+结尾组合)用 regexp 更直观</li>
+<li>常用符号:<code>^</code> 开头、<code>$</code> 结尾、<code>.</code> 任意一个字符、<code>[abc]</code> 之中的一个、<code>[a-z]</code> 范围、<code>*</code> 前面的字符出现 0 次或多次、<code>|</code> 或</li>
+<li><code>select &#39;alex&#39; regexp &#39;^a&#39;;</code> 直接返回 1(匹配)&#x2F;0(不匹配),写业务 SQL 前可以先用 select 验证模式</li>
+<li>regexp 默认<strong>不区分大小写</strong>,要区分大小写写成 <code>regexp binary &#39;^A&#39;</code></li>
+<li>选型记忆:简单包含&#x2F;前后缀用 like(<code>&#39;%x%&#39;</code>),有结构规则的匹配(如’以 a 开头以 n 结尾’)用 regexp</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="string">&#x27;alex&#x27;</span> regexp <span class="string">&#x27;^a&#x27;</span>;          <span class="comment">-- 1:以 a 开头</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;alex&#x27;</span> regexp <span class="string">&#x27;^(a|b)&#x27;</span>;      <span class="comment">-- 1:以 a 或 b 开头</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;alex&#x27;</span> regexp <span class="string">&#x27;^a.l$&#x27;</span>;       <span class="comment">-- 0:模式只匹配 3 个字符,alex 是 4 个</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> name regexp <span class="string">&#x27;^a.*n$&#x27;</span>;  <span class="comment">-- 以 a 开头、n 结尾的员工</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> name <span class="keyword">like</span> <span class="string">&#x27;%x%&#x27;</span>;       <span class="comment">-- 等价的简单写法:包含 x</span></span><br></pre></td></tr></table></figure>
+
+<p><em>regexp 正则匹配示例</em></p>
+<h3 id="13-navicat-数据库图形化管理工具"><a href="#13-navicat-数据库图形化管理工具" class="headerlink" title="13. navicat:数据库图形化管理工具"></a>13. navicat:数据库图形化管理工具</h3><blockquote>
+<p>🎬 对应视频:P569</p>
+</blockquote>
+<p><strong>navicat 是最常用的 MySQL 图形化客户端:建连接后</strong>点鼠标就能建库建表改数据**,还能可视化写查询、导出&#x2F;导入 SQL 文件;学习阶段建议先手写 SQL,再用工具核对。**</p>
+<ul>
+<li>navicat 是跨平台的数据库图形化客户端(收费软件,同类还有免费的 heidiSQL、datagrip 等);本质和命令行敲 mysql 一样,都是把 SQL 发给服务端执行</li>
+<li>新建连接:填主机(本机 127.0.0.1)、端口 3306、用户名 root 和密码,连上后左侧能看到服务器上所有的库</li>
+<li>常用操作:右键库 → 新建表&#x2F;设计表(可视化改字段、加索引,背后生成的就是 create&#x2F;alter 语句)、双击表直接编辑行数据、新建查询窗口写 SQL 执行</li>
+<li>「转储 SQL 文件」把库&#x2F;表的结构和数据导出成 .sql 文件(可当备份、发给别人);「运行 SQL 文件」把别人给的 .sql 导入到自己的库里</li>
+<li>设计表界面看到的对象 DDL(反引号包字段名、AUTO_INCREMENT、ENGINE&#x3D;InnoDB 等)就是 show create table 的内容,看懂它对理解建表语法很有帮助</li>
+<li>提醒:图形工具是为了提效,学习阶段要先把 SQL 手写熟练,别养成只会点鼠标的习惯</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- navicat「对象定义/DDL」里看到的,就是这类标准建表语句(show create table emp 的输出)</span></span><br><span class="line"><span class="comment">-- CREATE TABLE `emp` (</span></span><br><span class="line"><span class="comment">--   `id` int(11) NOT NULL AUTO_INCREMENT,</span></span><br><span class="line"><span class="comment">--   `name` varchar(16) DEFAULT NULL,</span></span><br><span class="line"><span class="comment">--   `dept_id` int(11) DEFAULT NULL,</span></span><br><span class="line"><span class="comment">--   PRIMARY KEY (`id`),</span></span><br><span class="line"><span class="comment">--   CONSTRAINT `emp_dept` FOREIGN KEY (dept_id) REFERENCES `dept` (id)</span></span><br><span class="line"><span class="comment">-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">create table</span> emp;</span><br></pre></td></tr></table></figure>
+
+<p><em>navicat 里看到的表 DDL</em></p>
+<h3 id="14-视图、触发器、存储过程、函数与流程控制"><a href="#14-视图、触发器、存储过程、函数与流程控制" class="headerlink" title="14. 视图、触发器、存储过程、函数与流程控制"></a>14. 视图、触发器、存储过程、函数与流程控制</h3><blockquote>
+<p>🎬 对应视频:P577<del>P578、P580</del>P582</p>
+</blockquote>
+<p><strong>视图是</strong>复用查询的虚拟表<strong>、触发器是对表做增删改时</strong>自动执行<strong>的钩子、存储过程把一段 SQL <strong>封装起来用 call 调用</strong>、流程控制(if&#x2F;while)写在它们的 begin…end 里;实际开发中这些常被程序代码替代,但要能讲清概念和写法。</strong></p>
+<ul>
+<li>视图:<code>create view 视图名 as select ...;</code> 把一条常用查询存成虚拟表,之后 <code>select * from 视图名</code> 直接查;真实数据仍在原表,<strong>改视图里的数据就是改原表</strong>;用途是复用与简化 SQL,但视图多了难维护,开发中不建议大量创建</li>
+<li>触发器:<code>create trigger 名 trigger时机( before/after 增/删/改 ) on 表 for each row begin ... end</code>;触发时机如 after insert(插入之后自动执行);<code>new.列</code> 引用新值、<code>old.列</code> 引用旧值,适合自动记日志;缺点是逻辑藏在数据库里、不好排查,实际项目用得少</li>
+<li>存储过程:<code>create procedure 名(in 参数 类型) begin ... end</code>,用 <code>call 名(实参)</code> 调用,相当于’存在数据库里的函数’;参数分 in(传入)&#x2F; out(传出)&#x2F; inout;好处是 SQL 复用、少网络往返,现在更多把这类逻辑写在程序&#x2F;ORM 里</li>
+<li>函数:内置函数在 select 里直接用——<code>now()</code> 当前时间、<code>date_format(now(), &#39;%Y-%m-%d&#39;)</code> 格式化日期、<code>concat(a,b)</code> 拼接字符串、<code>char_length()</code> 字符数与 <code>length()</code> 字节数;也可以自定义函数</li>
+<li>流程控制:<code>if 条件 then ... else ... end if</code>、<code>while ... do ... end while</code>、<code>repeat/loop</code> 等,写在存储过程、函数、触发器的 begin…end 内部使用</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 视图:把常用查询存成虚拟表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> v_emp_dept <span class="keyword">as</span></span><br><span class="line"><span class="keyword">select</span> e.name <span class="keyword">as</span> emp_name, d.name <span class="keyword">as</span> dept_name</span><br><span class="line"><span class="keyword">from</span> emp <span class="keyword">as</span> e <span class="keyword">left</span> <span class="keyword">join</span> dept <span class="keyword">as</span> d <span class="keyword">on</span> e.dept_id <span class="operator">=</span> d.id;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> v_emp_dept;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 触发器:往 emp 插入数据后,自动往日志表记一条</span></span><br><span class="line">delimiter <span class="operator">/</span><span class="operator">/</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">trigger</span> tri_emp_log after <span class="keyword">insert</span> <span class="keyword">on</span> emp</span><br><span class="line"><span class="keyword">for</span> <span class="keyword">each</span> <span class="type">row</span></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">insert into</span> emp_log(emp_id, action, at_time)</span><br><span class="line">    <span class="keyword">values</span> (new.id, <span class="string">&#x27;insert&#x27;</span>, now());</span><br><span class="line"><span class="keyword">end</span><span class="operator">/</span><span class="operator">/</span></span><br><span class="line">delimiter ;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 存储过程:封装一段 SQL,call 调用</span></span><br><span class="line">delimiter <span class="operator">/</span><span class="operator">/</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">procedure</span> p_top_emp(<span class="keyword">in</span> n <span class="type">int</span>)</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">select</span> name, salary <span class="keyword">from</span> emp <span class="keyword">order</span> <span class="keyword">by</span> salary <span class="keyword">desc</span> limit n;</span><br><span class="line"><span class="keyword">end</span><span class="operator">/</span><span class="operator">/</span></span><br><span class="line">delimiter ;</span><br><span class="line"><span class="keyword">call</span> p_top_emp(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+<p><em>视图&#x2F;触发器&#x2F;存储过程示例</em></p>
+<h2 id="📖-Redis-与-MongoDB"><a href="#📖-Redis-与-MongoDB" class="headerlink" title="📖 Redis 与 MongoDB"></a>📖 Redis 与 MongoDB</h2><blockquote>
+<p>🎬 对应课程:数据库阶段(Redis五大类型、MongoDB文档操作)</p>
+</blockquote>
+<h3 id="1-Redis-简介-为什么快"><a href="#1-Redis-简介-为什么快" class="headerlink" title="1. Redis 简介:为什么快"></a>1. Redis 简介:为什么快</h3><p><strong>Redis 是基于</strong>内存<strong>的 key-value 数据库,<strong>单线程</strong>执行命令,读写极快,最常用来做</strong>缓存<strong>。</strong></p>
+<ul>
+<li>Redis 是<strong>内存数据库</strong>,数据以 key-value 形式存储,最常用作缓存,也做计数器、排行榜等</li>
+<li><strong>单线程</strong>执行命令(6.0 后网络 IO 部分多线程,但命令执行仍是单线程),没有线程切换和锁竞争的开销</li>
+<li>为什么快:<strong>纯内存操作</strong> + 单线程无锁竞争 + IO 多路复用 + 高效的数据结构</li>
+<li>基础命令:<code>set name alex</code>、<code>get name</code>、<code>del name</code>;<code>keys *</code> 会遍历所有键,键多时会阻塞,生产环境慎用</li>
+<li>默认 16 个库(db0~db15),<code>select 0</code> 切换;value 有五大类型(见下一知识点)</li>
+</ul>
+<h3 id="2-五大类型与常用命令"><a href="#2-五大类型与常用命令" class="headerlink" title="2. 五大类型与常用命令"></a>2. 五大类型与常用命令</h3><p><strong>value 的五大类型:<strong>string、hash、list、set、zset</strong>;命令前缀有规律——h 开头是 hash,l 开头是 list,s 开头是 set,z 开头是 zset。</strong></p>
+<ul>
+<li><strong>string</strong>:最基础的类型,<code>set</code>&#x2F;<code>get</code>,<code>incr</code> 自增(做计数器)、<code>decr</code> 自减</li>
+<li><strong>hash</strong>:一个 key 存多个字段,像对象:<code>hset user:1 name alex</code>、<code>hget user:1 name</code>、<code>hgetall user:1</code></li>
+<li><strong>list</strong>:双向列表,<code>lpush</code> 左插 &#x2F; <code>rpush</code> 右插、<code>lrange key 0 -1</code> 取全部,可做简单队列</li>
+<li><strong>set</strong>:无序、<strong>元素不重复</strong>,<code>sadd</code> 添加、<code>smembers</code> 查看全部,天然去重</li>
+<li><strong>zset</strong>:带分数的有序集合,<code>zadd rank 100 alex</code>、<code>zrange rank 0 -1</code>,做<strong>排行榜</strong>首选</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> name alex          # string 写入</span><br><span class="line"><span class="keyword">get</span> name               # alex</span><br><span class="line">incr count             # string 自增(计数器)</span><br><span class="line">hset <span class="keyword">user</span>:<span class="number">1</span> name alex  # hash 写字段</span><br><span class="line">hget <span class="keyword">user</span>:<span class="number">1</span> name       # alex</span><br><span class="line">hgetall <span class="keyword">user</span>:<span class="number">1</span>         # 取整个对象</span><br><span class="line">lpush list1 a          # list 从左插</span><br><span class="line">rpush list1 b          # 从右插</span><br><span class="line">lrange list1 <span class="number">0</span> <span class="number">-1</span>      # 取全部</span><br><span class="line">sadd tags a b a        # <span class="keyword">set</span> 自动去重</span><br><span class="line">smembers tags          # 只剩 a、b</span><br><span class="line">zadd rank <span class="number">100</span> alex     # zset 带分数</span><br><span class="line">zrange rank <span class="number">0</span> <span class="number">-1</span>       # 排行榜取值</span><br></pre></td></tr></table></figure>
+
+<p><em>Redis 五大类型常用命令</em></p>
+<h3 id="3-过期时间与持久化"><a href="#3-过期时间与持久化" class="headerlink" title="3. 过期时间与持久化"></a>3. 过期时间与持久化</h3><p><strong><code>expire</code> 设过期秒数、<code>TTL</code> 查剩余时间;持久化两种方案:<strong>RDB 快照</strong>(快、可能丢数据)和 <strong>AOF 日志</strong>(全、文件大)。</strong></p>
+<ul>
+<li><code>expire key 60</code>:60 秒后自动删除;<code>ttl key</code> 查剩余秒数,<strong>-1 表示永不过期、-2 表示 key 不存在(或已过期)</strong></li>
+<li><code>persist key</code> 移除过期时间,变回永不过期</li>
+<li><strong>RDB(快照)</strong>:定时把整个内存数据 dump 成文件,文件小、恢复快,但<strong>最后一次快照之后的数据会丢</strong></li>
+<li><strong>AOF(日志)</strong>:每条写命令都追加记录进日志文件,丢数据少,但文件大、恢复慢</li>
+<li>两种方式可以同时开启;Redis 重启后靠持久化文件恢复内存数据</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> token abc123</span><br><span class="line">expire token <span class="number">60</span>    # <span class="number">60</span> 秒后自动删除</span><br><span class="line">ttl token          # 查剩余秒数</span><br><span class="line">persist token      # 取消过期时间</span><br></pre></td></tr></table></figure>
+
+<p><em>过期时间操作</em></p>
+<h3 id="4-python-操作-redis"><a href="#4-python-操作-redis" class="headerlink" title="4. python 操作 redis"></a>4. python 操作 redis</h3><p><strong>用 redis-py:<code>r = redis.Redis(host, port)</code>,<strong>方法名和命令同名</strong>(<code>r.set()</code>、<code>r.get()</code>),返回值默认是 <strong>bytes</strong>。</strong></p>
+<ul>
+<li>安装:<code>pip install redis</code>;连接:<code>r = redis.Redis(host=&#39;127.0.0.1&#39;, port=6379, db=0)</code></li>
+<li>方法与命令同名:<code>r.set(&#39;name&#39;,&#39;alex&#39;)</code>、<code>r.get(&#39;name&#39;)</code>、<code>r.incr(&#39;count&#39;)</code>、<code>r.expire(&#39;name&#39;, 60)</code></li>
+<li>默认返回 <strong>bytes</strong>(如 b’alex’),连接时加 <code>decode_responses=True</code> 直接得到字符串</li>
+<li>其他类型同理:<code>r.hset/hget/hgetall</code>、<code>r.lpush/r.lrange</code>、<code>r.sadd/smembers</code>、<code>r.zadd/zrange</code></li>
+<li>生产环境常用<strong>连接池</strong> <code>redis.ConnectionPool(...)</code> 复用连接,避免频繁建连</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"></span><br><span class="line"><span class="comment"># decode_responses=True:取出来直接是 str,否则是 bytes</span></span><br><span class="line">r = redis.Redis(host=<span class="string">&quot;127.0.0.1&quot;</span>, port=<span class="number">6379</span>, db=<span class="number">0</span>, decode_responses=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">r.<span class="built_in">set</span>(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;alex&quot;</span>)</span><br><span class="line">r.expire(<span class="string">&quot;name&quot;</span>, <span class="number">60</span>)              <span class="comment"># 60 秒过期</span></span><br><span class="line"><span class="built_in">print</span>(r.get(<span class="string">&quot;name&quot;</span>))              <span class="comment"># alex</span></span><br><span class="line"></span><br><span class="line">r.hset(<span class="string">&quot;user:1&quot;</span>, <span class="string">&quot;age&quot;</span>, <span class="number">18</span>)</span><br><span class="line"><span class="built_in">print</span>(r.hgetall(<span class="string">&quot;user:1&quot;</span>))        <span class="comment"># &#123;&#x27;age&#x27;: &#x27;18&#x27;&#125;</span></span><br><span class="line"></span><br><span class="line">r.zadd(<span class="string">&quot;rank&quot;</span>, &#123;<span class="string">&quot;alex&quot;</span>: <span class="number">100</span>, <span class="string">&quot;bob&quot;</span>: <span class="number">90</span>&#125;)</span><br><span class="line"><span class="built_in">print</span>(r.zrange(<span class="string">&quot;rank&quot;</span>, <span class="number">0</span>, -<span class="number">1</span>, withscores=<span class="literal">True</span>))</span><br></pre></td></tr></table></figure>
+
+<p><em>redis-py 基本操作</em></p>
+<h3 id="5-MongoDB-概念与-pymongo"><a href="#5-MongoDB-概念与-pymongo" class="headerlink" title="5. MongoDB 概念与 pymongo"></a>5. MongoDB 概念与 pymongo</h3><p><strong>MongoDB 是</strong>文档型<strong>数据库,结构为 <strong>database → collection → document</strong>,文档是 BSON 格式、自带唯一 <code>_id</code>,python 里用 <strong>pymongo</strong> 操作。</strong></p>
+<ul>
+<li>和 MySQL 对照:<strong>database 对应库、collection(集合)对应表、document(文档)对应行</strong>;文档格式是 BSON(二进制的 JSON)</li>
+<li>每条文档自动生成唯一的 <strong>_id</strong>(默认 ObjectId 类型),不用自己设计主键</li>
+<li>pymongo 三步:<code>client = MongoClient(host, 27017)</code> → <code>db = client[&#39;school&#39;]</code> → <code>col = db[&#39;student&#39;]</code></li>
+<li>增:<code>insert_one({})</code> &#x2F; <code>insert_many([{}, {}])</code>;查:<code>find_one({})</code> 返回一条文档、<code>find({})</code> 返回<strong>游标</strong>(可 for 遍历)</li>
+<li>条件用字典加操作符:<code>{&#39;age&#39;: {&#39;$gt&#39;: 18}}</code> 大于、<code>$gte</code> ≥、<code>$lt</code> &lt;、<code>$in</code> 在列表中</li>
+<li>改:<code>update_one(条件, {&#39;$set&#39;: {&#39;age&#39;: 20}})</code>;删:<code>delete_one(条件)</code> &#x2F; <code>delete_many(条件)</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pymongo <span class="keyword">import</span> MongoClient</span><br><span class="line"></span><br><span class="line">client = MongoClient(<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">27017</span>)</span><br><span class="line">col = client[<span class="string">&quot;school&quot;</span>][<span class="string">&quot;student&quot;</span>]     <span class="comment"># 库.集合</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 增</span></span><br><span class="line">col.insert_one(&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;alex&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">18</span>, <span class="string">&quot;gender&quot;</span>: <span class="string">&quot;男&quot;</span>&#125;)</span><br><span class="line"><span class="comment"># 查:find_one 一条,find 全部(游标,可 for 遍历)</span></span><br><span class="line"><span class="built_in">print</span>(col.find_one(&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;alex&quot;</span>&#125;))</span><br><span class="line"><span class="keyword">for</span> doc <span class="keyword">in</span> col.find(&#123;<span class="string">&quot;age&quot;</span>: &#123;<span class="string">&quot;$gt&quot;</span>: <span class="number">16</span>&#125;&#125;):</span><br><span class="line">    <span class="built_in">print</span>(doc)</span><br><span class="line"><span class="comment"># 改:$set 指定要修改的字段</span></span><br><span class="line">col.update_one(&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;alex&quot;</span>&#125;, &#123;<span class="string">&quot;$set&quot;</span>: &#123;<span class="string">&quot;age&quot;</span>: <span class="number">20</span>&#125;&#125;)</span><br><span class="line"><span class="comment"># 删</span></span><br><span class="line">col.delete_one(&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;alex&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><em>pymongo 增删改查</em></p>
+<h3 id="6-MySQL、Redis、MongoDB-选型对比"><a href="#6-MySQL、Redis、MongoDB-选型对比" class="headerlink" title="6. MySQL、Redis、MongoDB 选型对比"></a>6. MySQL、Redis、MongoDB 选型对比</h3><p>*<em><strong>MySQL 存核心数据(要事务、要持久),Redis 做缓存(要快、可过期),MongoDB 存灵活文档(字段多变)</strong>;三者互补,不是替代关系。</em>*</p>
+<ul>
+<li>MySQL:关系型,表结构固定,支持事务和多表连查,适合<strong>订单、账户、资金</strong>等核心数据</li>
+<li>Redis:内存 key-value,读写最快、可设过期,适合<strong>缓存、验证码、排行榜、计数器</strong></li>
+<li>MongoDB:文档型,BSON 结构灵活、无固定表结构,适合<strong>日志、评论、商品详情</strong>等字段不固定的数据</li>
+<li>典型架构:请求先查 Redis 缓存,没有再查 MySQL,查到后回写 Redis,减轻数据库压力</li>
+<li>一句话选型:<strong>要事务强一致找 MySQL,要速度找 Redis,要结构灵活找 MongoDB</strong></li>
+</ul>
+<h3 id="7-Redis-持久化细节-RDB-与-AOF-深入对比"><a href="#7-Redis-持久化细节-RDB-与-AOF-深入对比" class="headerlink" title="7. Redis 持久化细节:RDB 与 AOF 深入对比"></a>7. Redis 持久化细节:RDB 与 AOF 深入对比</h3><p><strong>RDB 靠 <strong>bgsave fork 子进程做全量快照</strong>,AOF 靠</strong>逐条追加写命令<strong>并按 <code>appendfsync</code> 策略刷盘,文件大了还有 <strong>AOF 重写</strong>;两者可同时开启。</strong></p>
+<ul>
+<li>RDB 的触发:配置 <code>save 900 1</code>(900 秒内至少 1 次修改就触发)、手动 <code>save</code>(<strong>阻塞主线程,生产禁用</strong>)与 <code>bgsave</code>(fork 子进程做快照,不阻塞)</li>
+<li>RDB 优:全量二进制文件紧凑、<strong>恢复最快</strong>;劣:两次快照之间的数据宕机就丢,不适合数据完整性要求高的场景</li>
+<li>AOF 刷盘策略 <code>appendfsync</code>:**always 每条命令都刷(最安全、最慢)<strong>、</strong>everysec 每秒刷一次(默认,最多丢约 1 秒)**、no 交给操作系统(最快、最不安全)</li>
+<li>AOF 文件越写越大 → <strong>AOF 重写</strong>:按当前内存数据生成最小命令集,<code>bgrewriteaof</code> 触发(同样 fork 子进程),重写期间新写入照常追加,不丢数据</li>
+<li><strong>Redis 4.0+ 支持混合持久化</strong>:AOF 重写时先写入 RDB 格式的全量数据、之后追加增量命令,兼顾恢复速度与数据安全</li>
+<li>选型:能容忍丢一点数据、追求恢复速度 → 只开 RDB;数据重要 → 开 AOF;生产环境一般<strong>两者同时开</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># redis.conf 关键配置</span><br><span class="line">save <span class="number">900</span> <span class="number">1</span>                # <span class="number">900</span> 秒内 <span class="number">1</span> 次修改触发 RDB</span><br><span class="line">save <span class="number">300</span> <span class="number">10</span>               # <span class="number">300</span> 秒内 <span class="number">10</span> 次修改触发 RDB</span><br><span class="line">appendonly yes            # 开启 AOF</span><br><span class="line">appendfsync everysec      # 每秒刷盘,最多丢约 <span class="number">1</span> 秒数据</span><br><span class="line"></span><br><span class="line"># 命令行手动触发</span><br><span class="line"># bgsave          后台做 RDB 快照,不阻塞</span><br><span class="line"># bgrewriteaof    后台重写 AOF,压缩文件</span><br></pre></td></tr></table></figure>
+
+<p><em>持久化相关配置与命令</em></p>
+<h3 id="8-Redis-事务与管道-pipeline"><a href="#8-Redis-事务与管道-pipeline" class="headerlink" title="8. Redis 事务与管道 pipeline"></a>8. Redis 事务与管道 pipeline</h3><p><strong><code>multi → 命令入队 → exec</code> 保证命令</strong>连续执行不被插队**,但不保证原子性、不回滚;<strong>pipeline 把多条命令攒起来一次发送</strong>,省掉逐条往返的网络开销。**</p>
+<ul>
+<li>事务三步:<code>multi</code> 开启 → 后续命令只入队不执行 → <code>exec</code> 一次性顺序执行;<code>discard</code> 可中途放弃整个队列</li>
+<li>两类错误要分清:<strong>入队时</strong>就发现命令不存在&#x2F;参数错 → exec 时<strong>整个事务都不执行</strong>;<strong>执行时</strong>某条命令操作类型不对(如对 string 做 lpush)→ 只有它失败,<strong>其他命令照常执行、不回滚</strong></li>
+<li>所以 Redis 事务<strong>不保证原子性</strong>、没有回滚;’要么全成功要么全失败’的强一致需求要靠业务层或 Lua 脚本兜底</li>
+<li><code>watch key</code> 是乐观锁:exec 之前 key 被别的客户端改过,事务自动放弃执行,适合’先查再改’的竞态场景</li>
+<li><strong>管道 pipeline</strong>:客户端把一批命令一次性发给服务端、再统一收结果,把 N 次网络往返(RTT)压成 1 次,批量写入性能大幅提升;它只负责’攒着发’,和事务的’不被插队’是两回事,redis-py 的 <code>pipeline()</code> 默认连事务一起打包</li>
+<li>注意:事务&#x2F;管道都<strong>不能替代锁</strong>;高并发下’读-改-写’的竞态要用 watch 或 Lua 保证</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"></span><br><span class="line">r = redis.Redis(decode_responses=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 管道:一批命令一次发送、统一收结果</span></span><br><span class="line">pipe = r.pipeline()</span><br><span class="line">pipe.<span class="built_in">set</span>(<span class="string">&quot;k1&quot;</span>, <span class="string">&quot;v1&quot;</span>)          <span class="comment"># 命令先在客户端排队</span></span><br><span class="line">pipe.incr(<span class="string">&quot;num&quot;</span>)              <span class="comment"># num 不存在,自增后为 1</span></span><br><span class="line">pipe.hset(<span class="string">&quot;user:1&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;alex&quot;</span>)</span><br><span class="line">ret = pipe.execute()          <span class="comment"># 一次提交,返回每条命令的结果列表</span></span><br><span class="line"><span class="built_in">print</span>(ret)                    <span class="comment"># [True, 1, 1]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># transaction=False 就是纯管道:只省网络开销,不打包 MULTI/EXEC</span></span><br><span class="line">fast = r.pipeline(transaction=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p><em>redis-py pipeline 批量提交</em></p>
+<h3 id="9-MongoDB-聚合管道-aggregate-简介"><a href="#9-MongoDB-聚合管道-aggregate-简介" class="headerlink" title="9. MongoDB 聚合管道 aggregate 简介"></a>9. MongoDB 聚合管道 aggregate 简介</h3><p><strong>aggregate 让文档流过一串 stage:</strong><code>$match</code> 过滤 → <code>$group</code> 分组统计 → <code>$sort</code>&#x2F;<code>$limit</code> 收尾**,与 SQL 的 where、group by、order by 一一对应。**</p>
+<ul>
+<li>聚合管道:上一个阶段的输出就是下一个阶段的输入,像流水线;<code>col.aggregate([...阶段列表...])</code> 返回游标</li>
+<li><code>$match</code>:过滤文档,条件写法与 find 完全一样(<strong>先 match 再 group,能少处理大量数据</strong>)</li>
+<li><code>$group</code>:<code>_id</code> 指定分组依据(如 <code>&#39;$gender&#39;</code>),配合累加器统计——<code>$sum: 1</code> 计数、<code>$avg</code>&#x2F;<code>$max</code>&#x2F;<code>$min</code>&#x2F;<code>$sum</code> 求均值与最值</li>
+<li><code>$project</code> 挑选&#x2F;重命名字段(1 保留 0 剔除)、<code>$sort</code> 排序(1 升 -1 降)、<code>$limit</code>&#x2F;<code>$skip</code> 截取</li>
+<li>对照 SQL:$match &#x3D; where、$group &#x3D; group by、$project &#x3D; select 挑列、$sort &#x3D; order by、$limit &#x3D; limit</li>
+<li>复杂统计(如按分组算平均再取前三)在 MongoDB 里就是一条 pipeline;聚合是 MongoDB 做数据分析的核心工具</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pymongo <span class="keyword">import</span> MongoClient</span><br><span class="line"></span><br><span class="line">col = MongoClient()[<span class="string">&quot;school&quot;</span>][<span class="string">&quot;student&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价 SQL:select gender, count(*) cnt, avg(age) avg_age</span></span><br><span class="line"><span class="comment">#          from student where age &gt;= 18</span></span><br><span class="line"><span class="comment">#          group by gender order by cnt desc limit 5</span></span><br><span class="line">pipeline = [</span><br><span class="line">    &#123;<span class="string">&quot;$match&quot;</span>: &#123;<span class="string">&quot;age&quot;</span>: &#123;<span class="string">&quot;$gte&quot;</span>: <span class="number">18</span>&#125;&#125;&#125;,              <span class="comment"># 1.先过滤</span></span><br><span class="line">    &#123;<span class="string">&quot;$group&quot;</span>: &#123;<span class="string">&quot;_id&quot;</span>: <span class="string">&quot;$gender&quot;</span>,                   <span class="comment"># 2.按 gender 分组</span></span><br><span class="line">                <span class="string">&quot;cnt&quot;</span>: &#123;<span class="string">&quot;$sum&quot;</span>: <span class="number">1</span>&#125;,                 <span class="comment">#    计数</span></span><br><span class="line">                <span class="string">&quot;avg_age&quot;</span>: &#123;<span class="string">&quot;$avg&quot;</span>: <span class="string">&quot;$age&quot;</span>&#125;&#125;&#125;,      <span class="comment">#    平均年龄</span></span><br><span class="line">    &#123;<span class="string">&quot;$sort&quot;</span>: &#123;<span class="string">&quot;cnt&quot;</span>: -<span class="number">1</span>&#125;&#125;,                         <span class="comment"># 3.按人数降序</span></span><br><span class="line">    &#123;<span class="string">&quot;$limit&quot;</span>: <span class="number">5</span>&#125;,</span><br><span class="line">]</span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> col.aggregate(pipeline):</span><br><span class="line">    <span class="built_in">print</span>(row)   <span class="comment"># &#123;&#x27;_id&#x27;: &#x27;男&#x27;, &#x27;cnt&#x27;: 3, &#x27;avg_age&#x27;: 20.5&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><em>aggregate 分组统计</em></p>
+<h2 id="📖-课后作业（MySQL）"><a href="#📖-课后作业（MySQL）" class="headerlink" title="📖 课后作业（MySQL）"></a>📖 课后作业（MySQL）</h2><blockquote>
+<p>🎬 对应课程：Day44&#x2F;48「作业布置」小节（P530、P573），练习按作业主题原创编写</p>
+</blockquote>
+<h3 id="1-作业清单与完成顺序"><a href="#1-作业清单与完成顺序" class="headerlink" title="1. 作业清单与完成顺序"></a>1. 作业清单与完成顺序</h3><blockquote>
+<p>🎬 对应视频:P530、P573</p>
+</blockquote>
+<p><strong>数据库阶段两次大作业：</strong>Day44 库表约束作业<strong>（建学生表+外键级联）→ <strong>Day48 pymysql 作业</strong>（参数化增删改查）。</strong></p>
+<ul>
+<li>Day44：建 student&#x2F;cls 表，练主键自增、唯一、默认值、外键级联</li>
+<li>Day48：用 pymysql 写增删改查，重点练 <strong>%s 参数化</strong>防 SQL 注入</li>
+<li>做完到「题库练习」筛 MySQL 章节的题自测</li>
+</ul>
+<hr>
+<p><strong>系列目录 &#x2F; 工具获取方式见文末 👇</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/09/python-09/">https://ln996.github.io/2026/11/09/python-09/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/10/python-10/" title="前端三件套"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">前端三件套</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTML 🎬 对应课程:前端阶段(HTML文档结构、常用标签、表单、表格)  1. HTML文档结构 🎬 对应视频:P587~P588  页面骨架 &#x3D;  声明 + html 根标签,head 里放给浏览器看的配置,body 里放给用户看的内容。  &lt;!DOCTYPE html&gt; 声明这是 HTML5 文档,必须写在文件第一行 &lt;head&gt; 内是配置信息:&lt;meta charset=&quot;UTF-8&quot;&gt; 声明编码防止中文乱码,&lt;title&gt; 是浏览器标签页上显示的标题 &lt;body&gt; 内是页面可见内容:文字、图片、链接、表单都写在这里 标签一般成对出现如 &lt;p&gt;&lt;/p&gt;,自闭合标签如 &lt;img&gt;、&lt;input&gt;、&lt;br&gt; 除外 HTML 注释写 &lt;!-- 注释内容 --&gt;,浏览器不执行  12345678910&lt;!DO...</div></div></div></a><a class="pagination-related" href="/2026/11/08/python-08/" title="经典练习与课后作业"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">经典练习与课后作业</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 课堂经典练习(视频例题) 🎬 对应课程:Python基础阶段课堂练习与作业(视频里反复练的经典例题整理,可对照B站视频)  1. 编程题四步法读题 → 想思路(先写注释伪代码) → 写代码 → 测边界,视频里反复强调:先想清楚再动手。  读题:把题面要求逐句圈出来,明确输入是什么、输出是什么 想思路:用中文注释把步骤写下来,再逐行翻译成代码 写代码:小步走,每写一小段就运行验证 测边界:空输入、错误输入(如数字位置输入了字母)、极端值(0、负数)  12345# 例:购物车思路伪代码# 1. 输入工资# 2. 循环:展示商品 -&gt; 输入编号# 3. 判断余额够不够 -&gt; 够:扣钱加入购物车# 4. 输入 q 退出,打印购物清单和余额  2. 经典练习与考点对照每个经典练习都对应固定的知识点,练一题等于复习一片。  九九乘法表:双层for + end参数;斐波那契:多重赋值 a, b &#x3D; b, a+b 猜年龄 &#x2F; 登录锁定:while循环 + br...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/11/12/python-12/" title="项目实战"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-12</div><div class="info-item-2">项目实战</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 选课系统项目(面向对象综合) 🎬 对应课程:Day31~32 选课系统(面向对象阶段的项目)  1. 项目概览与角色设计 🎬 对应视频:P384~P385  选课系统是面向对象思想的综合练习**:管理员&#x2F;学生&#x2F;老师三种角色,围绕 学校→班级→课程 的层级组织数据。**  三种角色功能:管理员(创建学校&#x2F;课程&#x2F;老师)、学生(注册&#x2F;选课&#x2F;查看分数)、老师(选择教授课程&#x2F;查看学生&#x2F;修改分数) 核心类:School(学校)、Classes(班级)、Course(课程)、Teacher(老师)、Student(学生)、Admin(管理员) 关系:学校与班级一对多、班级与课程关联、老师与课程多对多、学生选课程后产生分数记录 这个阶段还没有数据库,数据持久化用 json&#x2F;pickle 文件保存对象状态  2. 登录认证装饰器 🎬 对应视频:P389  每种角色登录后,后续功能都要先校验身份——用认证...</div></div></div></a><a class="pagination-related" href="/2026/11/06/python-06/" title="并发编程逐集精讲"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-06</div><div class="info-item-2">并发编程逐集精讲</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 并发编程 🎬 对应课程:Python基础 第9章(多进程、多线程、GIL、锁、线程池、协程)  1. 进程与线程基本概念 🎬 对应视频:P458、P470  进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配资源(内存、文件句柄)的基本单位,进程之间相互独立 线程:进程内部的执行单元,共享所在进程的全局变量和内存,创建、切换开销比进程小 一个进程至少有一个主线程;某线程崩溃可能拖垮整个进程,而一个进程崩溃不影响其他进程 并行:多个 CPU 核心真正同时执行;并发:单核(或同一核)时间片轮转,看起来同时执行 Python 实践:计算密集用多进程,IO 密集用多线程或协程  2. multiprocessing 多进程 🎬 对应视频:P458~P460、P463、P468  Process(target=函数, args=(参数,)) 创建子进程,start() 启动、join() 等待;进程...</div></div></div></a><a class="pagination-related" href="/2026/11/08/python-08/" title="经典练习与课后作业"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-08</div><div class="info-item-2">经典练习与课后作业</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 课堂经典练习(视频例题) 🎬 对应课程:Python基础阶段课堂练习与作业(视频里反复练的经典例题整理,可对照B站视频)  1. 编程题四步法读题 → 想思路(先写注释伪代码) → 写代码 → 测边界,视频里反复强调:先想清楚再动手。  读题:把题面要求逐句圈出来,明确输入是什么、输出是什么 想思路:用中文注释把步骤写下来,再逐行翻译成代码 写代码:小步走,每写一小段就运行验证 测边界:空输入、错误输入(如数字位置输入了字母)、极端值(0、负数)  12345# 例:购物车思路伪代码# 1. 输入工资# 2. 循环:展示商品 -&gt; 输入编号# 3. 判断余额够不够 -&gt; 够:扣钱加入购物车# 4. 输入 q 退出,打印购物清单和余额  2. 经典练习与考点对照每个经典练习都对应固定的知识点,练一题等于复习一片。  九九乘法表:双层for + end参数;斐波那契:多重赋值 a, b &#x3D; b, a+b 猜年龄 &#x2F; 登录锁定:while循环 + br...</div></div></div></a><a class="pagination-related" href="/2026/11/04/python-04/" title="面向对象编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-04</div><div class="info-item-2">面向对象编程</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 面向对象 🎬 对应课程:Python基础 第7章(类、三大特性、绑定方法、反射、元类)  1. 类与对象(类属性 vs 实例属性) 🎬 对应视频:P352~P357  类是模板**,对象是实例;__init__ 在实例化时自动执行;类属性所有实例共享,实例属性每个对象独有一份。**  定义:class 类名:(大驼峰命名);实例化 p = 类名(参数) 自动触发 __init__ 实例方法的第一个参数 self 就是当前实例,实例属性靠 self.x = ... 绑定在对象上 类属性写在类里方法外,所有实例共享;实例属性只属于一个对象 取值先找实例属性,找不到再找类属性;实例.属性 = 值 是给实例新增属性,不会改类属性 对象属性可以动态增删:p.age = 18、del p.age  12345678910class Student:    school = &quot;老男孩&quot;   # 类属性,所有实例共享    def __init__(self, name)...</div></div></div></a><a class="pagination-related" href="/2026/11/07/python-07/" title="异常处理与代码模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-07</div><div class="info-item-2">异常处理与代码模板</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 异常处理 🎬 对应课程:Python基础(异常处理+日志)  1. 为什么要处理异常 🎬 对应视频:P418  异常就是程序运行时发生的错误,不处理程序会当场崩溃,处理了就能给出友好提示并继续运行。  异常发生后若不捕获,程序立即终止,并打印异常类型、位置和描述(堆栈信息) Python 中一切异常都是异常类的实例,不同错误对应不同类型 崩溃是不可接受的,尤其是服务端程序:一个用户请求出错不能拖垮整个服务  2. try &#x2F; except &#x2F; else &#x2F; finally 完整结构 🎬 对应视频:P419~P420  try 包可能出错的代码,except 捕获并处理,else 在没异常时执行,finally 无论如何都执行。  except 可以写多个,从上到下匹配,子类异常要写在父类前面 except 后不写类型 &#x3D; 捕获所有异常(方便但危险,不推荐用于生产) except XxxError as e 可以拿到异常对象,print...</div></div></div></a><a class="pagination-related" href="/2026/11/01/python-01/" title="Python入门与数据类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-01</div><div class="info-item-2">Python入门与数据类型</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 计算机基础 🎬 对应课程:Day01~03 计算机核心基础  1. 计算机五大组成 🎬 对应视频:P11、P22  计算机五大组成:控制器、运算器、存储器、输入设备、输出设备;控制器 + 运算器 &#x3D; CPU,程序的本质是”数据 + 指令”,全部用二进制表示。  控制器:计算机的”指挥系统”,负责读取指令、分析指令、发出控制信号,协调各部件工作 运算器:负责算术运算(加、减、乘、除)和逻辑运算(与、或、非、比较),是真正”算数”的部件 存储器:保存数据和程序;分内存(电信号存储、速度快、断电丢失)与外存&#x2F;硬盘(永久保存、速度慢) 输入设备:把外界信息转成二进制给计算机,如键盘、鼠标、麦克风;输出设备:把二进制结果还原成人能看懂的形式,如显示器、音箱、打印机 程序运行的本质:程序(指令 + 数据)先加载到存储器,CPU 不断”取指令 → 分析 → 执行”,结果交给输出设备呈现  2. 三大核心硬件与存储器(IO瓶颈) 🎬 对应视频:P13、P21、P25~P...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-MySQL%E5%9F%BA%E7%A1%80%E4%B8%8E%E8%BF%9B%E9%98%B6"><span class="toc-number">1.</span> <span class="toc-text">📖 MySQL基础与进阶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BA%93%E8%A1%A8%E6%93%8D%E4%BD%9C%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1. 库表操作与常用数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BA%A6%E6%9D%9F%E4%B8%8E%E5%A4%96%E9%94%AE%E7%BA%A7%E8%81%94"><span class="toc-number">1.2.</span> <span class="toc-text">2. 约束与外键级联</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E4%B8%8E%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.3.</span> <span class="toc-text">3. 增删改查与查询执行顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5%E4%B8%8E%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.4.</span> <span class="toc-text">4. 多表连接与子查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-pymysql-%E4%B8%8E%E4%BA%8B%E5%8A%A1"><span class="toc-number">1.5.</span> <span class="toc-text">5. pymysql 与事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%B4%A2%E5%BC%95-%E5%8E%9F%E7%90%86%E3%80%81%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E4%B8%8E%E5%A4%B1%E6%95%88"><span class="toc-number">1.6.</span> <span class="toc-text">6. 索引:原理、最左前缀与失效</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E-InnoDB-%E4%B8%8E-MyISAM"><span class="toc-number">1.7.</span> <span class="toc-text">7. 存储引擎:InnoDB 与 MyISAM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E5%BB%BA%E8%A1%A8%E5%AE%8C%E6%95%B4%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%AD%97%E6%AE%B5%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.8.</span> <span class="toc-text">8. 建表完整语法与字段类型详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E4%BF%AE%E6%94%B9%E8%A1%A8%E8%BF%9B%E9%98%B6%E4%B8%8E%E5%A4%8D%E5%88%B6%E8%A1%A8"><span class="toc-number">1.9.</span> <span class="toc-text">9. 修改表进阶与复制表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-SQL-%E6%9F%A5%E8%AF%A2%E7%BB%83%E4%B9%A0%E6%80%9D%E8%B7%AF-%E6%8B%86%E9%A2%98%E4%BA%94%E6%AD%A5%E6%B3%95"><span class="toc-number">1.10.</span> <span class="toc-text">10. SQL 查询练习思路:拆题五步法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%94%B1%E6%9D%A5%E3%80%81%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5%E4%B8%8E-MySQL-%E5%AE%89%E8%A3%85%E7%AE%A1%E7%90%86"><span class="toc-number">1.11.</span> <span class="toc-text">11. 数据库由来、重要概念与 MySQL 安装管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-where-%E8%BF%9B%E9%98%B6-%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D-regexp"><span class="toc-number">1.12.</span> <span class="toc-text">12. where 进阶:正则匹配 regexp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-navicat-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9B%BE%E5%BD%A2%E5%8C%96%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7"><span class="toc-number">1.13.</span> <span class="toc-text">13. navicat:数据库图形化管理工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E8%A7%86%E5%9B%BE%E3%80%81%E8%A7%A6%E5%8F%91%E5%99%A8%E3%80%81%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E3%80%81%E5%87%BD%E6%95%B0%E4%B8%8E%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">1.14.</span> <span class="toc-text">14. 视图、触发器、存储过程、函数与流程控制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-Redis-%E4%B8%8E-MongoDB"><span class="toc-number">2.</span> <span class="toc-text">📖 Redis 与 MongoDB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Redis-%E7%AE%80%E4%BB%8B-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%AB"><span class="toc-number">2.1.</span> <span class="toc-text">1. Redis 简介:为什么快</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BA%94%E5%A4%A7%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">2.2.</span> <span class="toc-text">2. 五大类型与常用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4%E4%B8%8E%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">2.3.</span> <span class="toc-text">3. 过期时间与持久化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-python-%E6%93%8D%E4%BD%9C-redis"><span class="toc-number">2.4.</span> <span class="toc-text">4. python 操作 redis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-MongoDB-%E6%A6%82%E5%BF%B5%E4%B8%8E-pymongo"><span class="toc-number">2.5.</span> <span class="toc-text">5. MongoDB 概念与 pymongo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-MySQL%E3%80%81Redis%E3%80%81MongoDB-%E9%80%89%E5%9E%8B%E5%AF%B9%E6%AF%94"><span class="toc-number">2.6.</span> <span class="toc-text">6. MySQL、Redis、MongoDB 选型对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Redis-%E6%8C%81%E4%B9%85%E5%8C%96%E7%BB%86%E8%8A%82-RDB-%E4%B8%8E-AOF-%E6%B7%B1%E5%85%A5%E5%AF%B9%E6%AF%94"><span class="toc-number">2.7.</span> <span class="toc-text">7. Redis 持久化细节:RDB 与 AOF 深入对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E7%AE%A1%E9%81%93-pipeline"><span class="toc-number">2.8.</span> <span class="toc-text">8. Redis 事务与管道 pipeline</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-MongoDB-%E8%81%9A%E5%90%88%E7%AE%A1%E9%81%93-aggregate-%E7%AE%80%E4%BB%8B"><span class="toc-number">2.9.</span> <span class="toc-text">9. MongoDB 聚合管道 aggregate 简介</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E8%AF%BE%E5%90%8E%E4%BD%9C%E4%B8%9A%EF%BC%88MySQL%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">📖 课后作业（MySQL）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%9C%E4%B8%9A%E6%B8%85%E5%8D%95%E4%B8%8E%E5%AE%8C%E6%88%90%E9%A1%BA%E5%BA%8F"><span class="toc-number">3.1.</span> <span class="toc-text">1. 作业清单与完成顺序</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

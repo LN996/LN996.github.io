@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>李宁的博客 - 学习记录与分享</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Python 学习笔记、技术与生活">
+<meta property="og:type" content="website">
+<meta property="og:title" content="李宁的博客">
+<meta property="og:url" content="https://ln996.github.io/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="Python 学习笔记、技术与生活">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:author" content="李宁">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "李宁的博客",
+  "alternateName": [
+    "学习记录与分享",
+    "ln996.github.io"
+  ],
+  "url": "https://ln996.github.io/"
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '李宁的博客',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">李宁的博客</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%BC%80%E5%9C%BA%E7%99%BD/">开场白</a></span></div><div class="content">欢迎来到我的博客!这是用 Hexo 搭建的第一篇文章。 为什么写博客?把学到的知识整理成文章,是最好的复习方式。以后我的 Python 学习笔记都会发布在这里。 如何写新文章在博客目录下运行: 1hexo new &quot;文章标题&quot;  会在 source/_posts/ 下生成一个 Markdown 文件,用编辑器写完内容后: 123hexo clean     # 清理缓存hexo generate  # 生成静态页面hexo server    # 本地预览,浏览器打开 http://localhost:4000  以后的计划 把 Python 课程笔记(01~14 篇)整理发布到博客 记录学习中的踩坑与心得 分享项目实战经验  stay hungry, stay foolish! </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文整理视频里老师敲的重点课堂代码,每段标注对应集数与练习要点。建议:先遮住代码自己写,写完对照;改参数看变化。   ⌨️ 变量引用与 id &#x2F; is &#x2F; &#x3D;&#x3D;(第一周必敲) 🎬 对应视频:P55~P61  🎯 这段练什么: 变量存的是引用不是值本身;b &#x3D; a 后两个名字共用对象;is 比地址、== 比值。敲完这段,后面所有”改了a怎么b也变了”的问题都能自己推导。 12345678910a = [1, 2, 3]b = a              # b 和 a 指向同一个列表b.append(4)print(a)           # [1, 2, 3, 4]  改b即改aprint(a is b)      # True 同一个对象c = [1, 2, 3, 4]print(a == c)      # True 值相等print(a is c)      # False 但不是同一个对象print(id(a), id(c))  # 两个不同的内存地址   ⌨️ 可变 &#x2F; 不可变 类型行为实验 🎬 对...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 Git 与 Linux 🎬 对应课程：就业拓展(Git版本控制、Linux常用命令、部署基础)  1. Git 三区模型、基础命令与版本回退 🎬 对应视频:P995~P996  Git 分工作区、暂存区、版本库三个区域,add 进暂存区、commit 进版本库;reset --hard 回退版本,误操作用 git reflog 找回。  三区模型:工作区(正在编辑的目录)→ git add 进暂存区(stage)→ git commit 进版本库(.git 里的提交历史) git init 初始化本地仓库;git clone url 克隆远程仓库(自带全部历史);git status 看三区状态,git diff 看工作区与暂存区的差异,git log --oneline 一行一条看提交历史 回退:git reset --hard 提交id(或 HEAD^、HEAD~2)把分支指针移过去,工作区、暂存区、版本库一起回退;--soft 只动 HEAD、改动留在暂存区;--mix...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 选课系统项目(面向对象综合) 🎬 对应课程:Day31~32 选课系统(面向对象阶段的项目)  1. 项目概览与角色设计 🎬 对应视频:P384~P385  选课系统是面向对象思想的综合练习**:管理员&#x2F;学生&#x2F;老师三种角色,围绕 学校→班级→课程 的层级组织数据。**  三种角色功能:管理员(创建学校&#x2F;课程&#x2F;老师)、学生(注册&#x2F;选课&#x2F;查看分数)、老师(选择教授课程&#x2F;查看学生&#x2F;修改分数) 核心类:School(学校)、Classes(班级)、Course(课程)、Teacher(老师)、Student(学生)、Admin(管理员) 关系:学校与班级一对多、班级与课程关联、老师与课程多对多、学生选课程后产生分数记录 这个阶段还没有数据库,数据持久化用 json&#x2F;pickle 文件保存对象状态  2. 登录认证装饰器 🎬 对应视频:P389  每种角色登录后,后续功能都要先校验身份——用认证...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTTP协议与Web框架本质 🎬 对应课程:框架开始前(HTTP协议、wsgiref、手写web框架)  1. HTTP协议特点(基于TCP、无状态、长连接) 🎬 对应视频:P585~P586  HTTP 是基于 TCP 的应用层协议**,本身无状态;HTTP&#x2F;1.1 默认通过 keep-alive 复用 TCP 连接,但每次请求的内容仍然相互独立。**  HTTP 工作在应用层,底层依赖 TCP 提供可靠传输(默认端口 80,HTTPS 默认 443) 无状态:协议本身不记住上一次请求是谁发的,每次请求相互独立;登录状态是靠 cookie&#x2F;session 机制额外补充的 短连接:HTTP&#x2F;1.0 每次请求都新建一条 TCP 连接,用完就断,频繁握手开销大 keep-alive(长连接):HTTP&#x2F;1.1 默认开启,一条 TCP 连接可以连续承载多次 HTTP 请求&#x2F;响应 无状态说的是”不保存上下文”,长&#x2F;短连接说的...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/10/python-10/" title="前端三件套">前端三件套</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-10T01:00:00.000Z" title="发表于 2026-11-10 09:00:00">2026-11-10</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTML 🎬 对应课程:前端阶段(HTML文档结构、常用标签、表单、表格)  1. HTML文档结构 🎬 对应视频:P587~P588  页面骨架 &#x3D;  声明 + html 根标签,head 里放给浏览器看的配置,body 里放给用户看的内容。  &lt;!DOCTYPE html&gt; 声明这是 HTML5 文档,必须写在文件第一行 &lt;head&gt; 内是配置信息:&lt;meta charset=&quot;UTF-8&quot;&gt; 声明编码防止中文乱码,&lt;title&gt; 是浏览器标签页上显示的标题 &lt;body&gt; 内是页面可见内容:文字、图片、链接、表单都写在这里 标签一般成对出现如 &lt;p&gt;&lt;/p&gt;,自闭合标签如 &lt;img&gt;、&lt;input&gt;、&lt;br&gt; 除外 HTML 注释写 &lt;!-- 注释内容 --&gt;,浏览器不执行  12345678910&lt;!DO...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/09/python-09/" title="MySQL数据库">MySQL数据库</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-09T01:00:00.000Z" title="发表于 2026-11-09 09:00:00">2026-11-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 MySQL基础与进阶 🎬 对应课程:数据库阶段(MySQL安装、库表操作、增删改查、连表、pymysql、事务、索引)  1. 库表操作与常用数据类型 🎬 对应视频:P527~P528、P538、P550  用 create/drop/alter 管理库和表;字符串定长用 char、变长用 varchar**,区别是空间和速度的取舍。**  库操作:create database db1 charset utf8mb4;、drop database db1;、show databases;、use db1; 表操作:create table t(id int, name varchar(16));、drop table t;、show tables;、desc t; 查看表结构 改表:alter table t add 列名 类型; 加列、alter table t drop 列名; 删列、alter table t modify 列名 新类型; 改类型 常用类型:int&#...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/08/python-08/" title="经典练习与课后作业">经典练习与课后作业</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-08T01:00:00.000Z" title="发表于 2026-11-08 09:00:00">2026-11-08</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 课堂经典练习(视频例题) 🎬 对应课程:Python基础阶段课堂练习与作业(视频里反复练的经典例题整理,可对照B站视频)  1. 编程题四步法读题 → 想思路(先写注释伪代码) → 写代码 → 测边界,视频里反复强调:先想清楚再动手。  读题:把题面要求逐句圈出来,明确输入是什么、输出是什么 想思路:用中文注释把步骤写下来,再逐行翻译成代码 写代码:小步走,每写一小段就运行验证 测边界:空输入、错误输入(如数字位置输入了字母)、极端值(0、负数)  12345# 例:购物车思路伪代码# 1. 输入工资# 2. 循环:展示商品 -&gt; 输入编号# 3. 判断余额够不够 -&gt; 够:扣钱加入购物车# 4. 输入 q 退出,打印购物清单和余额  2. 经典练习与考点对照每个经典练习都对应固定的知识点,练一题等于复习一片。  九九乘法表:双层for + end参数;斐波那契:多重赋值 a, b &#x3D; b, a+b 猜年龄 &#x2F; 登录锁定:while循环 + br...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/07/python-07/" title="异常处理与代码模板">异常处理与代码模板</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-07T01:00:00.000Z" title="发表于 2026-11-07 09:00:00">2026-11-07</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 异常处理 🎬 对应课程:Python基础(异常处理+日志)  1. 为什么要处理异常 🎬 对应视频:P418  异常就是程序运行时发生的错误,不处理程序会当场崩溃,处理了就能给出友好提示并继续运行。  异常发生后若不捕获,程序立即终止,并打印异常类型、位置和描述(堆栈信息) Python 中一切异常都是异常类的实例,不同错误对应不同类型 崩溃是不可接受的,尤其是服务端程序:一个用户请求出错不能拖垮整个服务  2. try &#x2F; except &#x2F; else &#x2F; finally 完整结构 🎬 对应视频:P419~P420  try 包可能出错的代码,except 捕获并处理,else 在没异常时执行,finally 无论如何都执行。  except 可以写多个,从上到下匹配,子类异常要写在父类前面 except 后不写类型 &#x3D; 捕获所有异常(方便但危险,不推荐用于生产) except XxxError as e 可以拿到异常对象,print...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/06/python-06/" title="并发编程逐集精讲">并发编程逐集精讲</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-06T01:00:00.000Z" title="发表于 2026-11-06 09:00:00">2026-11-06</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 并发编程 🎬 对应课程:Python基础 第9章(多进程、多线程、GIL、锁、线程池、协程)  1. 进程与线程基本概念 🎬 对应视频:P458、P470  进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配资源(内存、文件句柄)的基本单位,进程之间相互独立 线程:进程内部的执行单元,共享所在进程的全局变量和内存,创建、切换开销比进程小 一个进程至少有一个主线程;某线程崩溃可能拖垮整个进程,而一个进程崩溃不影响其他进程 并行:多个 CPU 核心真正同时执行;并发:单核(或同一核)时间片轮转,看起来同时执行 Python 实践:计算密集用多进程,IO 密集用多线程或协程  2. multiprocessing 多进程 🎬 对应视频:P458~P460、P463、P468  Process(target=函数, args=(参数,)) 创建子进程,start() 启动、join() 等待;进程...</div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><span class="card-category-list-name">Python学习笔记</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BC%80%E5%9C%BA%E7%99%BD/"><span class="card-category-list-name">开场白</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/HTML/" style="font-size: 1.1em; color: #999">HTML</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">网络编程</a> <a href="/tags/JavaScript/" style="font-size: 1.1em; color: #999">JavaScript</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.23em; color: #999ea6">随笔</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/" style="font-size: 1.1em; color: #999">项目实战</a> <a href="/tags/Python/" style="font-size: 1.5em; color: #99a9bf">Python</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">并发编程</a> <a href="/tags/Django/" style="font-size: 1.1em; color: #999">Django</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 1.1em; color: #999">面向对象</a> <a href="/tags/%E5%9F%BA%E7%A1%80/" style="font-size: 1.37em; color: #99a4b2">基础</a> <a href="/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 1.1em; color: #999">异常处理</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 1.1em; color: #999">运维</a> <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 1.1em; color: #999">代码</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 1.1em; color: #999">数据库</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.1em; color: #999">面试</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 1.1em; color: #999">前端</a> <a href="/tags/%E7%BB%83%E4%B9%A0/" style="font-size: 1.1em; color: #999">练习</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/11/">
+            <span class="card-archive-list-date">
+              十一月 2026
+            </span>
+            <span class="card-archive-list-count">15</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/10/">
+            <span class="card-archive-list-date">
+              十月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">16</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-11-17T06:53:46.894Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

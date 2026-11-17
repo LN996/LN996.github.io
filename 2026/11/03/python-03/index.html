@@ -1,0 +1,605 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>函数与模块 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 函数 🎬 对应课程:Python基础 第5章(函数、作用域、装饰器、迭代器生成器)  1. 函数定义与返回值 🎬 对应视频:P198~P200、P204  函数用 def 定义,没有 return 或只写 return 时默认返回 None;return a, b 本质是返回一个元组。  定义">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数与模块">
+<meta property="og:url" content="https://ln996.github.io/2026/11/03/python-03/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 函数 🎬 对应课程:Python基础 第5章(函数、作用域、装饰器、迭代器生成器)  1. 函数定义与返回值 🎬 对应视频:P198~P200、P204  函数用 def 定义,没有 return 或只写 return 时默认返回 None;return a, b 本质是返回一个元组。  定义">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-03T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T06:53:34.878Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "函数与模块",
+  "url": "https://ln996.github.io/2026/11/03/python-03/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-03T01:00:00.000Z",
+  "dateModified": "2026-11-17T06:53:34.878Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/03/python-03/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '函数与模块',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">函数与模块</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">函数与模块</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-03T01:00:00.000Z" title="发表于 2026-11-03 09:00:00">2026-11-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-17T06:53:34.878Z" title="更新于 2026-11-17 14:53:34">2026-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。</p>
+</blockquote>
+<hr>
+<h2 id="📖-函数"><a href="#📖-函数" class="headerlink" title="📖 函数"></a>📖 函数</h2><blockquote>
+<p>🎬 对应课程:Python基础 第5章(函数、作用域、装饰器、迭代器生成器)</p>
+</blockquote>
+<h3 id="1-函数定义与返回值"><a href="#1-函数定义与返回值" class="headerlink" title="1. 函数定义与返回值"></a>1. 函数定义与返回值</h3><blockquote>
+<p>🎬 对应视频:P198~P200、P204</p>
+</blockquote>
+<p><strong>函数用 <code>def</code> 定义,<strong>没有 return 或只写 return 时默认返回 None</strong>;return a, b 本质是返回一个</strong>元组<strong>。</strong></p>
+<ul>
+<li>定义:<code>def 函数名(参数):</code> + 缩进的函数体;函数<strong>先定义后调用</strong>,定义时函数体并不执行</li>
+<li>return 会<strong>立即结束函数</strong>;没有 return 或 return 后面不带值,统一返回 None</li>
+<li><code>return a, b</code> 是把两个值打包成<strong>元组</strong>返回,接收时 <code>a, b = f()</code> 解包</li>
+<li>函数体第一行可写三引号字符串作文档说明,用 <code>函数名.__doc__</code> 查看</li>
+<li>函数名遵循变量命名规范,且不能与内置函数重名(如自定义 list 会遮蔽内置 list)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_max</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;返回较大的数&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> a <span class="keyword">if</span> a &gt; b <span class="keyword">else</span> b</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(my_max(<span class="number">3</span>, <span class="number">7</span>))     <span class="comment"># 7</span></span><br><span class="line"><span class="built_in">print</span>(my_max.__doc__)   <span class="comment"># 返回较大的数</span></span><br></pre></td></tr></table></figure>
+
+<p><em>定义函数并调用</em></p>
+<h3 id="2-函数参数-位置-关键字-默认-args-kwargs"><a href="#2-函数参数-位置-关键字-默认-args-kwargs" class="headerlink" title="2. 函数参数(位置&#x2F;关键字&#x2F;默认&#x2F;*args&#x2F;**kwargs)"></a>2. 函数参数(位置&#x2F;关键字&#x2F;默认&#x2F;*args&#x2F;**kwargs)</h3><blockquote>
+<p>🎬 对应视频:P206~P214、P217</p>
+</blockquote>
+<p><em>*常见定义顺序:<em>*位置参数 → 默认参数 → *args → <strong>kwargs</strong>;默认参数**千万不要用可变类型</em>*,否则多次调用共享同一个对象。</em>*</p>
+<ul>
+<li>位置参数按顺序对应;关键字参数指名道姓传 <code>f(age=18)</code>,可以不按顺序</li>
+<li>默认参数要写在位置参数后面:<code>def f(a, b=1)</code> 合法,<code>def f(a=1, b)</code> 直接报错</li>
+<li><strong>坑</strong>:默认值是 list&#x2F;dict 等可变类型时,它在<strong>定义时只创建一次</strong>,多次调用会往同一个列表里追加</li>
+<li>标准解法:默认值写 None,函数体内 <code>if lst is None: lst = []</code> 再创建新列表</li>
+<li><code>*args</code> 收集多余<strong>位置参数</strong>成<strong>元组</strong>;<code>**kwargs</code> 收集多余<strong>关键字参数</strong>成<strong>字典</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>(<span class="params">a, b=<span class="number">2</span>, *args, **kwargs</span>):</span><br><span class="line">    <span class="built_in">print</span>(a, b, args, kwargs)</span><br><span class="line"></span><br><span class="line">f(<span class="number">1</span>)                 <span class="comment"># 1 2 () &#123;&#125;</span></span><br><span class="line">f(<span class="number">1</span>, <span class="number">9</span>, <span class="number">3</span>, <span class="number">4</span>, x=<span class="number">5</span>)   <span class="comment"># 1 9 (3, 4) &#123;&#x27;x&#x27;: 5&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">x, lst=<span class="literal">None</span></span>):   <span class="comment"># 避开可变默认参数的坑</span></span><br><span class="line">    <span class="keyword">if</span> lst <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        lst = []</span><br><span class="line">    lst.append(x)</span><br><span class="line">    <span class="keyword">return</span> lst</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(add(<span class="number">1</span>), add(<span class="number">2</span>))   <span class="comment"># [1] [2]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-名称空间与作用域-LEGB、global-nonlocal"><a href="#3-名称空间与作用域-LEGB、global-nonlocal" class="headerlink" title="3. 名称空间与作用域(LEGB、global&#x2F;nonlocal)"></a>3. 名称空间与作用域(LEGB、global&#x2F;nonlocal)</h3><blockquote>
+<p>🎬 对应视频:P218~P224</p>
+</blockquote>
+<p><strong>取值顺序 <strong>LEGB:Local → Enclosing → Global → Built-in</strong>;函数内给全局变量</strong>重新赋值<strong>要 global,嵌套函数改外层变量要 nonlocal。</strong></p>
+<ul>
+<li>三类名称空间:内置、全局、局部;加载顺序 内置→全局→局部,查找名字按 <strong>LEGB</strong></li>
+<li>函数内只读全局变量不用声明;<strong>重新赋值</strong>不可变类型的全局变量必须 <code>global x</code></li>
+<li>直接修改全局<strong>可变对象</strong>的内容(append 等)不需要 global,因为只是改内容、没有改变量的指向</li>
+<li><code>nonlocal</code> 只作用于<strong>外层函数</strong>的局部变量,和全局名称空间无关</li>
+<li>作用域在<strong>函数定义时</strong>就确定了,和在哪里调用无关</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">f</span>():</span><br><span class="line">    <span class="keyword">global</span> x</span><br><span class="line">    x = <span class="number">10</span></span><br><span class="line">f()</span><br><span class="line"><span class="built_in">print</span>(x)   <span class="comment"># 10</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">outer</span>():</span><br><span class="line">    n = <span class="number">0</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner</span>():</span><br><span class="line">        <span class="keyword">nonlocal</span> n</span><br><span class="line">        n += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> n</span><br><span class="line">    <span class="keyword">return</span> inner</span><br><span class="line"></span><br><span class="line">inc = outer()</span><br><span class="line"><span class="built_in">print</span>(inc(), inc())   <span class="comment"># 1 2  闭包让 n 常驻内存</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-闭包与装饰器-含带参装饰器"><a href="#4-闭包与装饰器-含带参装饰器" class="headerlink" title="4. 闭包与装饰器(含带参装饰器)"></a>4. 闭包与装饰器(含带参装饰器)</h3><blockquote>
+<p>🎬 对应视频:P232、P236<del>P244、P246、P248</del>P249</p>
+</blockquote>
+<p><strong>闭包 &#x3D; <strong>内层函数引用外层函数变量 + 外层返回内层函数</strong>;装饰器本质是“接收函数、返回函数”的闭包,<code>@deco</code> 就是 <code>func = deco(func)</code> 的语法糖。</strong></p>
+<ul>
+<li>装饰器在<strong>函数定义时</strong>立即执行(打印装饰器内的 print 会先出现),原函数在<strong>调用时</strong>才执行</li>
+<li>wrapper 里通常 <code>*args, **kwargs</code> 透传参数、<code>return func(...)</code> 透传返回值,保证和原函数行为一致</li>
+<li>被装饰后函数名其实指向 wrapper,可用 <code>functools.wraps(func)</code> 保留原函数的元信息</li>
+<li>带参装饰器是<strong>三层</strong>嵌套:<code>@deco(arg)</code> 先执行 deco(arg) 返回真正的装饰器,再装饰函数</li>
+<li>典型用途:登录验证、计时、日志,不改原函数代码就能加功能</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">logger</span>(<span class="params">func</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(func.__name__ + <span class="string">&quot; 被调用&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@logger</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">a, b</span>):</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(add(<span class="number">1</span>, <span class="number">2</span>))   <span class="comment"># 先打印 add 被调用,再打印 3</span></span><br></pre></td></tr></table></figure>
+
+<p><em>装饰器基本结构</em></p>
+<h3 id="5-迭代器与生成器-yield、next"><a href="#5-迭代器与生成器-yield、next" class="headerlink" title="5. 迭代器与生成器(yield、next)"></a>5. 迭代器与生成器(yield、next)</h3><blockquote>
+<p>🎬 对应视频:P250~P251、P253</p>
+</blockquote>
+<p><strong>函数里一出现 <strong>yield</strong> 就变成生成器函数;生成器用 <code>next()</code> 逐个取值、</strong>取完抛 StopIteration**,惰性求值省内存,只能向前走一遍。**</p>
+<ul>
+<li>可迭代对象(list&#x2F;str&#x2F;dict…)用 <code>iter()</code> 拿到迭代器;迭代器同时实现 <code>__iter__</code> 和 <code>__next__</code></li>
+<li>for 循环本质:先 <code>iter()</code>,再不断 <code>next()</code>,捕获 StopIteration 自动结束</li>
+<li>执行到 yield 会<strong>暂停</strong>并交出一个值,下次 next 从暂停处继续;调用函数拿到的是生成器对象而不是返回值</li>
+<li>生成器<strong>不能回头重遍历</strong>,耗尽后要重新创建;适合大文件、死循环数据流等省内存场景</li>
+<li>生成器表达式把 [] 换成 ():<code>(x * 2 for x in range(3))</code>,用 list() 才能看到全部结果</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">gen</span>():</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line"></span><br><span class="line">g = gen()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(g), <span class="built_in">next</span>(g))   <span class="comment"># 1 2</span></span><br><span class="line"><span class="comment"># print(next(g))          # 再取就抛 StopIteration</span></span><br><span class="line"></span><br><span class="line">g2 = (x * <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(g2))           <span class="comment"># [0, 2, 4]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-递归、lambda-与常用内置函数"><a href="#6-递归、lambda-与常用内置函数" class="headerlink" title="6. 递归、lambda 与常用内置函数"></a>6. 递归、lambda 与常用内置函数</h3><blockquote>
+<p>🎬 对应视频:P273~P275</p>
+</blockquote>
+<p><strong>递归必须有</strong>出口**,默认深度上限约 1000;<code>lambda 参数: 表达式</code> 配合 <strong>map &#x2F; filter &#x2F; sorted &#x2F; zip &#x2F; max &#x2F; min &#x2F; enumerate</strong> 处理序列最常用。**</p>
+<ul>
+<li>递归:函数自己调用自己;没有出口会 RecursionError,深度上限约 1000(<code>sys.getrecursionlimit()</code> 查看)</li>
+<li><code>map(f, it)</code> 逐个加工、<code>filter(f, it)</code> 留下为 True 的;都返回迭代器,要 <code>list()</code> 才能直接看</li>
+<li><code>sorted(lst, key=函数, reverse=True)</code> 排序;<code>max/min</code> 也支持 key,如按字典值找最大</li>
+<li><code>zip(a, b)</code> 按位配对成元组;<code>enumerate(lst)</code> 同时给下标和值</li>
+<li>lambda 冒号后只能是<strong>一个表达式</strong>,常作 sorted&#x2F;map&#x2F;filter 的参数一次性使用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">nums = [<span class="number">3</span>, -<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">sorted</span>(nums, key=<span class="built_in">abs</span>))                <span class="comment"># [-1, 2, 3]</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">map</span>(<span class="built_in">str</span>, [<span class="number">1</span>, <span class="number">2</span>])))               <span class="comment"># [&#x27;1&#x27;, &#x27;2&#x27;]</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x &gt; <span class="number">0</span>, nums)))  <span class="comment"># [3, 2]</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">zip</span>([<span class="number">1</span>, <span class="number">2</span>], <span class="string">&quot;ab&quot;</span>)))              <span class="comment"># [(1, &#x27;a&#x27;), (2, &#x27;b&#x27;)]</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(<span class="built_in">enumerate</span>(<span class="string">&quot;xy&quot;</span>)))                <span class="comment"># [(0, &#x27;x&#x27;), (1, &#x27;y&#x27;)]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fact</span>(<span class="params">n</span>):   <span class="comment"># 递归要有出口</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> n &lt;= <span class="number">1</span> <span class="keyword">else</span> n * fact(n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(fact(<span class="number">5</span>))   <span class="comment"># 120</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-函数定义的三种形式与调用形式"><a href="#7-函数定义的三种形式与调用形式" class="headerlink" title="7. 函数定义的三种形式与调用形式"></a>7. 函数定义的三种形式与调用形式</h3><blockquote>
+<p>🎬 对应视频:P202~P203</p>
+</blockquote>
+<p><strong>定义函数三形式:<strong>无参、有参、空函数</strong>;空函数用 pass 占位、先搭项目骨架再逐步实现;调用函数有语句、表达式、当参数三种用法。</strong></p>
+<ul>
+<li>无参函数:def hello(): …,功能不依赖外部数据,直接 hello() 调用</li>
+<li>有参函数:结果随外部输入变化,把依赖做成参数:def my_max(a, b) —— 参数是函数与外界的”接口”</li>
+<li>空函数:函数体写 pass(或只写文档字符串),先把程序有哪些功能想清楚、占好位置,再逐个填充 —— 项目开发先搭框架的常用手段</li>
+<li>调用函数的三种形式:① 语句形式:只执行功能不要返回值 f() ② 表达式形式:拿返回值参与运算 x &#x3D; f() * 2 ③ 函数当参数:sorted(lst, key&#x3D;f),把函数名传给另一个函数</li>
+<li>记住:定义时不执行函数体,调用才执行;必须<strong>先定义后调用</strong>,先写调用行会 NameError</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">register</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;注册功能(待实现)&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">pass</span>            <span class="comment"># 空函数:先占位</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">my_max</span>(<span class="params">a, b</span>):   <span class="comment"># 有参:依赖外部数据</span></span><br><span class="line">    <span class="keyword">return</span> a <span class="keyword">if</span> a &gt; b <span class="keyword">else</span> b</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(my_max(<span class="number">3</span>, <span class="number">7</span>))   <span class="comment"># 7</span></span><br></pre></td></tr></table></figure>
+
+<p><em>函数定义三形式</em></p>
+<h3 id="8-递归的两个阶段与二分法"><a href="#8-递归的两个阶段与二分法" class="headerlink" title="8. 递归的两个阶段与二分法"></a>8. 递归的两个阶段与二分法</h3><blockquote>
+<p>🎬 对应视频:P264<del>P266、P269</del>P270</p>
+</blockquote>
+<p><strong>递归 &#x3D; <strong>递推(层层深入)→ 回溯(层层带回)</strong>,必须写</strong>出口**,否则 RecursionError;二分法在<strong>有序</strong>数据上每次排除一半,最多 log₂n 次定位。**</p>
+<ul>
+<li>递推阶段:函数不断自己调用自己,问题规模一点点缩小;碰到<strong>出口</strong>(终止条件)停止递推</li>
+<li>回溯阶段:从最里层开始一层层往回返回结果,把答案带回最外层 —— 先递推到底、再回溯返回</li>
+<li>没有出口 → 无限递归,触发 RecursionError;py 默认递归深度约 1000(sys.getrecursionlimit() 查看)</li>
+<li>二分法前提:<strong>序列必须有序</strong>(先 sort);拿中间值与目标比较,中间值小了去右半边找、大了去左半边找,区间为空说明不存在</li>
+<li>效率:10 万个数据最多约 17 次比较(2^17 ≈ 13 万),比从头遍历快得多;可用 while 循环或递归实现</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">binary_search</span>(<span class="params">lst, target</span>):</span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(lst) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> left &lt;= right:</span><br><span class="line">        mid = (left + right) // <span class="number">2</span></span><br><span class="line">        <span class="keyword">if</span> lst[mid] == target:</span><br><span class="line">            <span class="keyword">return</span> mid           <span class="comment"># 找到,返回下标</span></span><br><span class="line">        <span class="keyword">if</span> lst[mid] &lt; target:</span><br><span class="line">            left = mid + <span class="number">1</span>       <span class="comment"># 去右半边</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            right = mid - <span class="number">1</span>      <span class="comment"># 去左半边</span></span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>                    <span class="comment"># 不存在</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(binary_search([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>], <span class="number">7</span>))   <span class="comment"># 3</span></span><br></pre></td></tr></table></figure>
+
+<p><em>二分查找(非递归版)</em></p>
+<h3 id="9-yield-表达式形式-send-给-yield-传值"><a href="#9-yield-表达式形式-send-给-yield-传值" class="headerlink" title="9. yield 表达式形式(send 给 yield 传值)"></a>9. yield 表达式形式(send 给 yield 传值)</h3><blockquote>
+<p>🎬 对应视频:P258~P259</p>
+</blockquote>
+<p><strong><code>data = yield 值</code> 是 yield 的</strong>表达式形式**:用 <strong>g.send(v)</strong> 可以在生成器暂停时给它传值,生成器从”只输出”升级为”能收能发”。**</p>
+<ul>
+<li>x &#x3D; yield 值:next() 推进时交出右边的值并暂停;g.send(v) 会先把 v 赋给 x,再推进到下一个 yield</li>
+<li><strong>先初始化再 send</strong>:生成器刚创建停在函数开头,还没走到 yield,直接 g.send(值) 报 TypeError;必须先 next(g) 或 g.send(None) 推到第一个 yield</li>
+<li>send 的返回值:推进后停在的下一个 yield 右边的值 —— 一次 send 既是”传值进去”也是”取值出来”</li>
+<li>典型结构:生成器里 while True + x &#x3D; yield,不断接收外部数据做加工(吃包子案例);用完 g.close() 关闭</li>
+<li>这是协程思想的雏形:程序在”暂停点”之间双向传值,asyncio 的底层思路与之一脉相承(了解)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">eater</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        food = <span class="keyword">yield</span> <span class="string">&quot;等待投喂&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;吃到:&quot;</span>, food)</span><br><span class="line"></span><br><span class="line">g = eater()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(g))         <span class="comment"># 先初始化:等待投喂</span></span><br><span class="line"><span class="built_in">print</span>(g.send(<span class="string">&quot;包子&quot;</span>))  <span class="comment"># 吃到: 包子,返回下一个 yield 值</span></span><br><span class="line"><span class="built_in">print</span>(g.send(<span class="string">&quot;饺子&quot;</span>))  <span class="comment"># 吃到: 饺子</span></span><br><span class="line">g.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>send 给 yield 传值</em></p>
+<h3 id="10-面向过程与函数式编程思想"><a href="#10-面向过程与函数式编程思想" class="headerlink" title="10. 面向过程与函数式编程思想"></a>10. 面向过程与函数式编程思想</h3><blockquote>
+<p>🎬 对应视频:P271~P272</p>
+</blockquote>
+<p><strong><strong>面向过程</strong>:把大问题拆成一步一步的小函数按流水线执行,核心是”步骤”;<strong>函数式</strong>:用纯函数 + lambda&#x2F;map&#x2F;filter&#x2F;reduce 处理数据,不依赖外部状态。</strong></p>
+<ul>
+<li>面向过程:关注”先干什么、再干什么”,把复杂流程拆成一个个函数按顺序调用,像工厂流水线;写起来直接,适合脚本、小工具</li>
+<li>短板:步骤之间靠变量传递状态,一处修改可能牵连整条流水线,程序变大后难维护 —— 这正是后来引入面向对象的原因</li>
+<li>函数式思想:源自数学函数 —— <strong>相同输入永远得到相同输出、不修改外部变量</strong>(纯函数),代表工具 lambda、map、filter、reduce</li>
+<li>functools.reduce(f, 序列):把前两个元素算出的结果继续和下一个元素累计运算,reduce(lambda x, y: x + y, [1, 2, 3, 4]) → 10(累加器)</li>
+<li>实际开发是混合风格:流程骨架用面向过程组织,数据加工环节用 map&#x2F;filter&#x2F;reduce 这类无状态小函数</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce</span><br><span class="line">nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">total = reduce(<span class="keyword">lambda</span> x, y: x + y, nums)          <span class="comment"># 10</span></span><br><span class="line">even_doubled = <span class="built_in">list</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x * <span class="number">2</span>,</span><br><span class="line">                        <span class="built_in">filter</span>(<span class="keyword">lambda</span> x: x % <span class="number">2</span> == <span class="number">0</span>, nums)))</span><br><span class="line"><span class="built_in">print</span>(total, even_doubled)   <span class="comment"># 10 [4, 8]</span></span><br></pre></td></tr></table></figure>
+
+<p><em>函数式小函数组合</em></p>
+<h3 id="11-函数对象与函数嵌套"><a href="#11-函数对象与函数嵌套" class="headerlink" title="11. 函数对象与函数嵌套"></a>11. 函数对象与函数嵌套</h3><blockquote>
+<p>🎬 对应视频:P228~P231、P233</p>
+</blockquote>
+<p><strong>函数名就是变量名——函数是</strong>第一类对象**:可以赋值给变量、当参数、当返回值、存进容器按名字调用;函数体内还能<strong>嵌套定义</strong>另一个函数,嵌套定义是闭包的前提。**</p>
+<ul>
+<li>函数对象四大用法:<code>f = foo</code> 赋值给变量、把函数名<strong>当参数</strong>传给别的函数、<code>return foo</code> 当返回值、把函数存进 dict&#x2F;list 按名字调度</li>
+<li>函数名<strong>不带括号</strong>是函数本身(对象),<strong>带括号</strong>才是调用执行 —— <code>func_map[&quot;login&quot;]</code> 拿到函数,<code>func_map[&quot;login&quot;]()</code> 才执行</li>
+<li>经典应用:用字典 + 函数对象替代一长串 if&#x2F;elif 分支(模拟 switch),新增功能只要往字典里加一条,主逻辑不用改</li>
+<li>嵌套定义:函数体里 def 的函数只在外层函数体内可见,出了外层作用域就取不到 —— 想在外面用,必须让外层把它 return 出去</li>
+<li>嵌套调用 vs 嵌套定义:前者是在函数体里<strong>调用</strong>已定义好的函数,后者是在函数体里<strong>定义</strong>新函数;闭包 &#x3D; 嵌套定义 + 内层引用外层变量 + 外层返回内层</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">login</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;登录成功&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pay</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;支付成功&quot;</span></span><br><span class="line"></span><br><span class="line">func_map = &#123;<span class="string">&quot;login&quot;</span>: login, <span class="string">&quot;pay&quot;</span>: pay&#125;   <span class="comment"># 函数当值存进字典</span></span><br><span class="line"><span class="built_in">print</span>(func_map[<span class="string">&quot;login&quot;</span>]())                <span class="comment"># 登录成功</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">outer</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner</span>():                          <span class="comment"># 嵌套定义</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;inner 执行&quot;</span></span><br><span class="line">    <span class="keyword">return</span> inner                          <span class="comment"># 函数当返回值带出去</span></span><br><span class="line"></span><br><span class="line">f = outer()</span><br><span class="line"><span class="built_in">print</span>(f())                                <span class="comment"># inner 执行</span></span><br></pre></td></tr></table></figure>
+
+<p><em>函数对象与嵌套定义</em></p>
+<h3 id="12-叠加多个装饰器的执行顺序"><a href="#12-叠加多个装饰器的执行顺序" class="headerlink" title="12. 叠加多个装饰器的执行顺序"></a>12. 叠加多个装饰器的执行顺序</h3><blockquote>
+<p>🎬 对应视频:P256</p>
+</blockquote>
+<p><strong>多个装饰器</strong>从下往上<strong>依次包装(离 def 最近的先包),调用时</strong>从上往下<strong>执行 wrapper 代码——口诀:装饰从下往上,执行从上往下,像洋葱一层套一层。</strong></p>
+<ul>
+<li>@deco1 在上、@deco2 在下:加载阶段先执行 deco2(hello) 得到新函数,再执行 deco1(新函数)——等价于 hello &#x3D; deco1(deco2(hello))</li>
+<li>最外层的 wrapper 来自<strong>最上面的</strong>装饰器 deco1,调用 hello() 时最先执行它的前半段</li>
+<li>执行顺序像洋葱:deco1 前半段 → deco2 前半段 → 原函数 → deco2 后半段 → deco1 后半段;打印语句写在 func() 之前属于前半段、之后属于后半段</li>
+<li>实战建议:和业务强相关的装饰器放里层,通用能力(计时、日志)放外层;叠太多层排查困难,每层职责要单一</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">deco1</span>(<span class="params">func</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>():</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deco1 before&quot;</span>)</span><br><span class="line">        func()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deco1 after&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">deco2</span>(<span class="params">func</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">wrapper</span>():</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deco2 before&quot;</span>)</span><br><span class="line">        func()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deco2 after&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@deco1   </span><span class="comment"># hello = deco1(deco2(hello))</span></span><br><span class="line"><span class="meta">@deco2</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hello</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line"></span><br><span class="line">hello()</span><br><span class="line"><span class="comment"># 输出:deco1 before -&gt; deco2 before -&gt; hello -&gt; deco2 after -&gt; deco1 after</span></span><br></pre></td></tr></table></figure>
+
+<p><em>双层装饰器洋葱模型</em></p>
+<h3 id="13-三元表达式与列表生成式"><a href="#13-三元表达式与列表生成式" class="headerlink" title="13. 三元表达式与列表生成式"></a>13. 三元表达式与列表生成式</h3><blockquote>
+<p>🎬 对应视频:P260~P263</p>
+</blockquote>
+<p><strong><code>值1 if 条件 else 值2</code> 一行写完取值逻辑;<code>[表达式 for x in 可迭代 if 条件]</code> 一行生成列表,换成 {} 写字典&#x2F;集合生成式、换成 () 写生成器表达式。</strong></p>
+<ul>
+<li>三元表达式:res &#x3D; “及格” if score &gt;&#x3D; 60 else “不及格” —— 先写条件成立的值,再写 if 条件、else 不成立的值,<strong>必须有 else</strong> 不能省</li>
+<li>列表生成式语法:[处理后的值 for 变量 in 可迭代对象 if 筛选条件],if 筛选可省略;执行顺序是先跑 for、再过 if、最后算表达式</li>
+<li>两种条件位置别混:写在 for <strong>后面</strong>的是筛选(不满足直接丢弃),写在 for <strong>前面</strong>的是三元表达式(每个元素都要给出结果)</li>
+<li>其他生成式:{k: v for …} 字典生成式、{x for …} 集合生成式、(x for …) 生成器表达式(惰性,用 next 或 for 消费)</li>
+<li>一行写得清楚才用生成式;要套两层以上 for&#x2F;if 就老老实实写普通循环,可读性优先</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">scores = [<span class="number">55</span>, <span class="number">72</span>, <span class="number">90</span>]</span><br><span class="line"><span class="built_in">print</span>([<span class="string">&quot;及格&quot;</span> <span class="keyword">if</span> s &gt;= <span class="number">60</span> <span class="keyword">else</span> <span class="string">&quot;不及格&quot;</span> <span class="keyword">for</span> s <span class="keyword">in</span> scores])</span><br><span class="line"><span class="comment"># [&#x27;不及格&#x27;, &#x27;及格&#x27;, &#x27;及格&#x27;]</span></span><br><span class="line"></span><br><span class="line">nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]</span><br><span class="line"><span class="built_in">print</span>([x * x <span class="keyword">for</span> x <span class="keyword">in</span> nums <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>])   <span class="comment"># [4, 16, 36]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(&#123;x: x ** <span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)&#125;)        <span class="comment"># &#123;1: 1, 2: 4, 3: 9&#125;</span></span><br><span class="line">g = (x <span class="keyword">for</span> x <span class="keyword">in</span> nums <span class="keyword">if</span> x &gt; <span class="number">3</span>)               <span class="comment"># 生成器表达式</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(g))                               <span class="comment"># 4</span></span><br></pre></td></tr></table></figure>
+
+<p><em>生成式家族</em></p>
+<h3 id="14-迭代器优缺点总结"><a href="#14-迭代器优缺点总结" class="headerlink" title="14. 迭代器优缺点总结"></a>14. 迭代器优缺点总结</h3><blockquote>
+<p>🎬 对应视频:P252</p>
+</blockquote>
+<p><strong>优点:<strong>惰性求值省内存</strong>、提供统一遍历协议(不依赖下标);缺点:<strong>只能向前不能后退</strong>、</strong>没有 len() 不支持下标<strong>、耗尽即废。</strong></p>
+<ul>
+<li>优点一 惰性:next 一次才计算一个值,处理超大文件、无限数据流时内存占用恒定 —— 这是迭代器&#x2F;生成器最大的价值</li>
+<li>优点二 通用:list&#x2F;str&#x2F;dict&#x2F;文件对象都能用同一套 for + next 遍历,不要求容器支持下标访问,协议统一</li>
+<li>缺点一 不能回头:迭代器没有指针回退,想重头再来只能重新 iter() 或重建生成器</li>
+<li>缺点二 不好定位:len(it) 报错、it[0] 报错,只能逐个 next 或用 for 消费;想要第 5 个元素就得先走完前 4 个</li>
+<li>选型结论:一次性顺序消费、大数据要省内存 → 迭代器&#x2F;生成器;需要反复随机访问、多次遍历 → 老实用 list</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">it = <span class="built_in">iter</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(it))     <span class="comment"># 1 惰性取值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(it))     <span class="comment"># [2, 3] 只剩没取过的</span></span><br><span class="line"><span class="comment"># print(len(it))    # TypeError:迭代器没有长度</span></span><br><span class="line"><span class="comment"># print(it[0])      # TypeError:不支持下标</span></span><br></pre></td></tr></table></figure>
+
+<p><em>迭代器的长与短</em></p>
+<h2 id="📖-模块与常用模块"><a href="#📖-模块与常用模块" class="headerlink" title="📖 模块与常用模块"></a>📖 模块与常用模块</h2><blockquote>
+<p>🎬 对应课程:Python基础 第6章(模块与包、os&#x2F;sys&#x2F;time&#x2F;json&#x2F;re&#x2F;hashlib等)</p>
+</blockquote>
+<h3 id="1-模块与包、import-机制"><a href="#1-模块与包、import-机制" class="headerlink" title="1. 模块与包、import 机制"></a>1. 模块与包、import 机制</h3><blockquote>
+<p>🎬 对应视频:P276<del>P286、P288</del>P289</p>
+</blockquote>
+<p><strong>import 时模块顶层代码</strong>只执行一次**(有缓存);<code>from m import x</code> 直接用名字;测试代码要放在 <code>if __name__ == &quot;__main__&quot;:</code> 下。**</p>
+<ul>
+<li>模块就是一个 .py 文件;包是含 <code>__init__.py</code> 的文件夹,导入包时先执行包下的 <code>__init__.py</code></li>
+<li><code>import m</code> 后用 <code>m.x</code>;<code>from m import x</code> 直接用 x;<code>from m import x as y</code> 可起别名</li>
+<li><code>__name__</code> 被直接运行时是 “<strong>main</strong>“,被导入时是模块名,常用来让测试代码只在直接运行时执行</li>
+<li>搜索路径:先内存中已加载的 → 内置模块 → <code>sys.path</code>(通常第一个是脚本所在目录)</li>
+<li>循环导入(两个模块互相 import)会报错:把公共内容抽到第三个模块,或把 import 写进函数里延迟导入</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 文件 mymod.py</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;mymod 模块被加载&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hi</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;hi&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    hi()   <span class="comment"># 只有直接运行 python mymod.py 才执行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件 main.py</span></span><br><span class="line"><span class="keyword">import</span> mymod    <span class="comment"># 只打印: mymod 模块被加载,不会执行 hi()</span></span><br><span class="line">mymod.hi()</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>name</strong> 的作用</em></p>
+<h3 id="2-os-与-sys"><a href="#2-os-与-sys" class="headerlink" title="2. os 与 sys"></a>2. os 与 sys</h3><blockquote>
+<p>🎬 对应视频:P287、P305~P308</p>
+</blockquote>
+<p><strong>os 负责</strong>操作系统**(目录、文件、路径),sys 负责 <strong>Python 解释器本身</strong>(命令行参数、搜索路径、递归深度)。**</p>
+<ul>
+<li><code>os.getcwd()</code> 当前工作目录、<code>os.listdir()</code> 列目录、<code>os.makedirs()</code> 递归建目录、<code>os.remove()</code> 删文件</li>
+<li><code>os.path.join()</code> 按平台拼路径、<code>os.path.exists()</code> 判断存在、<code>os.path.basename/dirname</code> 取文件名&#x2F;目录名</li>
+<li><code>os.name</code> 看平台、<code>os.sep</code> 路径分隔符(win 是 ,linux&#x2F;mac 是 &#x2F;)</li>
+<li><code>sys.argv</code> 命令行参数列表(argv[0] 是脚本名)、<code>sys.path</code> 模块搜索路径、<code>sys.exit()</code> 退出程序</li>
+<li><code>sys.modules</code> 记录已加载的模块;<code>sys.getrecursionlimit()</code> 查看递归上限</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os, sys</span><br><span class="line"><span class="built_in">print</span>(os.getcwd())              <span class="comment"># 当前工作目录</span></span><br><span class="line"><span class="built_in">print</span>(os.path.exists(<span class="string">&quot;a.txt&quot;</span>))  <span class="comment"># True / False</span></span><br><span class="line"><span class="built_in">print</span>(os.path.join(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>))   <span class="comment"># a/b 或 a\b(看平台)</span></span><br><span class="line"><span class="built_in">print</span>(sys.argv)                 <span class="comment"># [&#x27;脚本名&#x27;, &#x27;命令行参数...&#x27;]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-time-datetime-random"><a href="#3-time-datetime-random" class="headerlink" title="3. time &#x2F; datetime &#x2F; random"></a>3. time &#x2F; datetime &#x2F; random</h3><blockquote>
+<p>🎬 对应视频:P300~P304</p>
+</blockquote>
+<p><strong><code>time.time()</code> 拿时间戳、<code>time.strftime()</code> 格式化;datetime 用 <code>timedelta</code> 做日期加减;random 的 <code>randint(a, b)</code> <strong>含 a 也含 b</strong>。</strong></p>
+<ul>
+<li>时间三种表示:时间戳(float)、格式化字符串、结构化时间 struct_time,<code>time.localtime()</code> 转结构化</li>
+<li><code>time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;)</code> 格式化输出;<code>time.sleep(秒)</code> 让程序暂停</li>
+<li><code>datetime.datetime.now()</code> 当前时间,<code>± datetime.timedelta(days=3)</code> 算前后三天</li>
+<li><code>random.random()</code> 得 [0,1) 小数、<code>random.randint(a, b)</code> 含两端整数、<code>random.choice(seq)</code> 随机取一个</li>
+<li><code>random.shuffle(lst)</code> 原地打乱;<code>random.sample(seq, n)</code> 不重复抽样,适合做验证码</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time, datetime, random</span><br><span class="line"><span class="built_in">print</span>(time.strftime(<span class="string">&quot;%Y-%m-%d&quot;</span>))          <span class="comment"># 如 2020-03-01</span></span><br><span class="line">now = datetime.datetime.now()</span><br><span class="line"><span class="built_in">print</span>(now - datetime.timedelta(days=<span class="number">3</span>))   <span class="comment"># 三天前</span></span><br><span class="line"><span class="built_in">print</span>(random.randint(<span class="number">1</span>, <span class="number">6</span>), random.choice(<span class="string">&quot;abc&quot;</span>))   <span class="comment"># 1~6 的整数、随机字符</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-json-与-pickle-序列化"><a href="#4-json-与-pickle-序列化" class="headerlink" title="4. json 与 pickle(序列化)"></a>4. json 与 pickle(序列化)</h3><blockquote>
+<p>🎬 对应视频:P312~P314、P316</p>
+</blockquote>
+<p><strong>两者都做序列化:<strong>json 是跨语言通用文本但类型少</strong>,<strong>pickle 是 Python 专有、几乎什么对象都能存</strong>,但反序列化不可信数据有安全风险。</strong></p>
+<ul>
+<li>json 四件套:<code>dumps/loads</code>(对象↔字符串)、<code>dump/load</code>(对象↔文件)</li>
+<li>json 只支持 str&#x2F;int&#x2F;float&#x2F;bool&#x2F;None&#x2F;list&#x2F;dict(tuple 会转成列表)</li>
+<li>json 与 Python 的差异:True→true、False→false、None→null,引号统一变双引号</li>
+<li>pickle 是二进制字节,能存函数、对象等几乎全部 Python 类型,只适合 Python 自己保存数据</li>
+<li><code>pickle.loads</code> 可能执行任意代码,<strong>永远不要</strong>加载来历不明的 pickle 数据</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json, pickle</span><br><span class="line">s = json.dumps(&#123;<span class="string">&quot;ok&quot;</span>: <span class="literal">True</span>, <span class="string">&quot;n&quot;</span>: <span class="literal">None</span>&#125;)</span><br><span class="line"><span class="built_in">print</span>(s)             <span class="comment"># &#123;&quot;ok&quot;: true, &quot;n&quot;: null&#125;</span></span><br><span class="line">d = json.loads(s)    <span class="comment"># 还原回字典</span></span><br><span class="line">b = pickle.dumps([<span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"><span class="built_in">print</span>(pickle.loads(b))   <span class="comment"># [1, 2]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-re-正则表达式"><a href="#5-re-正则表达式" class="headerlink" title="5. re 正则表达式"></a>5. re 正则表达式</h3><blockquote>
+<p>🎬 对应视频:P332</p>
+</blockquote>
+<p><strong>常用元字符 <code>\d \w \s . * + ? {n,m} [] |</code>;<strong>match 只匹配开头,search 找第一个,findall 返回所有匹配的列表</strong>;量词默认贪婪,加 ? 变非贪婪。</strong></p>
+<ul>
+<li>元字符:<code>\d</code> 数字、<code>\w</code> 字母数字下划线、<code>\s</code> 空白、<code>.</code> 除换行外任意字符、<code>^</code> 开头、<code>$</code> 结尾</li>
+<li>量词:<code>*</code> 0次以上、<code>+</code> 1次以上、<code>?</code> 0或1次、<code>{2,5}</code> 2到5次;默认<strong>贪婪</strong>尽可能多匹配</li>
+<li>match 从头匹配失败返回 None;search 返回第一个 Match 对象,<code>m.group()</code> 取内容、<code>m.group(1)</code> 取分组</li>
+<li>findall 直接返回<strong>所有匹配组成的列表</strong>;正则里有分组时,返回的是分组内容</li>
+<li>写法:<code>re.findall(r&quot;\d+&quot;, s)</code>,加 r 原始字符串避免转义问题;字符组 <code>[.]</code> 里就是字面量的点</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="built_in">print</span>(re.findall(<span class="string">r&quot;\d+&quot;</span>, <span class="string">&quot;a1b22c333&quot;</span>))   <span class="comment"># [&#x27;1&#x27;, &#x27;22&#x27;, &#x27;333&#x27;]</span></span><br><span class="line">m = re.search(<span class="string">r&quot;(\d+)-(\d+)&quot;</span>, <span class="string">&quot;2020-03&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(m.group(<span class="number">0</span>), m.group(<span class="number">1</span>), m.group(<span class="number">2</span>))   <span class="comment"># 2020-03 2020 03</span></span><br><span class="line"><span class="built_in">print</span>(re.findall(<span class="string">r&quot;a.+?&quot;</span>, <span class="string">&quot;aab&quot;</span>))           <span class="comment"># [&#x27;aa&#x27;] 非贪婪</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-hashlib-加密与-logging-日志"><a href="#6-hashlib-加密与-logging-日志" class="headerlink" title="6. hashlib 加密与 logging 日志"></a>6. hashlib 加密与 logging 日志</h3><blockquote>
+<p>🎬 对应视频:P320~P321、P326</p>
+</blockquote>
+<p><strong>hashlib 提供 <strong>md5&#x2F;sha 系列</strong>单向摘要:只认</strong>字节<strong>、不可逆,常用来“存摘要不存明文”;logging 五个级别 <strong>DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</strong>,默认只输出 WARNING 及以上。</strong></p>
+<ul>
+<li><code>update()</code> 必须传字节:<code>hashlib.md5(&quot;abc&quot;.encode(&quot;utf-8&quot;))</code>;<code>hexdigest()</code> 返回十六进制字符串</li>
+<li>摘要不可逆:数据库一般存密码摘要而不是明文;相同内容摘要一定相同,可加“盐”防彩虹表</li>
+<li><code>update()</code> 可以多次调用,效果等同于把所有内容拼接后一次性 update</li>
+<li><code>logging.basicConfig(level=logging.INFO, format=...)</code> 设置级别和格式</li>
+<li>级别低于设定值的不输出:设为 INFO 后,debug 看不到、info 及以上能看到</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line">m = hashlib.md5()</span><br><span class="line">m.update(<span class="string">&quot;hello&quot;</span>.encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">m.update(<span class="string">&quot;world&quot;</span>.encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(m.hexdigest() == hashlib.md5(<span class="string">b&quot;helloworld&quot;</span>).hexdigest())   <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line">logging.basicConfig(level=logging.INFO)   <span class="comment"># 低于 INFO 的不输出</span></span><br><span class="line">logging.info(<span class="string">&quot;系统启动&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-包与相对导入"><a href="#7-包与相对导入" class="headerlink" title="7. 包与相对导入"></a>7. 包与相对导入</h3><blockquote>
+<p>🎬 对应视频:P291~P294</p>
+</blockquote>
+<p><strong>包 &#x3D; 含 <strong><strong>init</strong>.py</strong> 的文件夹;包内用</strong>相对导入**(. 本包、.. 上一级包)组织模块,但相对导入<strong>只能在包内使用</strong>,直接运行包内文件会报错。**</p>
+<ul>
+<li>导入包本质是执行包下的 <strong>init</strong>.py;包用来把一组相关模块组织成层级结构,避免所有模块堆在顶层互相重名</li>
+<li>绝对导入:from mypkg import utils、from mypkg.api import core,以顶层包名开头写全路径,任何入口都能用</li>
+<li>相对导入:from . import utils(本包)、from .. import utils(上一级包)、from .helper import run;<strong>只有被当成包导入时</strong>才能解析 . 和 ..</li>
+<li>大坑:直接 python mypkg&#x2F;api&#x2F;core.py 运行,该文件没有”包”身份,相对导入抛 ImportError;正确姿势是 python -m mypkg.api.core 或改用绝对导入</li>
+<li><strong>init</strong>.py 常用来汇总导出:里面写 from .utils import f1,外部就能 from mypkg import f1,调用方更简洁</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 目录:mypkg/__init__.py  mypkg/utils.py  mypkg/api/core.py</span></span><br><span class="line"><span class="comment"># core.py 内部:</span></span><br><span class="line"><span class="keyword">from</span> .. <span class="keyword">import</span> utils          <span class="comment"># 上一级包 mypkg 的 utils</span></span><br><span class="line"><span class="keyword">from</span> .helper <span class="keyword">import</span> run       <span class="comment"># 同包 api 下的 helper</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行方式决定成败:</span></span><br><span class="line"><span class="comment"># python mypkg/api/core.py      ❌ 相对导入报错</span></span><br><span class="line"><span class="comment"># python -m mypkg.api.core      ✅ 以包方式运行</span></span><br></pre></td></tr></table></figure>
+
+<p><em>相对导入与运行方式</em></p>
+<h3 id="8-软件开发的目录规范"><a href="#8-软件开发的目录规范" class="headerlink" title="8. 软件开发的目录规范"></a>8. 软件开发的目录规范</h3><blockquote>
+<p>🎬 对应视频:P296~P297、P331</p>
+</blockquote>
+<p><strong>项目按固定目录分层:<strong>bin(启动)&#x2F; conf(配置)&#x2F; core(业务)&#x2F; db(数据)&#x2F; lib(公共库)&#x2F; log(日志)</strong>,入口负责把项目根目录加入 sys.path。</strong></p>
+<ul>
+<li>典型结构:bin&#x2F;start.py 是<strong>唯一启动入口</strong>;conf&#x2F;settings.py 放配置;core&#x2F;src.py 写核心业务;db&#x2F;db_handle.py 管数据文件;lib&#x2F;common.py 放公共函数(校验、加密);log&#x2F;access.log 记日志</li>
+<li>入口第一件事:把项目根目录加进 sys.path(sys.path.append(根目录路径)),否则 from core import … 找不到模块</li>
+<li>配置与代码分离:路径、开关、密钥等常变的东西放 settings.py,业务里 from conf import settings 读 —— 改配置不改代码</li>
+<li>lib 是”人人可用”的公共层,谁都可以 import 它;core 只编排业务流程,不写底层工具函数</li>
+<li>再加 README.md 说明项目介绍与运行方式;规范的价值:团队协作、排查问题都按固定位置找文件,新人上手快</li>
+</ul>
+<h3 id="9-configparser、shelve-与-xml"><a href="#9-configparser、shelve-与-xml" class="headerlink" title="9. configparser、shelve 与 xml"></a>9. configparser、shelve 与 xml</h3><blockquote>
+<p>🎬 对应视频:P317~P318</p>
+</blockquote>
+<p><strong>三个”存取数据”的补充工具:<strong>configparser</strong> 读写 ini 配置、</strong>shelve** 把字典直接持久化到文件、<strong>xml</strong> 解析标签式老格式(了解)。**</p>
+<ul>
+<li>configparser:操作 xxx.ini;结构是 [section] 下 key &#x3D; value;config.read(“conf.ini”) 读入,config[“section”][“key”] 取值(全是字符串),改完要 config.write(f) 才落盘</li>
+<li>shelve:import shelve;d &#x3D; shelve.open(“data”) 得到一个<strong>持久化字典</strong>,d[“user”] &#x3D; 任意 Python 对象,close 时自动序列化存盘 —— 比 pickle 更省心的本地缓存</li>
+<li>xml:标签嵌套的数据格式,标准库 xml.etree.ElementTree 解析:tree &#x3D; ET.parse(“x.xml”);root &#x3D; tree.getroot();root.iter(“标签”) 遍历</li>
+<li>选型:程序配置用 configparser(更现代可换 yaml,需第三方库);本地对象缓存用 shelve;跨语言交换数据还是 json 为主;xml 多见于老系统对接</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> configparser</span><br><span class="line">c = configparser.ConfigParser()</span><br><span class="line">c[<span class="string">&quot;server&quot;</span>] = &#123;<span class="string">&quot;port&quot;</span>: <span class="string">&quot;8000&quot;</span>&#125;</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;conf.ini&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    c.write(f)</span><br><span class="line"><span class="built_in">print</span>(c[<span class="string">&quot;server&quot;</span>][<span class="string">&quot;port&quot;</span>])    <span class="comment"># 8000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> shelve</span><br><span class="line">db = shelve.<span class="built_in">open</span>(<span class="string">&quot;data&quot;</span>)</span><br><span class="line">db[<span class="string">&quot;user&quot;</span>] = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;alex&quot;</span>&#125;</span><br><span class="line">db.close()</span><br></pre></td></tr></table></figure>
+
+<p><em>configparser 与 shelve</em></p>
+<h3 id="10-猴子补丁-monkey-patch"><a href="#10-猴子补丁-monkey-patch" class="headerlink" title="10. 猴子补丁(monkey patch)"></a>10. 猴子补丁(monkey patch)</h3><blockquote>
+<p>🎬 对应视频:P315</p>
+</blockquote>
+<p><strong><strong>猴子补丁 &#x3D; 程序运行中动态替换模块&#x2F;类的属性方法</strong>:<code>模块.名字 = 新函数</code> 就完成替换;典型用途是把慢实现悄悄换成快实现,调用方一行不改。</strong></p>
+<ul>
+<li>原理:Python 属性在运行期随时可改,import json 后执行 json.loads &#x3D; my_fast_load,之后所有 json.loads 都走新实现</li>
+<li>经典案例:用性能更好的 ujson 替换标准库 json —— 业务代码里仍然 import json、json.dumps(…),实际干活的是 ujson</li>
+<li>打补丁的时机:尽量在<strong>程序入口处统一打</strong>,越早越好;散落在各处打补丁会让行为不可预测</li>
+<li>代价:补丁让”看到的代码”和”实际执行的代码”不一致,排查问题要绕个弯;必须在注释里写清楚补丁的目的</li>
+<li>它也是一种”不改源码改行为”的思想,本质是鸭子类型给的运行时自由</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># pip install ujson 之后,在程序入口统一打补丁:</span></span><br><span class="line"><span class="keyword">import</span> json, ujson</span><br><span class="line">json.dumps = ujson.dumps    <span class="comment"># 猴子补丁</span></span><br><span class="line"><span class="built_in">print</span>(json.dumps(&#123;<span class="string">&quot;a&quot;</span>: <span class="number">1</span>&#125;))  <span class="comment"># 调用方无感知,实际由 ujson 执行</span></span><br></pre></td></tr></table></figure>
+
+<p><em>猴子补丁替换 json 实现</em></p>
+<h3 id="11-subprocess-执行系统命令"><a href="#11-subprocess-执行系统命令" class="headerlink" title="11. subprocess 执行系统命令"></a>11. subprocess 执行系统命令</h3><blockquote>
+<p>🎬 对应视频:P323</p>
+</blockquote>
+<p><strong><strong>subprocess</strong> 在 Python 里执行操作系统命令并**拿到输出结果</strong>,是 os.system 的升级版,自动化运维脚本的标配。**</p>
+<ul>
+<li>res &#x3D; subprocess.run(“命令”, shell&#x3D;True) 执行命令,返回 CompletedProcess 对象;res.returncode 是退出码,0 表示成功</li>
+<li>拿输出:run(cmd, shell&#x3D;True, stdout&#x3D;subprocess.PIPE, stderr&#x3D;subprocess.PIPE),结果在 res.stdout &#x2F; res.stderr(bytes),要 .decode() 才能看</li>
+<li>Windows 命令行输出默认是 <strong>gbk</strong> 编码,res.stdout.decode(“gbk”);Linux&#x2F;Mac 一般 decode(“utf-8”)</li>
+<li>对比 os.system(cmd):只负责把命令丢给终端执行、返回退出码,<strong>拿不到命令输出</strong>;要结果就用 subprocess</li>
+<li>安全提醒:shell&#x3D;True 拼接用户输入有命令注入风险,外部输入别直接拼进命令</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line">res = subprocess.run(<span class="string">&quot;dir&quot;</span>, shell=<span class="literal">True</span>,</span><br><span class="line">                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line"><span class="built_in">print</span>(res.returncode)             <span class="comment"># 0 表示执行成功</span></span><br><span class="line"><span class="built_in">print</span>(res.stdout.decode(<span class="string">&quot;gbk&quot;</span>))   <span class="comment"># 打印 dir 的输出(Windows)</span></span><br></pre></td></tr></table></figure>
+
+<p><em>执行系统命令并拿结果</em></p>
+<h3 id="12-打印进度条-r-与-flush"><a href="#12-打印进度条-r-与-flush" class="headerlink" title="12. 打印进度条(\r 与 flush)"></a>12. 打印进度条(\r 与 flush)</h3><blockquote>
+<p>🎬 对应视频:P309</p>
+</blockquote>
+<p><strong>进度条核心是</strong>\r 回到行首覆盖打印** + <strong>flush&#x3D;True 强制立刻输出</strong>:<code>print(..., end=&quot;&quot;, flush=True)</code> 在同一行不断重写百分比。**</p>
+<ul>
+<li>\r 是回车符:光标回到本行开头,下一次打印从行首覆盖旧内容;\n 则换到下一行 —— 进度条靠 \r 实现”原地刷新”</li>
+<li>print 默认 end&#x3D;”\n” 且有缓冲,必须改成 end&#x3D;”” 不换行,并加 flush&#x3D;True 立刻刷出,否则终端迟迟看不到更新</li>
+<li>百分比 &#x3D; 已完成 &#x2F; 总数 × 100;再换算成字符块更直观:bar &#x3D; “#” * int(pct &#x2F; 5),拼出 [#####     ] 50% 的样子</li>
+<li>time.sleep(0.1) 只是模拟耗时;真实场景(下载、批量处理)把 sleep 换成实际任务,每完成一批刷一次</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line">total = <span class="number">30</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(total + <span class="number">1</span>):</span><br><span class="line">    pct = i / total * <span class="number">100</span></span><br><span class="line">    bar = <span class="string">&quot;#&quot;</span> * <span class="built_in">int</span>(pct / <span class="number">5</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\r[<span class="subst">&#123;bar:&lt;<span class="number">10</span>&#125;</span>] <span class="subst">&#123;pct:<span class="number">.0</span>f&#125;</span>%&quot;</span>, end=<span class="string">&quot;&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+
+<p><em>命令行进度条</em></p>
+<h3 id="13-shutil-文件与目录的高级操作"><a href="#13-shutil-文件与目录的高级操作" class="headerlink" title="13. shutil 文件与目录的高级操作"></a>13. shutil 文件与目录的高级操作</h3><blockquote>
+<p>🎬 对应视频:P310</p>
+</blockquote>
+<p><strong>shutil 在 os 之上封装</strong>目录级高级操作**:copytree 复制整个目录、rmtree 强删非空目录、move 移动&#x2F;改名,make_archive 还能一行打包 zip。**</p>
+<ul>
+<li>复制三兄弟:copyfile(src, dst) 只拷内容;copy 再拷权限;copy2 连修改时间等元数据一起拷 —— 备份场景用 copy2</li>
+<li>shutil.copytree(“src”, “dst”) 递归复制整个文件夹树;os 模块只能一个文件一个文件处理,目录级操作就靠 shutil</li>
+<li>shutil.rmtree(“dir”) 递归删除整个非空目录;对比:os.remove 只能删文件、os.rmdir 只能删空目录</li>
+<li>shutil.move(src, dst) 移动文件或文件夹,目标名不同时就是重命名,等价于剪切+粘贴</li>
+<li>shutil.make_archive(“base_name”, “zip”, root_dir&#x3D;”要打包的目录”) 一行压缩打包;解压用 zipfile&#x2F;tarfile 模块</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> shutil</span><br><span class="line">shutil.copytree(<span class="string">&quot;data&quot;</span>, <span class="string">&quot;data_backup&quot;</span>)    <span class="comment"># 整个目录连内容复制</span></span><br><span class="line">shutil.move(<span class="string">&quot;data_backup&quot;</span>, <span class="string">&quot;bak&quot;</span>)         <span class="comment"># 改名/移动</span></span><br><span class="line">shutil.rmtree(<span class="string">&quot;bak&quot;</span>)                      <span class="comment"># 连目录带内容删除</span></span><br><span class="line">shutil.make_archive(<span class="string">&quot;log2020&quot;</span>, <span class="string">&quot;zip&quot;</span>, root_dir=<span class="string">&quot;log&quot;</span>)   <span class="comment"># 打包 zip</span></span><br></pre></td></tr></table></figure>
+
+<p><em>目录级复制&#x2F;移动&#x2F;删除</em></p>
+<h3 id="14-函数的类型提示-type-hints"><a href="#14-函数的类型提示-type-hints" class="headerlink" title="14. 函数的类型提示(type hints)"></a>14. 函数的类型提示(type hints)</h3><blockquote>
+<p>🎬 对应视频:P290</p>
+</blockquote>
+<p><strong>参数和返回值可用</strong>类型注解<strong>说明意图:<code>def add(x: int, y: int) -&gt; int:</code>;它不是强制校验,而是给 IDE、静态检查工具和人看的”说明书”。</strong></p>
+<ul>
+<li>写法:参数后冒号加类型,返回值用 -&gt; 类型;带默认值照常写:def f(age: int &#x3D; 18) -&gt; str</li>
+<li>注解<strong>不参与运行校验</strong>:add(“a”, “b”) 照样执行返回 ab,类型写错解释器不拦 —— 想静态检查要配 mypy 等工具</li>
+<li>容器类型:from typing import List, Dict 后写 List[int]、Dict[str, int];Python 3.9+ 也可以直接写 list[int]、dict[str, int]</li>
+<li>好处:IDE 补全和告警更准、mypy 能提前抓类型 bug、代码即文档,团队协作时函数签名一眼看懂</li>
+<li>变量也能注解:name: str &#x3D; “alex”;函数的注解存在 <strong>annotations</strong> 字典里可以查看</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">x: <span class="built_in">int</span>, y: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(add(<span class="number">1</span>, <span class="number">2</span>))            <span class="comment"># 3</span></span><br><span class="line"><span class="comment"># print(add(&quot;a&quot;, &quot;b&quot;))      # 不报错,返回 ab:注解不强制</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">total</span>(<span class="params">nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span>(nums)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(total([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))     <span class="comment"># 6</span></span><br></pre></td></tr></table></figure>
+
+<p><em>类型注解示例</em></p>
+<h3 id="15-logging-进阶-格式、落盘、日志字典与轮转"><a href="#15-logging-进阶-格式、落盘、日志字典与轮转" class="headerlink" title="15. logging 进阶(格式、落盘、日志字典与轮转)"></a>15. logging 进阶(格式、落盘、日志字典与轮转)</h3><blockquote>
+<p>🎬 对应视频:P327~P330</p>
+</blockquote>
+<p><strong>logging 可用 <strong>format 定制格式</strong>、</strong>filename 让日志落盘**;配置多时收成<strong>日志字典</strong>交给 dictConfig 一次生效;大日志用 <strong>RotatingFileHandler 按大小轮转</strong>防止写满磁盘。**</p>
+<ul>
+<li>常用格式字段:%(asctime)s 时间、%(levelname)s 级别、%(name)s 日志器名、%(message)s 内容、%(lineno)d 行号、%(filename)s 文件名</li>
+<li>basicConfig(filename&#x3D;”app.log”, encoding&#x3D;”utf-8”) 写文件;不传 filename 输出到控制台 —— level&#x2F;format&#x2F;filename&#x2F;encoding 各管一件事</li>
+<li>日志字典:把 version、formatters、handlers、loggers 写成一个 dict,logging.config.dictConfig(cfg) 一次性生效;配置可以挪到 conf 目录当设置文件</li>
+<li>日志轮转:RotatingFileHandler(“app.log”, maxBytes&#x3D;10<em>1024</em>1024, backupCount&#x3D;5) 单文件超 10MB 就切新文件,最多留 5 个历史文件</li>
+<li>日志命名:logging.getLogger(“业务名”) 按名字拿 logger,模块里常用 <strong>name</strong> 命名;名字不同互不干扰,日志一眼看出来源</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">fmt = <span class="string">&quot;%(asctime)s %(levelname)s %(message)s&quot;</span></span><br><span class="line">logging.basicConfig(</span><br><span class="line">    level=logging.INFO,</span><br><span class="line">    <span class="built_in">format</span>=fmt,</span><br><span class="line">    filename=<span class="string">&quot;app.log&quot;</span>,     <span class="comment"># 写入文件而不是控制台</span></span><br><span class="line">    encoding=<span class="string">&quot;utf-8&quot;</span>,</span><br><span class="line">)</span><br><span class="line">logging.info(<span class="string">&quot;服务启动&quot;</span>)</span><br><span class="line">logging.warning(<span class="string">&quot;磁盘空间不足&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置项多时:cfg = &#123;...&#125;; logging.config.dictConfig(cfg)</span></span><br><span class="line"><span class="comment"># 大日志:from logging.handlers import RotatingFileHandler</span></span><br></pre></td></tr></table></figure>
+
+<p><em>日志格式与落盘</em></p>
+<h3 id="16-密码加盐-salt"><a href="#16-密码加盐-salt" class="headerlink" title="16. 密码加盐(salt)"></a>16. 密码加盐(salt)</h3><blockquote>
+<p>🎬 对应视频:P322</p>
+</blockquote>
+<p><strong>裸 md5(“123456”) 能被彩虹表反查;把一段</strong>随机字符串(盐)拼进密码<strong>再做摘要,相同明文也得到不同摘要,反查难度大幅提升。</strong></p>
+<ul>
+<li>加盐摘要:m.update((盐 + 密码).encode(“utf-8”));校验时用<strong>同一个盐</strong>再算一遍,比对两次的 hexdigest</li>
+<li>盐的最佳实践:<strong>每个用户一个随机盐</strong>(os.urandom(16).hex() 或 uuid4().hex),随摘要一起存库;固定全局盐也能对抗通用彩虹表</li>
+<li>安全性来自「不可逆 + 盐随机」:攻击者拿到库,也要对每个用户的盐单独建表,成本大幅上升</li>
+<li>工程上更推荐 bcrypt&#x2F;argon2 等专用算法(自动加盐、故意算得慢);md5+盐是理解原理的入门实现</li>
+<li>项目实战(Day25 注册登录)就是把「明文 → 拼盐 → md5 → 存摘要」封装成 lib&#x2F;common.py 的公共加密函数,登录认证装饰器复用它</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib, os</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_digest</span>(<span class="params">password, salt</span>):</span><br><span class="line">    m = hashlib.md5()</span><br><span class="line">    m.update((salt + password).encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    <span class="keyword">return</span> m.hexdigest()</span><br><span class="line"></span><br><span class="line">salt = os.urandom(<span class="number">16</span>).<span class="built_in">hex</span>()          <span class="comment"># 每个用户一份随机盐</span></span><br><span class="line">d1 = make_digest(<span class="string">&quot;123456&quot;</span>, salt)</span><br><span class="line"><span class="built_in">print</span>(d1 == make_digest(<span class="string">&quot;123456&quot;</span>, salt))          <span class="comment"># True 同盐同密码</span></span><br><span class="line"><span class="built_in">print</span>(make_digest(<span class="string">&quot;123456&quot;</span>, <span class="string">&quot;另一份盐&quot;</span>) == d1)    <span class="comment"># False 盐变摘要变</span></span><br></pre></td></tr></table></figure>
+
+<p><em>加盐摘要</em></p>
+<hr>
+<p><strong>系列目录 &#x2F; 工具获取方式见文末 👇</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/03/python-03/">https://ln996.github.io/2026/11/03/python-03/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E5%9F%BA%E7%A1%80/">基础</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/04/python-04/" title="面向对象编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">面向对象编程</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 面向对象 🎬 对应课程:Python基础 第7章(类、三大特性、绑定方法、反射、元类)  1. 类与对象(类属性 vs 实例属性) 🎬 对应视频:P352~P357  类是模板**,对象是实例;__init__ 在实例化时自动执行;类属性所有实例共享,实例属性每个对象独有一份。**  定义:class 类名:(大驼峰命名);实例化 p = 类名(参数) 自动触发 __init__ 实例方法的第一个参数 self 就是当前实例,实例属性靠 self.x = ... 绑定在对象上 类属性写在类里方法外,所有实例共享;实例属性只属于一个对象 取值先找实例属性,找不到再找类属性;实例.属性 = 值 是给实例新增属性,不会改类属性 对象属性可以动态增删:p.age = 18、del p.age  12345678910class Student:    school = &quot;老男孩&quot;   # 类属性,所有实例共享    def __init__(self, name)...</div></div></div></a><a class="pagination-related" href="/2026/11/02/python-02/" title="流程控制与文件操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">流程控制与文件操作</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 流程控制(if &#x2F; while &#x2F; for) 🎬 对应课程:Python基础 第3章(if判断、while循环、for循环)  1. if 分支结构 🎬 对应视频:P86、P89~P92  Python 用缩进**(推荐4空格)表示代码块,if / elif / else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写 90 &gt; score &gt;= 80 elif 可以有多个,else 最多一个且可不写 三元表达式:值1 if 条件 else 值2  12345678score = 85if score &gt;= 90:    print(&quot;A&quot;)elif score &gt;= 80:    print(&quot;B&quot;)else:    print(&quot;C&quot...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/11/02/python-02/" title="流程控制与文件操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-02</div><div class="info-item-2">流程控制与文件操作</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 流程控制(if &#x2F; while &#x2F; for) 🎬 对应课程:Python基础 第3章(if判断、while循环、for循环)  1. if 分支结构 🎬 对应视频:P86、P89~P92  Python 用缩进**(推荐4空格)表示代码块,if / elif / else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写 90 &gt; score &gt;= 80 elif 可以有多个,else 最多一个且可不写 三元表达式:值1 if 条件 else 值2  12345678score = 85if score &gt;= 90:    print(&quot;A&quot;)elif score &gt;= 80:    print(&quot;B&quot;)else:    print(&quot;C&quot...</div></div></div></a><a class="pagination-related" href="/2026/11/01/python-01/" title="Python入门与数据类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-01</div><div class="info-item-2">Python入门与数据类型</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 计算机基础 🎬 对应课程:Day01~03 计算机核心基础  1. 计算机五大组成 🎬 对应视频:P11、P22  计算机五大组成:控制器、运算器、存储器、输入设备、输出设备;控制器 + 运算器 &#x3D; CPU,程序的本质是”数据 + 指令”,全部用二进制表示。  控制器:计算机的”指挥系统”,负责读取指令、分析指令、发出控制信号,协调各部件工作 运算器:负责算术运算(加、减、乘、除)和逻辑运算(与、或、非、比较),是真正”算数”的部件 存储器:保存数据和程序;分内存(电信号存储、速度快、断电丢失)与外存&#x2F;硬盘(永久保存、速度慢) 输入设备:把外界信息转成二进制给计算机,如键盘、鼠标、麦克风;输出设备:把二进制结果还原成人能看懂的形式,如显示器、音箱、打印机 程序运行的本质:程序(指令 + 数据)先加载到存储器,CPU 不断”取指令 → 分析 → 执行”,结果交给输出设备呈现  2. 三大核心硬件与存储器(IO瓶颈) 🎬 对应视频:P13、P21、P25~P...</div></div></div></a><a class="pagination-related" href="/2026/11/14/python-14/" title="课堂代码精选51段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-14</div><div class="info-item-2">课堂代码精选51段</div></div><div class="info-2"><div class="info-item-1"> 本文整理视频里老师敲的重点课堂代码,每段标注对应集数与练习要点。建议:先遮住代码自己写,写完对照;改参数看变化。   ⌨️ 变量引用与 id &#x2F; is &#x2F; &#x3D;&#x3D;(第一周必敲) 🎬 对应视频:P55~P61  🎯 这段练什么: 变量存的是引用不是值本身;b &#x3D; a 后两个名字共用对象;is 比地址、== 比值。敲完这段,后面所有”改了a怎么b也变了”的问题都能自己推导。 12345678910a = [1, 2, 3]b = a              # b 和 a 指向同一个列表b.append(4)print(a)           # [1, 2, 3, 4]  改b即改aprint(a is b)      # True 同一个对象c = [1, 2, 3, 4]print(a == c)      # True 值相等print(a is c)      # False 但不是同一个对象print(id(a), id(c))  # 两个不同的内存地址   ⌨️ 可变 &#x2F; 不可变 类型行为实验 🎬 对...</div></div></div></a><a class="pagination-related" href="/2026/11/11/python-11/" title="Django与DRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-11</div><div class="info-item-2">Django与DRF</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTTP协议与Web框架本质 🎬 对应课程:框架开始前(HTTP协议、wsgiref、手写web框架)  1. HTTP协议特点(基于TCP、无状态、长连接) 🎬 对应视频:P585~P586  HTTP 是基于 TCP 的应用层协议**,本身无状态;HTTP&#x2F;1.1 默认通过 keep-alive 复用 TCP 连接,但每次请求的内容仍然相互独立。**  HTTP 工作在应用层,底层依赖 TCP 提供可靠传输(默认端口 80,HTTPS 默认 443) 无状态:协议本身不记住上一次请求是谁发的,每次请求相互独立;登录状态是靠 cookie&#x2F;session 机制额外补充的 短连接:HTTP&#x2F;1.0 每次请求都新建一条 TCP 连接,用完就断,频繁握手开销大 keep-alive(长连接):HTTP&#x2F;1.1 默认开启,一条 TCP 连接可以连续承载多次 HTTP 请求&#x2F;响应 无状态说的是”不保存上下文”,长&#x2F;短连接说的...</div></div></div></a><a class="pagination-related" href="/2026/11/08/python-08/" title="经典练习与课后作业"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-08</div><div class="info-item-2">经典练习与课后作业</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 课堂经典练习(视频例题) 🎬 对应课程:Python基础阶段课堂练习与作业(视频里反复练的经典例题整理,可对照B站视频)  1. 编程题四步法读题 → 想思路(先写注释伪代码) → 写代码 → 测边界,视频里反复强调:先想清楚再动手。  读题:把题面要求逐句圈出来,明确输入是什么、输出是什么 想思路:用中文注释把步骤写下来,再逐行翻译成代码 写代码:小步走,每写一小段就运行验证 测边界:空输入、错误输入(如数字位置输入了字母)、极端值(0、负数)  12345# 例:购物车思路伪代码# 1. 输入工资# 2. 循环:展示商品 -&gt; 输入编号# 3. 判断余额够不够 -&gt; 够:扣钱加入购物车# 4. 输入 q 退出,打印购物清单和余额  2. 经典练习与考点对照每个经典练习都对应固定的知识点,练一题等于复习一片。  九九乘法表:双层for + end参数;斐波那契:多重赋值 a, b &#x3D; b, a+b 猜年龄 &#x2F; 登录锁定:while循环 + br...</div></div></div></a><a class="pagination-related" href="/2026/11/06/python-06/" title="并发编程逐集精讲"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-06</div><div class="info-item-2">并发编程逐集精讲</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 并发编程 🎬 对应课程:Python基础 第9章(多进程、多线程、GIL、锁、线程池、协程)  1. 进程与线程基本概念 🎬 对应视频:P458、P470  进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配资源(内存、文件句柄)的基本单位,进程之间相互独立 线程:进程内部的执行单元,共享所在进程的全局变量和内存,创建、切换开销比进程小 一个进程至少有一个主线程;某线程崩溃可能拖垮整个进程,而一个进程崩溃不影响其他进程 并行:多个 CPU 核心真正同时执行;并发:单核(或同一核)时间片轮转,看起来同时执行 Python 实践:计算密集用多进程,IO 密集用多线程或协程  2. multiprocessing 多进程 🎬 对应视频:P458~P460、P463、P468  Process(target=函数, args=(参数,)) 创建子进程,start() 启动、join() 等待;进程...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E5%87%BD%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">📖 函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89%E4%B8%8E%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="toc-number">1.1.</span> <span class="toc-text">1. 函数定义与返回值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0-%E4%BD%8D%E7%BD%AE-%E5%85%B3%E9%94%AE%E5%AD%97-%E9%BB%98%E8%AE%A4-args-kwargs"><span class="toc-number">1.2.</span> <span class="toc-text">2. 函数参数(位置&#x2F;关键字&#x2F;默认&#x2F;*args&#x2F;**kwargs)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%90%8D%E7%A7%B0%E7%A9%BA%E9%97%B4%E4%B8%8E%E4%BD%9C%E7%94%A8%E5%9F%9F-LEGB%E3%80%81global-nonlocal"><span class="toc-number">1.3.</span> <span class="toc-text">3. 名称空间与作用域(LEGB、global&#x2F;nonlocal)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%97%AD%E5%8C%85%E4%B8%8E%E8%A3%85%E9%A5%B0%E5%99%A8-%E5%90%AB%E5%B8%A6%E5%8F%82%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="toc-number">1.4.</span> <span class="toc-text">4. 闭包与装饰器(含带参装饰器)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%BF%AD%E4%BB%A3%E5%99%A8%E4%B8%8E%E7%94%9F%E6%88%90%E5%99%A8-yield%E3%80%81next"><span class="toc-number">1.5.</span> <span class="toc-text">5. 迭代器与生成器(yield、next)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%80%92%E5%BD%92%E3%80%81lambda-%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="toc-number">1.6.</span> <span class="toc-text">6. 递归、lambda 与常用内置函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89%E7%9A%84%E4%B8%89%E7%A7%8D%E5%BD%A2%E5%BC%8F%E4%B8%8E%E8%B0%83%E7%94%A8%E5%BD%A2%E5%BC%8F"><span class="toc-number">1.7.</span> <span class="toc-text">7. 函数定义的三种形式与调用形式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E9%80%92%E5%BD%92%E7%9A%84%E4%B8%A4%E4%B8%AA%E9%98%B6%E6%AE%B5%E4%B8%8E%E4%BA%8C%E5%88%86%E6%B3%95"><span class="toc-number">1.8.</span> <span class="toc-text">8. 递归的两个阶段与二分法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-yield-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%BD%A2%E5%BC%8F-send-%E7%BB%99-yield-%E4%BC%A0%E5%80%BC"><span class="toc-number">1.9.</span> <span class="toc-text">9. yield 表达式形式(send 给 yield 传值)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E4%B8%8E%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3"><span class="toc-number">1.10.</span> <span class="toc-text">10. 面向过程与函数式编程思想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%87%BD%E6%95%B0%E5%B5%8C%E5%A5%97"><span class="toc-number">1.11.</span> <span class="toc-text">11. 函数对象与函数嵌套</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E5%8F%A0%E5%8A%A0%E5%A4%9A%E4%B8%AA%E8%A3%85%E9%A5%B0%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.12.</span> <span class="toc-text">12. 叠加多个装饰器的执行顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E4%B8%89%E5%85%83%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8E%E5%88%97%E8%A1%A8%E7%94%9F%E6%88%90%E5%BC%8F"><span class="toc-number">1.13.</span> <span class="toc-text">13. 三元表达式与列表生成式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E8%BF%AD%E4%BB%A3%E5%99%A8%E4%BC%98%E7%BC%BA%E7%82%B9%E6%80%BB%E7%BB%93"><span class="toc-number">1.14.</span> <span class="toc-text">14. 迭代器优缺点总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E6%A8%A1%E5%9D%97%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97"><span class="toc-number">2.</span> <span class="toc-text">📖 模块与常用模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A8%A1%E5%9D%97%E4%B8%8E%E5%8C%85%E3%80%81import-%E6%9C%BA%E5%88%B6"><span class="toc-number">2.1.</span> <span class="toc-text">1. 模块与包、import 机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-os-%E4%B8%8E-sys"><span class="toc-number">2.2.</span> <span class="toc-text">2. os 与 sys</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-time-datetime-random"><span class="toc-number">2.3.</span> <span class="toc-text">3. time &#x2F; datetime &#x2F; random</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-json-%E4%B8%8E-pickle-%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">2.4.</span> <span class="toc-text">4. json 与 pickle(序列化)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-re-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">2.5.</span> <span class="toc-text">5. re 正则表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-hashlib-%E5%8A%A0%E5%AF%86%E4%B8%8E-logging-%E6%97%A5%E5%BF%97"><span class="toc-number">2.6.</span> <span class="toc-text">6. hashlib 加密与 logging 日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%8C%85%E4%B8%8E%E7%9B%B8%E5%AF%B9%E5%AF%BC%E5%85%A5"><span class="toc-number">2.7.</span> <span class="toc-text">7. 包与相对导入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E7%9A%84%E7%9B%AE%E5%BD%95%E8%A7%84%E8%8C%83"><span class="toc-number">2.8.</span> <span class="toc-text">8. 软件开发的目录规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-configparser%E3%80%81shelve-%E4%B8%8E-xml"><span class="toc-number">2.9.</span> <span class="toc-text">9. configparser、shelve 与 xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E7%8C%B4%E5%AD%90%E8%A1%A5%E4%B8%81-monkey-patch"><span class="toc-number">2.10.</span> <span class="toc-text">10. 猴子补丁(monkey patch)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-subprocess-%E6%89%A7%E8%A1%8C%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4"><span class="toc-number">2.11.</span> <span class="toc-text">11. subprocess 执行系统命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E6%89%93%E5%8D%B0%E8%BF%9B%E5%BA%A6%E6%9D%A1-r-%E4%B8%8E-flush"><span class="toc-number">2.12.</span> <span class="toc-text">12. 打印进度条(\r 与 flush)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-shutil-%E6%96%87%E4%BB%B6%E4%B8%8E%E7%9B%AE%E5%BD%95%E7%9A%84%E9%AB%98%E7%BA%A7%E6%93%8D%E4%BD%9C"><span class="toc-number">2.13.</span> <span class="toc-text">13. shutil 文件与目录的高级操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%8F%90%E7%A4%BA-type-hints"><span class="toc-number">2.14.</span> <span class="toc-text">14. 函数的类型提示(type hints)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-logging-%E8%BF%9B%E9%98%B6-%E6%A0%BC%E5%BC%8F%E3%80%81%E8%90%BD%E7%9B%98%E3%80%81%E6%97%A5%E5%BF%97%E5%AD%97%E5%85%B8%E4%B8%8E%E8%BD%AE%E8%BD%AC"><span class="toc-number">2.15.</span> <span class="toc-text">15. logging 进阶(格式、落盘、日志字典与轮转)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-%E5%AF%86%E7%A0%81%E5%8A%A0%E7%9B%90-salt"><span class="toc-number">2.16.</span> <span class="toc-text">16. 密码加盐(salt)</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

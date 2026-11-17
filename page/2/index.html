@@ -1,0 +1,196 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>李宁的博客 - 学习记录与分享</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Python 学习笔记、技术与生活">
+<meta property="og:type" content="website">
+<meta property="og:title" content="李宁的博客">
+<meta property="og:url" content="https://ln996.github.io/page/2/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="Python 学习笔记、技术与生活">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:author" content="李宁">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json"></script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/page/2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '李宁的博客',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">李宁的博客</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/05/python-05/" title="网络编程逐集精讲">网络编程逐集精讲</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-05T01:00:00.000Z" title="发表于 2026-11-05 09:00:00">2026-11-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 网络编程 🎬 对应课程:Python基础 第8章(网络基础、socket、黏包、socketserver)  1. 网络基础(IP、端口、子网掩码) 🎬 对应视频:P421  网络通信三要素:IP 定位主机、端口定位程序、协议约定数据格式;子网掩码用来区分 IP 的网络位与主机位。  局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网 IP 地址:标识网络中的一台主机,如 192.168.1.10;127.0.0.1 是本机回环地址,永远代表自己,常用于本机测试 端口:范围 0~65535,标识主机上的一个应用程序;0~1023 是知名端口(80 HTTP、443 HTTPS、3306 MySQL),自写程序避开 子网掩码:如 255.255.255.0,与 IP 做按位与运算,得到网络位,用来判断两台机器是否在同一网段 MAC 地址:网卡的物理地址,用于局域网内定位设备;发送数据实际是 IP 找主机、MAC 找网卡、端口找程序  2. 网络分...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/04/python-04/" title="面向对象编程">面向对象编程</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-04T01:00:00.000Z" title="发表于 2026-11-04 09:00:00">2026-11-04</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 面向对象 🎬 对应课程:Python基础 第7章(类、三大特性、绑定方法、反射、元类)  1. 类与对象(类属性 vs 实例属性) 🎬 对应视频:P352~P357  类是模板**,对象是实例;__init__ 在实例化时自动执行;类属性所有实例共享,实例属性每个对象独有一份。**  定义:class 类名:(大驼峰命名);实例化 p = 类名(参数) 自动触发 __init__ 实例方法的第一个参数 self 就是当前实例,实例属性靠 self.x = ... 绑定在对象上 类属性写在类里方法外,所有实例共享;实例属性只属于一个对象 取值先找实例属性,找不到再找类属性;实例.属性 = 值 是给实例新增属性,不会改类属性 对象属性可以动态增删:p.age = 18、del p.age  12345678910class Student:    school = &quot;老男孩&quot;   # 类属性,所有实例共享    def __init__(self, name)...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/03/python-03/" title="函数与模块">函数与模块</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-03T01:00:00.000Z" title="发表于 2026-11-03 09:00:00">2026-11-03</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 函数 🎬 对应课程:Python基础 第5章(函数、作用域、装饰器、迭代器生成器)  1. 函数定义与返回值 🎬 对应视频:P198~P200、P204  函数用 def 定义,没有 return 或只写 return 时默认返回 None;return a, b 本质是返回一个元组。  定义:def 函数名(参数): + 缩进的函数体;函数先定义后调用,定义时函数体并不执行 return 会立即结束函数;没有 return 或 return 后面不带值,统一返回 None return a, b 是把两个值打包成元组返回,接收时 a, b = f() 解包 函数体第一行可写三引号字符串作文档说明,用 函数名.__doc__ 查看 函数名遵循变量命名规范,且不能与内置函数重名(如自定义 list 会遮蔽内置 list)  123456def my_max(a, b):    &quot;&quot;&quot;返回较大的数&quot;&quot;&quot;    retur...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/02/python-02/" title="流程控制与文件操作">流程控制与文件操作</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-02T01:00:00.000Z" title="发表于 2026-11-02 09:00:00">2026-11-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 流程控制(if &#x2F; while &#x2F; for) 🎬 对应课程:Python基础 第3章(if判断、while循环、for循环)  1. if 分支结构 🎬 对应视频:P86、P89~P92  Python 用缩进**(推荐4空格)表示代码块,if / elif / else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写 90 &gt; score &gt;= 80 elif 可以有多个,else 最多一个且可不写 三元表达式:值1 if 条件 else 值2  12345678score = 85if score &gt;= 90:    print(&quot;A&quot;)elif score &gt;= 80:    print(&quot;B&quot;)else:    print(&quot;C&quot...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/11/01/python-01/" title="Python入门与数据类型">Python入门与数据类型</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-11-01T01:00:00.000Z" title="发表于 2026-11-01 09:00:00">2026-11-01</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 计算机基础 🎬 对应课程:Day01~03 计算机核心基础  1. 计算机五大组成 🎬 对应视频:P11、P22  计算机五大组成:控制器、运算器、存储器、输入设备、输出设备;控制器 + 运算器 &#x3D; CPU,程序的本质是”数据 + 指令”,全部用二进制表示。  控制器:计算机的”指挥系统”,负责读取指令、分析指令、发出控制信号,协调各部件工作 运算器:负责算术运算(加、减、乘、除)和逻辑运算(与、或、非、比较),是真正”算数”的部件 存储器:保存数据和程序;分内存(电信号存储、速度快、断电丢失)与外存&#x2F;硬盘(永久保存、速度慢) 输入设备:把外界信息转成二进制给计算机,如键盘、鼠标、麦克风;输出设备:把二进制结果还原成人能看懂的形式,如显示器、音箱、打印机 程序运行的本质:程序(指令 + 数据)先加载到存储器,CPU 不断”取指令 → 分析 → 执行”,结果交给输出设备呈现  2. 三大核心硬件与存储器(IO瓶颈) 🎬 对应视频:P13、P21、P25~P...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2026/10/31/python-00/" title="Python全栈学习笔记:课程导读与目录">Python全栈学习笔记:课程导读与目录</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-10-31T01:00:00.000Z" title="发表于 2026-10-31 09:00:00">2026-10-31</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="content"> 最近跟完一套 Python 全栈课程,顺手给自己做了一个可刷题的本地学习系统:6 个阶段 &#x2F; 37 个章节 &#x2F; 453 道题(带解析) &#x2F; 22 页课堂板书笔记 &#x2F; 51 段课堂代码。本系列文章就是它的全部知识点笔记,按阶段拆成 15 篇,欢迎收藏追更。  本系列目录  Python入门与数据类型(笔记合集)(25 个知识点)    流程控制与文件操作(笔记合集)(16 个知识点)    函数与模块(笔记合集)(30 个知识点)    面向对象编程(笔记合集)(13 个知识点)    网络编程·逐集精讲(Day34~37)(37 个知识点)    并发编程·逐集精讲(Day38~42)(59 个知识点)    异常处理与代码模板速查(21 个知识点)    经典练习与课后作业(Python基础)(4 个知识点)    MySQL数据库(笔记+作业)(24 个知识点)    前端三件套:HTML&#x2F;CSS&#x2F;JS(笔记+作业)(39 个知识点)    Django与DRF(笔记+作业)(39 个知识点)    项目实战:选课...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline"><i class="fas fa-folder-open"></i><span>分类</span></div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><span class="card-category-list-name">Python学习笔记</span><span class="card-category-list-count">15</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%BC%80%E5%9C%BA%E7%99%BD/"><span class="card-category-list-name">开场白</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/HTML/" style="font-size: 1.1em; color: #999">HTML</a> <a href="/tags/MySQL/" style="font-size: 1.1em; color: #999">MySQL</a> <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">网络编程</a> <a href="/tags/JavaScript/" style="font-size: 1.1em; color: #999">JavaScript</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.23em; color: #999ea6">随笔</a> <a href="/tags/CSS/" style="font-size: 1.1em; color: #999">CSS</a> <a href="/tags/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/" style="font-size: 1.1em; color: #999">项目实战</a> <a href="/tags/Python/" style="font-size: 1.5em; color: #99a9bf">Python</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" style="font-size: 1.1em; color: #999">并发编程</a> <a href="/tags/Django/" style="font-size: 1.1em; color: #999">Django</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 1.1em; color: #999">面向对象</a> <a href="/tags/%E5%9F%BA%E7%A1%80/" style="font-size: 1.37em; color: #99a4b2">基础</a> <a href="/tags/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" style="font-size: 1.1em; color: #999">异常处理</a> <a href="/tags/%E8%BF%90%E7%BB%B4/" style="font-size: 1.1em; color: #999">运维</a> <a href="/tags/%E4%BB%A3%E7%A0%81/" style="font-size: 1.1em; color: #999">代码</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 1.1em; color: #999">数据库</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.1em; color: #999">面试</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 1.1em; color: #999">前端</a> <a href="/tags/%E7%BB%83%E4%B9%A0/" style="font-size: 1.1em; color: #999">练习</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/11/">
+            <span class="card-archive-list-date">
+              十一月 2026
+            </span>
+            <span class="card-archive-list-count">15</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/10/">
+            <span class="card-archive-list-date">
+              十月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">16</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-11-17T06:53:46.894Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

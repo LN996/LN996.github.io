@@ -1,0 +1,417 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>项目实战 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 选课系统项目(面向对象综合) 🎬 对应课程:Day31~32 选课系统(面向对象阶段的项目)  1. 项目概览与角色设计 🎬 对应视频:P384~P385  选课系统是面向对象思想的综合练习**:管理员&#x2F;学生&#x2F;老师三种角色,围绕 学校→班级→课程 的层级组织数据。**  三">
+<meta property="og:type" content="article">
+<meta property="og:title" content="项目实战">
+<meta property="og:url" content="https://ln996.github.io/2026/11/12/python-12/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 选课系统项目(面向对象综合) 🎬 对应课程:Day31~32 选课系统(面向对象阶段的项目)  1. 项目概览与角色设计 🎬 对应视频:P384~P385  选课系统是面向对象思想的综合练习**:管理员&#x2F;学生&#x2F;老师三种角色,围绕 学校→班级→课程 的层级组织数据。**  三">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-12T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T06:53:34.880Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="项目实战">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "项目实战",
+  "url": "https://ln996.github.io/2026/11/12/python-12/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-12T01:00:00.000Z",
+  "dateModified": "2026-11-17T06:53:34.880Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/12/python-12/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '项目实战',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">项目实战</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">项目实战</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-17T06:53:34.880Z" title="更新于 2026-11-17 14:53:34">2026-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。</p>
+</blockquote>
+<hr>
+<h2 id="📖-选课系统项目-面向对象综合"><a href="#📖-选课系统项目-面向对象综合" class="headerlink" title="📖 选课系统项目(面向对象综合)"></a>📖 选课系统项目(面向对象综合)</h2><blockquote>
+<p>🎬 对应课程:Day31~32 选课系统(面向对象阶段的项目)</p>
+</blockquote>
+<h3 id="1-项目概览与角色设计"><a href="#1-项目概览与角色设计" class="headerlink" title="1. 项目概览与角色设计"></a>1. 项目概览与角色设计</h3><blockquote>
+<p>🎬 对应视频:P384~P385</p>
+</blockquote>
+<p><strong>选课系统是</strong>面向对象思想的综合练习**:管理员&#x2F;学生&#x2F;老师三种角色,围绕 学校→班级→课程 的层级组织数据。**</p>
+<ul>
+<li>三种角色功能:管理员(创建学校&#x2F;课程&#x2F;老师)、学生(注册&#x2F;选课&#x2F;查看分数)、老师(选择教授课程&#x2F;查看学生&#x2F;修改分数)</li>
+<li>核心类:School(学校)、Classes(班级)、Course(课程)、Teacher(老师)、Student(学生)、Admin(管理员)</li>
+<li>关系:学校与班级<strong>一对多</strong>、班级与课程关联、老师与课程<strong>多对多</strong>、学生选课程后产生分数记录</li>
+<li>这个阶段还没有数据库,数据持久化用 <strong>json&#x2F;pickle 文件</strong>保存对象状态</li>
+</ul>
+<h3 id="2-登录认证装饰器"><a href="#2-登录认证装饰器" class="headerlink" title="2. 登录认证装饰器"></a>2. 登录认证装饰器</h3><blockquote>
+<p>🎬 对应视频:P389</p>
+</blockquote>
+<p><strong>每种角色登录后,后续功能都要先校验身份——用</strong>认证装饰器<strong>统一包裹,避免每个功能里重复写判断。</strong></p>
+<ul>
+<li>装饰器内校验当前登录状态(全局字典&#x2F;文件里是否保存了已登录角色),未登录则强制先登录</li>
+<li>用 <code>functools.wraps</code> 保留被装饰函数的元信息</li>
+<li>登录成功后把当前用户写入<strong>全局状态字典</strong>,后续功能从状态里取当前用户</li>
+<li>这是装饰器「不修改原函数代码增加功能」的典型实战应用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> wraps</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">auth</span>(<span class="params">fn</span>):</span><br><span class="line"><span class="meta">    @wraps(<span class="params">fn</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">inner</span>(<span class="params">*args, **kwargs</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;校验登录&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span> fn(*args, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> inner</span><br><span class="line"></span><br><span class="line"><span class="meta">@auth</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">view</span>():</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;首页&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(view())</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-反射调度功能"><a href="#3-反射调度功能" class="headerlink" title="3. 反射调度功能"></a>3. 反射调度功能</h3><blockquote>
+<p>🎬 对应视频:P386</p>
+</blockquote>
+<p><strong>菜单选择用 if&#x2F;elif 会越写越长,课程教的是</strong>用反射 getattr 按字符串调度功能**,这是该项目最重要的编程思想。**</p>
+<ul>
+<li>把功能函数名和菜单文字对应,用户输入后用 <code>getattr(模块或对象, &quot;函数名&quot;)</code> 拿到函数直接调用</li>
+<li>配合 hasattr 先判断功能是否存在,避免 AttributeError</li>
+<li>新增功能只需写函数+注册菜单,<strong>不用改调度逻辑</strong></li>
+<li>Django 的 CBV 底层也是同样的反射思想,在这里练熟后面看源码就不吃力</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Sys</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">login</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;登录页&quot;</span></span><br><span class="line"></span><br><span class="line">obj = Sys()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">getattr</span>(obj, <span class="string">&quot;login&quot;</span>)())   <span class="comment"># 按字符串调度方法</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-数据持久化与目录规范"><a href="#4-数据持久化与目录规范" class="headerlink" title="4. 数据持久化与目录规范"></a>4. 数据持久化与目录规范</h3><blockquote>
+<p>🎬 对应视频:P385~P386</p>
+</blockquote>
+<p><strong>对象数据用 <strong>json&#x2F;pickle 存到 db 目录</strong>,项目按 软件开发目录规范 组织:src&#x2F;db&#x2F;conf&#x2F;log 各司其职。</strong></p>
+<ul>
+<li>json 可读性好但只能存基础类型;pickle 能存对象但要小心反序列化安全</li>
+<li>保存:dump 对象字典;读取:load 后重建对象(或存字典直接用)</li>
+<li>目录规范:bin 启动、src 核心逻辑、db 数据文件、log 日志、conf 配置、README</li>
+<li>从根目录运行时用 <code>os.path</code> 处理数据文件路径,避免相对路径错乱</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line">data = &#123;<span class="string">&quot;student&quot;</span>: [<span class="string">&quot;alex&quot;</span>]&#125;</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;db.json&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    json.dump(data, f)</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;db.json&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    d = json.load(f)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(d[<span class="string">&quot;student&quot;</span>]))</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-三大角色业务流程-注册、选课与成绩"><a href="#5-三大角色业务流程-注册、选课与成绩" class="headerlink" title="5. 三大角色业务流程:注册、选课与成绩"></a>5. 三大角色业务流程:注册、选课与成绩</h3><blockquote>
+<p>🎬 对应视频:P395~P403</p>
+</blockquote>
+<p><strong>三条业务主线落地:学生 注册→选学校→选课程(自动生成分数记录)→查看分数;老师 查看教授课程→选择课程→查看课程下学生→修改分数;登录做成</strong>合并登录**,一个入口区分三种角色。**</p>
+<ul>
+<li>学生主线:注册后先<strong>选择学校</strong>,再从学校的班级里选课程,选课时自动创建一条该生该课的分数记录(初始 0 分),之后随时可查看分数</li>
+<li>老师主线:先查看自己可选择(教授)的课程列表,选定课程后就能查看课程下的学生并<strong>修改他们的分数</strong></li>
+<li>合并登录:一个登录入口按输入的用户名&#x2F;密码先找到对应角色(管理员&#x2F;学生&#x2F;老师),校验通过后按角色进入各自的功能视图</li>
+<li>选课关系用面向对象表达:学生对象持有课程列表、课程对象记录老师与选课学生,保存时把这张「对象关系网」序列化进 db 目录的文件</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line">        <span class="variable language_">self</span>.courses = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">choose</span>(<span class="params">self, course</span>):</span><br><span class="line">        <span class="keyword">if</span> course <span class="keyword">in</span> <span class="variable language_">self</span>.courses:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span>          <span class="comment"># 重复选课</span></span><br><span class="line">        <span class="variable language_">self</span>.courses.append(course)</span><br><span class="line">        course.scores[<span class="variable language_">self</span>.name] = <span class="number">0</span>   <span class="comment"># 选课即生成 0 分记录</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Course</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="variable language_">self</span>.name = name</span><br><span class="line">        <span class="variable language_">self</span>.scores = &#123;&#125;</span><br><span class="line"></span><br><span class="line">py = Course(<span class="string">&quot;Python&quot;</span>)</span><br><span class="line">alex = Student(<span class="string">&quot;alex&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(alex.choose(py), py.scores)</span><br></pre></td></tr></table></figure>
+
+<h2 id="📖-BBS博客项目-Django综合"><a href="#📖-BBS博客项目-Django综合" class="headerlink" title="📖 BBS博客项目(Django综合)"></a>📖 BBS博客项目(Django综合)</h2><blockquote>
+<p>🎬 对应课程:Day71~75 BBS博客项目</p>
+</blockquote>
+<h3 id="1-项目概览与技术栈"><a href="#1-项目概览与技术栈" class="headerlink" title="1. 项目概览与技术栈"></a>1. 项目概览与技术栈</h3><blockquote>
+<p>🎬 对应视频:P829~P830</p>
+</blockquote>
+<p><strong>BBS 是 Django 知识点的</strong>大汇合**:forms 校验、auth 认证、ORM 多表、模板继承、ajax、中间件全部用上。**</p>
+<ul>
+<li>技术栈:Django + MySQL + Bootstrap + jQuery + ajax + Pillow(验证码) + kindeditor(富文本)</li>
+<li>开发流程:需求分析 → <strong>表设计</strong>(最关键) → 注册登录 → 个人站点 → 文章详情 → 点赞评论 → 后台管理</li>
+<li>用户表基于 <code>AbstractUser</code> 扩展,settings 里配置 <code>AUTH_USER_MODEL = &quot;app01.UserInfo&quot;</code></li>
+<li>博客表 Blog 与用户<strong>一对一</strong>,个人站点皮肤&#x2F;标题存在 Blog 表里</li>
+</ul>
+<h3 id="2-数据库表设计-项目最核心一步"><a href="#2-数据库表设计-项目最核心一步" class="headerlink" title="2. 数据库表设计(项目最核心一步)"></a>2. 数据库表设计(项目最核心一步)</h3><blockquote>
+<p>🎬 对应视频:P830~P833</p>
+</blockquote>
+<p><strong>8 张表把三种关系用全:<strong>一对一</strong>(User-Blog)、</strong>一对多**(Category-Article)、<strong>多对多</strong>(Article-Tag,通过第三张表 Article2Tag)。**</p>
+<ul>
+<li>UserInfo(用户)、Blog(站点)、Category(分类)、Tag(标签)、Article(文章)、Article2Tag(文章标签第三张表)</li>
+<li>ArticleUpDown(点赞点踩:用户+文章+is_up,用户和文章<strong>联合唯一</strong>防重复操作)</li>
+<li>Comment(评论):关联文章和用户,<strong>parent 字段自关联 ForeignKey(“self”, null&#x3D;True)</strong> 实现根评论&#x2F;子评论</li>
+<li>设计口诀:先确定实体,再找实体间关系,多对多想清楚要不要自定义第三张表(要存额外字段就必须自定义)</li>
+</ul>
+<h3 id="3-注册与登录"><a href="#3-注册与登录" class="headerlink" title="3. 注册与登录"></a>3. 注册与登录</h3><blockquote>
+<p>🎬 对应视频:P834~P843</p>
+</blockquote>
+<p><strong>注册用 <strong>forms 组件校验</strong> + ajax 提交 + <strong>Pillow 生成图片验证码</strong>;登录用 auth 模块,一个接口同时支持用户名&#x2F;邮箱&#x2F;手机号登录。</strong></p>
+<ul>
+<li>forms 钩子函数做局部&#x2F;全局校验(如两次密码一致、用户名重复)</li>
+<li>验证码:一次性随机字符串画到图片上,存 session,提交时与用户输入比对(不区分大小写)</li>
+<li>头像实时预览:input file 的 change 事件 + FileReader 读图</li>
+<li>多方式登录:Q 查询把 username&#x2F;email&#x2F;phone 三个条件 or 起来,再交给 auth.authenticate</li>
+</ul>
+<h3 id="4-个人站点与侧边栏"><a href="#4-个人站点与侧边栏" class="headerlink" title="4. 个人站点与侧边栏"></a>4. 个人站点与侧边栏</h3><blockquote>
+<p>🎬 对应视频:P849~P854</p>
+</blockquote>
+<p><strong>每个用户一个个人站点页面,<strong>侧边栏三种筛选</strong>(分类&#x2F;标签&#x2F;日期归档)用 inclusion_tag 组件化,一条 ORM 查询带出文章+筛选。</strong></p>
+<ul>
+<li>路由支持用户名动态匹配;侧边栏做成 inclusion_tag,三个页面复用</li>
+<li>日期归档用 <code>annotate(month=TruncMonth(&quot;create_time&quot;)).values(&quot;month&quot;).annotate(c=Count(&quot;pk&quot;))</code> 按月分组计数</li>
+<li>筛选本质是给文章查询加不同 filter 条件(分类 id &#x2F; 标签 id &#x2F; 年月)</li>
+</ul>
+<h3 id="5-文章详情、点赞点踩与评论"><a href="#5-文章详情、点赞点踩与评论" class="headerlink" title="5. 文章详情、点赞点踩与评论"></a>5. 文章详情、点赞点踩与评论</h3><blockquote>
+<p>🎬 对应视频:P855~P859</p>
+</blockquote>
+<p><strong>点赞点踩和评论都走 <strong>ajax + 事务</strong>;子评论要记录 parent 评论;点赞用联合唯一防止重复。</strong></p>
+<ul>
+<li>点赞:先判断是否给自己的文章点赞、是否重复点赞,再<strong>事务包裹</strong>(文章计数+1 与插入点赞记录要么都成功要么都失败)</li>
+<li>评论提交后 ajax 局部刷新;子评论渲染时带上 @父评论用户</li>
+<li>文章正文里开事务前先生成简介(截取前 N 个字符),防止标签截断</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> transaction</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> transaction.atomic():</span><br><span class="line">    article.up_num += <span class="number">1</span></span><br><span class="line">    article.save()</span><br><span class="line">    ArticleUpDown.objects.create(user_id=uid, article_id=aid, is_up=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-后台管理与富文本安全"><a href="#6-后台管理与富文本安全" class="headerlink" title="6. 后台管理与富文本安全"></a>6. 后台管理与富文本安全</h3><blockquote>
+<p>🎬 对应视频:P862~P866</p>
+</blockquote>
+<p><strong>后台用 kindeditor 写文章,富文本内容</strong>必须做 XSS 清洗<strong>再入库,简介截取前也要先处理标签。</strong></p>
+<ul>
+<li>XSS 攻击:恶意用户在文章里提交 <script>,别人浏览就执行——<strong>永远不要直接信任用户输入的 HTML</strong></li>
+<li>清洗方案:BeautifulSoup 解析,只保留白名单标签(如 p/img/a),其余转义或删除</li>
+<li>文章简介 = 清洗后正文的前若干字符,避免页面样式错乱</li>
+<li>媒体文件配置 MEDIA_ROOT/MEDIA_URL,头像等上传文件统一管理</li>
+</ul>
+<h3 id="7-导航条、Django-admin-与-media-配置"><a href="#7-导航条、Django-admin-与-media-配置" class="headerlink" title="7. 导航条、Django admin 与 media 配置"></a>7. 导航条、Django admin 与 media 配置</h3><blockquote>
+<p>🎬 对应视频:P844~P848</p>
+</blockquote>
+<p><strong>登录成功后</strong>导航条按 auth 状态渲染<strong>两种样子;Django admin 注册模型即可可视化管理数据;media 配置让头像等上传文件能通过 URL 直接访问,顺带了解图片防盗链思路。</strong></p>
+<ul>
+<li>导航条基于 request.user 分支:未登录显示 登录/注册;已登录显示 用户名、修改密码、退出;退出调 auth.logout 清 session 后跳首页</li>
+<li>admin 后台:createsuperuser 建超管 → admin.site.register 注册模型(可配 ModelAdmin 定制列表列/搜索/过滤) → /admin 可视化增删改查</li>
+<li>media 三步:settings 配 MEDIA_ROOT(上传根目录)与 MEDIA_URL → urls 里 static() 把 /media/ 映射到目录 → 模板用 {{ MEDIA_URL }}{{ blog.user.avatar }} 拼路径展示头像</li>
+<li>图片防盗链:服务端校验请求头 Referer,非本站来源的图片请求拒绝返回,防止自己站点的图片被外链白嫖流量</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># settings.py</span></span><br><span class="line">MEDIA_URL = <span class="string">&quot;/media/&quot;</span></span><br><span class="line">MEDIA_ROOT = BASE_DIR / <span class="string">&quot;media&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># urls.py(调试期暴露媒体目录)</span></span><br><span class="line"><span class="keyword">from</span> django.conf <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> django.conf.urls.static <span class="keyword">import</span> static</span><br><span class="line"></span><br><span class="line">urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)</span><br></pre></td></tr></table></figure>
+
+<h2 id="📖-DRF图书接口项目-RestFramework"><a href="#📖-DRF图书接口项目-RestFramework" class="headerlink" title="📖 DRF图书接口项目(RestFramework)"></a>📖 DRF图书接口项目(RestFramework)</h2><blockquote>
+<p>🎬 对应课程:Day85~87 DRF图书接口项目</p>
+</blockquote>
+<h3 id="1-项目概览与-RESTful-规范"><a href="#1-项目概览与-RESTful-规范" class="headerlink" title="1. 项目概览与 RESTful 规范"></a>1. 项目概览与 RESTful 规范</h3><blockquote>
+<p>🎬 对应视频:P939~P941</p>
+</blockquote>
+<p><strong>围绕图书表写一套</strong>前后端分离的 5 大接口**(查所有/查单条/增/改/删),URL 和方法都遵守 restful 规范。**</p>
+<ul>
+<li>restful 核心:<strong>URL 只表示资源</strong>(名词),<strong>请求方法表示动作</strong>(GET 查 / POST 增 / PUT 改 / DELETE 删)</li>
+<li>返回统一响应结构 {code, msg, results},前后端只靠 JSON 通信</li>
+<li>表设计:Book(图书)、Publish(出版社)、Author(作者)、AuthorDetail(作者详情,一对一),图书与作者多对多</li>
+<li>公共字段抽到 <strong>BaseModel 抽象表</strong>(create_time、is_delete、is_show),其他表继承,配合 filter 过滤</li>
+</ul>
+<h3 id="2-序列化器实战"><a href="#2-序列化器实战" class="headerlink" title="2. 序列化器实战"></a>2. 序列化器实战</h3><blockquote>
+<p>🎬 对应视频:P943~P948</p>
+</blockquote>
+<p><strong>用 <strong>ModelSerializer</strong> 快速生成序列化器,反序列化走 局部钩子/全局钩子 校验,自定义操作要</strong>重写 create/update<strong>。</strong></p>
+<ul>
+<li>fields 用 <code>__all__</code> 或指定;外键展示用 <code>source</code> 或 SerializerMethodField</li>
+<li>新增图书时要保存多对多作者:<strong>重写 create</strong> 在 context 或序列化器里手动 set 作者</li>
+<li>批量增删改:many=True 走 ListSerializer,重写 list 方法实现批量更新</li>
+<li>校验失败抛 ValidationError,DRF 统一转成 400 响应</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">validate_title</span>(<span class="params">value</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;敏感&quot;</span> <span class="keyword">in</span> value:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;书名不合法&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    validate_title(<span class="string">&quot;python入门&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;通过&quot;</span>)</span><br><span class="line"><span class="keyword">except</span> ValueError:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;拒绝&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-视图集与自动路由"><a href="#3-视图集与自动路由" class="headerlink" title="3. 视图集与自动路由"></a>3. 视图集与自动路由</h3><blockquote>
+<p>🎬 对应视频:P943~P948</p>
+</blockquote>
+<p><strong>一个 <strong>ModelViewSet + DefaultRouter</strong> 自动生成 5 大接口路由;自定义接口用 <code>@action</code> 装饰器挂在视图集上。</strong></p>
+<ul>
+<li>ModelViewSet 组合了 list/retrieve/create/update/destroy 五个能力,Router 自动注册 <code>router.register(&quot;books&quot;, BookViewSet)</code></li>
+<li>queryset + serializer_class 两个类属性是视图集的基础;get_serializer 动态切换序列化类(读用带详情的,写用精简的)</li>
+<li>@action(methods=[GET], detail=False) 生成 /books/xxx/ 自定义接口</li>
+<li>响应统一用自封装 Response(code/msg/results),配合全局异常处理</li>
+</ul>
+<h3 id="4-认证、权限、频率三大组件"><a href="#4-认证、权限、频率三大组件" class="headerlink" title="4. 认证、权限、频率三大组件"></a>4. 认证、权限、频率三大组件</h3><blockquote>
+<p>🎬 对应视频:P950<del>P954、P956</del>P957、P965~P967</p>
+</blockquote>
+<p><strong>登录用 <strong>jwt 签发 token</strong>,请求头携带 token 走自定义认证类;权限控制不同角色;频率按 ip 限制防刷。</strong></p>
+<ul>
+<li>jwt 三段式:<strong>header.payload.signature</strong>,签名防篡改,过期时间可配置</li>
+<li>多方式登录:用户名/邮箱/手机号 Q 查询 + check_password 校验 → 签发 token</li>
+<li>自定义认证类继承 BaseAuthentication,从 requestMETA 里取 token 校验;权限类控制普通用户/管理员</li>
+<li>频率:自定义 SimpleRateThrottle 子类,<code>scope = &quot;ip&quot;</code>,settings 里配置频率如 <code>3/m</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="built_in">print</span>(base64.b64encode(<span class="string">b&quot;admin&quot;</span>).decode())   <span class="comment"># jwt 的 payload 段就是 base64 家族编码</span></span><br></pre></td></tr></table></figure>
+
+<p><em>base64 编码演示(jwt 组成部分)</em></p>
+<h3 id="5-分页与接口文档"><a href="#5-分页与接口文档" class="headerlink" title="5. 分页与接口文档"></a>5. 分页与接口文档</h3><blockquote>
+<p>🎬 对应视频:P949、P955</p>
+</blockquote>
+<p><strong>列表接口用 <strong>PageNumberPagination 分页</strong>;用 coreapi 自动生成接口文档,前后端对接不再靠嘴说。</strong></p>
+<ul>
+<li>分页三件套:page_size、page 查询参数、自定义分页类重写 get_paginated_response 保持统一响应结构</li>
+<li>批量删除/修改后配合 is_delete 逻辑删除,查询时过滤 is_show</li>
+<li>接口文档:安装 coreapi,settings 配置,路由挂 OptionalSlashRouter,访问 /docs 查看</li>
+</ul>
+<h3 id="6-Django-缓存机制"><a href="#6-Django-缓存机制" class="headerlink" title="6. Django 缓存机制"></a>6. Django 缓存机制</h3><blockquote>
+<p>🎬 对应视频:P968</p>
+</blockquote>
+<p><strong>把「经常读、很少变」的数据放进缓存,省掉重复的数据库查询与渲染:Django 支持多种缓存后端,生产常配 <strong>redis</strong>;视图/接口层用缓存装饰器或 drf 扩展一行生效。</strong></p>
+<ul>
+<li>缓存粒度从粗到细:全站缓存(两个中间件)、视图缓存 @cache_page、模板片段 {% cache %}、低阶 API cache.get/set、以及 ORM 查询结果缓存</li>
+<li>后端在 settings.CACHES 配置:开发用 LocMemCache(进程内存),生产用 django-redis 连 redis 服务</li>
+<li>低阶 API:cache.set(key, value, timeout) 写、cache.get(key) 读、cache.delete(key) 删;key 按业务命名(如 "book_list:page_2")</li>
+<li><strong>一致性提醒</strong>:增删改接口成功后要同步 cache.delete 对应 key,否则用户会读到旧数据</li>
+<li>DRF 列表接口可用 drf-extensions 的 CacheResponseMixin 直接缓存响应</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.core.cache <span class="keyword">import</span> cache</span><br><span class="line"></span><br><span class="line">cache.<span class="built_in">set</span>(<span class="string">&quot;book:1&quot;</span>, &#123;<span class="string">&quot;title&quot;</span>: <span class="string">&quot;Python入门&quot;</span>, <span class="string">&quot;price&quot;</span>: <span class="number">50</span>&#125;, timeout=<span class="number">60</span>)</span><br><span class="line"><span class="built_in">print</span>(cache.get(<span class="string">&quot;book:1&quot;</span>))          <span class="comment"># 命中缓存,不再查库</span></span><br><span class="line">cache.delete(<span class="string">&quot;book:1&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(cache.get(<span class="string">&quot;book:1&quot;</span>))          <span class="comment"># None(已失效)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="📖-课后作业（项目实战）"><a href="#📖-课后作业（项目实战）" class="headerlink" title="📖 课后作业（项目实战）"></a>📖 课后作业（项目实战）</h2><blockquote>
+<p>🎬 对应课程:BBS项目(Day71<del>75)与DRF项目(Day85</del>87)的功能实现作业,练习按项目功能原创编写</p>
+</blockquote>
+<h3 id="1-三大项目作业清单"><a href="#1-三大项目作业清单" class="headerlink" title="1. 三大项目作业清单"></a>1. 三大项目作业清单</h3><blockquote>
+<p>🎬 对应视频:P384<del>P404、P829</del>P868、P939~P968</p>
+</blockquote>
+<p><strong>项目阶段的作业就是把</strong>三个项目亲手落地一遍**:选课系统(面向对象)→ BBS(Django 全家桶)→ DRF 图书接口(前后端分离),每个项目都有必须独立完成的功能点。**</p>
+<ul>
+<li>选课系统作业:管理员建校/建课、学生注册选课退课(不能重复选、没选不能退)、老师查看学生改分数 —— 六个类的关系先画图再动手,对应本站「选课系统项目」章</li>
+<li>BBS作业:注册(头像/验证码)、多方式登录、个人站点侧边栏、点赞点踩防重复、评论楼中楼 —— 对应「BBS博客项目」章</li>
+<li>DRF作业:图书五大接口(查所有/查单条/增/改/删)+ 批量逻辑删除 + jwt 登录 —— 对应「DRF图书接口项目」章</li>
+<li>做项目先跑通主流程再抠细节:表设计 → 路由 → 视图 → 模板/序列化器,每完成一步就 git commit 一次,坏了随时能回</li>
+<li>做完每个项目,到「题库练习」把对应项目章的题刷一遍,错题进错题本</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 项目作业自查清单(以 DRF 为例)</span></span><br><span class="line"><span class="comment"># [ ] Book/Author 模型建好并迁移</span></span><br><span class="line"><span class="comment"># [ ] 五大接口全部通过 postman 测试</span></span><br><span class="line"><span class="comment"># [ ] 删除走逻辑删除(is_delete=True),列表接口记得过滤</span></span><br><span class="line"><span class="comment"># [ ] 登录用 jwt 签发 token,响应统一 &#123;code, msg, results&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><em>项目落地自查清单</em></p>
+<hr>
+<p><strong>系列目录 / 工具获取方式见文末 👇</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/12/python-12/">https://ln996.github.io/2026/11/12/python-12/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/">项目实战</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/13/python-13/" title="运维与面试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">运维与面试</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 Git 与 Linux 🎬 对应课程：就业拓展(Git版本控制、Linux常用命令、部署基础)  1. Git 三区模型、基础命令与版本回退 🎬 对应视频:P995~P996  Git 分工作区、暂存区、版本库三个区域,add 进暂存区、commit 进版本库;reset --hard 回退版本,误操作用 git reflog 找回。  三区模型:工作区(正在编辑的目录)→ git add 进暂存区(stage)→ git commit 进版本库(.git 里的提交历史) git init 初始化本地仓库;git clone url 克隆远程仓库(自带全部历史);git status 看三区状态,git diff 看工作区与暂存区的差异,git log --oneline 一行一条看提交历史 回退:git reset --hard 提交id(或 HEAD^、HEAD~2)把分支指针移过去,工作区、暂存区、版本库一起回退;--soft 只动 HEAD、改动留在暂存区;--mix...</div></div></div></a><a class="pagination-related" href="/2026/11/11/python-11/" title="Django与DRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Django与DRF</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTTP协议与Web框架本质 🎬 对应课程:框架开始前(HTTP协议、wsgiref、手写web框架)  1. HTTP协议特点(基于TCP、无状态、长连接) 🎬 对应视频:P585~P586  HTTP 是基于 TCP 的应用层协议**,本身无状态;HTTP&#x2F;1.1 默认通过 keep-alive 复用 TCP 连接,但每次请求的内容仍然相互独立。**  HTTP 工作在应用层,底层依赖 TCP 提供可靠传输(默认端口 80,HTTPS 默认 443) 无状态:协议本身不记住上一次请求是谁发的,每次请求相互独立;登录状态是靠 cookie&#x2F;session 机制额外补充的 短连接:HTTP&#x2F;1.0 每次请求都新建一条 TCP 连接,用完就断,频繁握手开销大 keep-alive(长连接):HTTP&#x2F;1.1 默认开启,一条 TCP 连接可以连续承载多次 HTTP 请求&#x2F;响应 无状态说的是”不保存上下文”,长&#x2F;短连接说的...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/11/11/python-11/" title="Django与DRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-11</div><div class="info-item-2">Django与DRF</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTTP协议与Web框架本质 🎬 对应课程:框架开始前(HTTP协议、wsgiref、手写web框架)  1. HTTP协议特点(基于TCP、无状态、长连接) 🎬 对应视频:P585~P586  HTTP 是基于 TCP 的应用层协议**,本身无状态;HTTP&#x2F;1.1 默认通过 keep-alive 复用 TCP 连接,但每次请求的内容仍然相互独立。**  HTTP 工作在应用层,底层依赖 TCP 提供可靠传输(默认端口 80,HTTPS 默认 443) 无状态:协议本身不记住上一次请求是谁发的,每次请求相互独立;登录状态是靠 cookie&#x2F;session 机制额外补充的 短连接:HTTP&#x2F;1.0 每次请求都新建一条 TCP 连接,用完就断,频繁握手开销大 keep-alive(长连接):HTTP&#x2F;1.1 默认开启,一条 TCP 连接可以连续承载多次 HTTP 请求&#x2F;响应 无状态说的是”不保存上下文”,长&#x2F;短连接说的...</div></div></div></a><a class="pagination-related" href="/2026/11/07/python-07/" title="异常处理与代码模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-07</div><div class="info-item-2">异常处理与代码模板</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 异常处理 🎬 对应课程:Python基础(异常处理+日志)  1. 为什么要处理异常 🎬 对应视频:P418  异常就是程序运行时发生的错误,不处理程序会当场崩溃,处理了就能给出友好提示并继续运行。  异常发生后若不捕获,程序立即终止,并打印异常类型、位置和描述(堆栈信息) Python 中一切异常都是异常类的实例,不同错误对应不同类型 崩溃是不可接受的,尤其是服务端程序:一个用户请求出错不能拖垮整个服务  2. try &#x2F; except &#x2F; else &#x2F; finally 完整结构 🎬 对应视频:P419~P420  try 包可能出错的代码,except 捕获并处理,else 在没异常时执行,finally 无论如何都执行。  except 可以写多个,从上到下匹配,子类异常要写在父类前面 except 后不写类型 &#x3D; 捕获所有异常(方便但危险,不推荐用于生产) except XxxError as e 可以拿到异常对象,print...</div></div></div></a><a class="pagination-related" href="/2026/11/14/python-14/" title="课堂代码精选51段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-14</div><div class="info-item-2">课堂代码精选51段</div></div><div class="info-2"><div class="info-item-1"> 本文整理视频里老师敲的重点课堂代码,每段标注对应集数与练习要点。建议:先遮住代码自己写,写完对照;改参数看变化。   ⌨️ 变量引用与 id &#x2F; is &#x2F; &#x3D;&#x3D;(第一周必敲) 🎬 对应视频:P55~P61  🎯 这段练什么: 变量存的是引用不是值本身;b &#x3D; a 后两个名字共用对象;is 比地址、== 比值。敲完这段,后面所有”改了a怎么b也变了”的问题都能自己推导。 12345678910a = [1, 2, 3]b = a              # b 和 a 指向同一个列表b.append(4)print(a)           # [1, 2, 3, 4]  改b即改aprint(a is b)      # True 同一个对象c = [1, 2, 3, 4]print(a == c)      # True 值相等print(a is c)      # False 但不是同一个对象print(id(a), id(c))  # 两个不同的内存地址   ⌨️ 可变 &#x2F; 不可变 类型行为实验 🎬 对...</div></div></div></a><a class="pagination-related" href="/2026/11/03/python-03/" title="函数与模块"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-03</div><div class="info-item-2">函数与模块</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 函数 🎬 对应课程:Python基础 第5章(函数、作用域、装饰器、迭代器生成器)  1. 函数定义与返回值 🎬 对应视频:P198~P200、P204  函数用 def 定义,没有 return 或只写 return 时默认返回 None;return a, b 本质是返回一个元组。  定义:def 函数名(参数): + 缩进的函数体;函数先定义后调用,定义时函数体并不执行 return 会立即结束函数;没有 return 或 return 后面不带值,统一返回 None return a, b 是把两个值打包成元组返回,接收时 a, b = f() 解包 函数体第一行可写三引号字符串作文档说明,用 函数名.__doc__ 查看 函数名遵循变量命名规范,且不能与内置函数重名(如自定义 list 会遮蔽内置 list)  123456def my_max(a, b):    &quot;&quot;&quot;返回较大的数&quot;&quot;&quot;    retur...</div></div></div></a><a class="pagination-related" href="/2026/11/09/python-09/" title="MySQL数据库"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-09</div><div class="info-item-2">MySQL数据库</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 MySQL基础与进阶 🎬 对应课程:数据库阶段(MySQL安装、库表操作、增删改查、连表、pymysql、事务、索引)  1. 库表操作与常用数据类型 🎬 对应视频:P527~P528、P538、P550  用 create/drop/alter 管理库和表;字符串定长用 char、变长用 varchar**,区别是空间和速度的取舍。**  库操作:create database db1 charset utf8mb4;、drop database db1;、show databases;、use db1; 表操作:create table t(id int, name varchar(16));、drop table t;、show tables;、desc t; 查看表结构 改表:alter table t add 列名 类型; 加列、alter table t drop 列名; 删列、alter table t modify 列名 新类型; 改类型 常用类型:int&#...</div></div></div></a><a class="pagination-related" href="/2026/11/01/python-01/" title="Python入门与数据类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-01</div><div class="info-item-2">Python入门与数据类型</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 计算机基础 🎬 对应课程:Day01~03 计算机核心基础  1. 计算机五大组成 🎬 对应视频:P11、P22  计算机五大组成:控制器、运算器、存储器、输入设备、输出设备;控制器 + 运算器 &#x3D; CPU,程序的本质是”数据 + 指令”,全部用二进制表示。  控制器:计算机的”指挥系统”,负责读取指令、分析指令、发出控制信号,协调各部件工作 运算器:负责算术运算(加、减、乘、除)和逻辑运算(与、或、非、比较),是真正”算数”的部件 存储器:保存数据和程序;分内存(电信号存储、速度快、断电丢失)与外存&#x2F;硬盘(永久保存、速度慢) 输入设备:把外界信息转成二进制给计算机,如键盘、鼠标、麦克风;输出设备:把二进制结果还原成人能看懂的形式,如显示器、音箱、打印机 程序运行的本质:程序(指令 + 数据)先加载到存储器,CPU 不断”取指令 → 分析 → 执行”,结果交给输出设备呈现  2. 三大核心硬件与存储器(IO瓶颈) 🎬 对应视频:P13、P21、P25~P...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E9%80%89%E8%AF%BE%E7%B3%BB%E7%BB%9F%E9%A1%B9%E7%9B%AE-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BB%BC%E5%90%88"><span class="toc-number">1.</span> <span class="toc-text">📖 选课系统项目(面向对象综合)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%A7%88%E4%B8%8E%E8%A7%92%E8%89%B2%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.</span> <span class="toc-text">1. 项目概览与角色设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81%E8%A3%85%E9%A5%B0%E5%99%A8"><span class="toc-number">1.2.</span> <span class="toc-text">2. 登录认证装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8F%8D%E5%B0%84%E8%B0%83%E5%BA%A6%E5%8A%9F%E8%83%BD"><span class="toc-number">1.3.</span> <span class="toc-text">3. 反射调度功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E7%9B%AE%E5%BD%95%E8%A7%84%E8%8C%83"><span class="toc-number">1.4.</span> <span class="toc-text">4. 数据持久化与目录规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%B8%89%E5%A4%A7%E8%A7%92%E8%89%B2%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B-%E6%B3%A8%E5%86%8C%E3%80%81%E9%80%89%E8%AF%BE%E4%B8%8E%E6%88%90%E7%BB%A9"><span class="toc-number">1.5.</span> <span class="toc-text">5. 三大角色业务流程:注册、选课与成绩</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-BBS%E5%8D%9A%E5%AE%A2%E9%A1%B9%E7%9B%AE-Django%E7%BB%BC%E5%90%88"><span class="toc-number">2.</span> <span class="toc-text">📖 BBS博客项目(Django综合)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%A1%B9%E7%9B%AE%E6%A6%82%E8%A7%88%E4%B8%8E%E6%8A%80%E6%9C%AF%E6%A0%88"><span class="toc-number">2.1.</span> <span class="toc-text">1. 项目概览与技术栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E8%AE%BE%E8%AE%A1-%E9%A1%B9%E7%9B%AE%E6%9C%80%E6%A0%B8%E5%BF%83%E4%B8%80%E6%AD%A5"><span class="toc-number">2.2.</span> <span class="toc-text">2. 数据库表设计(项目最核心一步)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B3%A8%E5%86%8C%E4%B8%8E%E7%99%BB%E5%BD%95"><span class="toc-number">2.3.</span> <span class="toc-text">3. 注册与登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%B8%AA%E4%BA%BA%E7%AB%99%E7%82%B9%E4%B8%8E%E4%BE%A7%E8%BE%B9%E6%A0%8F"><span class="toc-number">2.4.</span> <span class="toc-text">4. 个人站点与侧边栏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%96%87%E7%AB%A0%E8%AF%A6%E6%83%85%E3%80%81%E7%82%B9%E8%B5%9E%E7%82%B9%E8%B8%A9%E4%B8%8E%E8%AF%84%E8%AE%BA"><span class="toc-number">2.5.</span> <span class="toc-text">5. 文章详情、点赞点踩与评论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E5%AE%89%E5%85%A8"><span class="toc-number">2.6.</span> <span class="toc-text">6. 后台管理与富文本安全</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

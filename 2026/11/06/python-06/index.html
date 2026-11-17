@@ -1,0 +1,949 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>并发编程逐集精讲 | 李宁的博客</title><meta name="author" content="李宁"><meta name="copyright" content="李宁"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 并发编程 🎬 对应课程:Python基础 第9章(多进程、多线程、GIL、锁、线程池、协程)  1. 进程与线程基本概念 🎬 对应视频:P458、P470  进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发编程逐集精讲">
+<meta property="og:url" content="https://ln996.github.io/2026/11/06/python-06/index.html">
+<meta property="og:site_name" content="李宁的博客">
+<meta property="og:description" content="本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 并发编程 🎬 对应课程:Python基础 第9章(多进程、多线程、GIL、锁、线程池、协程)  1. 进程与线程基本概念 🎬 对应视频:P458、P470  进程是资源分配的最小单位,线程是 CPU 调度的最小单位;进程间数据隔离,线程间共享进程的内存。  进程:正在运行的程序,是操作系统分配">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ln996.github.io/img/avatar.svg">
+<meta property="article:published_time" content="2026-11-06T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-11-17T06:53:34.879Z">
+<meta property="article:author" content="李宁">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ln996.github.io/img/avatar.svg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "并发编程逐集精讲",
+  "url": "https://ln996.github.io/2026/11/06/python-06/",
+  "image": "https://ln996.github.io/img/avatar.svg",
+  "datePublished": "2026-11-06T01:00:00.000Z",
+  "dateModified": "2026-11-17T06:53:34.879Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "李宁",
+      "url": "https://ln996.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ln996.github.io/2026/11/06/python-06/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '并发编程逐集精讲',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(/img/bg.svg);"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/banner.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">李宁的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">并发编程逐集精讲</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">并发编程逐集精讲</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-06T01:00:00.000Z" title="发表于 2026-11-06 09:00:00">2026-11-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-17T06:53:34.879Z" title="更新于 2026-11-17 14:53:34">2026-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Python学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。</p>
+</blockquote>
+<hr>
+<h2 id="📖-并发编程"><a href="#📖-并发编程" class="headerlink" title="📖 并发编程"></a>📖 并发编程</h2><blockquote>
+<p>🎬 对应课程:Python基础 第9章(多进程、多线程、GIL、锁、线程池、协程)</p>
+</blockquote>
+<h3 id="1-进程与线程基本概念"><a href="#1-进程与线程基本概念" class="headerlink" title="1. 进程与线程基本概念"></a>1. 进程与线程基本概念</h3><blockquote>
+<p>🎬 对应视频:P458、P470</p>
+</blockquote>
+<p><strong><strong>进程是资源分配的最小单位,线程是 CPU 调度的最小单位</strong>;进程间数据隔离,线程间共享进程的内存。</strong></p>
+<ul>
+<li>进程:正在运行的程序,是操作系统<strong>分配资源</strong>(内存、文件句柄)的基本单位,进程之间相互独立</li>
+<li>线程:进程内部的执行单元,<strong>共享</strong>所在进程的全局变量和内存,创建、切换开销比进程小</li>
+<li>一个进程至少有一个<strong>主线程</strong>;某线程崩溃可能拖垮整个进程,而一个进程崩溃不影响其他进程</li>
+<li>并行:多个 CPU 核心真正同时执行;并发:单核(或同一核)时间片轮转,<strong>看起来</strong>同时执行</li>
+<li>Python 实践:计算密集用多进程,IO 密集用多线程或协程</li>
+</ul>
+<h3 id="2-multiprocessing-多进程"><a href="#2-multiprocessing-多进程" class="headerlink" title="2. multiprocessing 多进程"></a>2. multiprocessing 多进程</h3><blockquote>
+<p>🎬 对应视频:P458~P460、P463、P468</p>
+</blockquote>
+<p><strong><code>Process(target=函数, args=(参数,))</code> 创建子进程,<code>start()</code> 启动、<code>join()</code> 等待;<strong>进程间数据默认隔离</strong>,通信要用 <code>Queue</code>。</strong></p>
+<ul>
+<li>创建后必须调 <code>p.start()</code> 才真正开出子进程;<code>p.join()</code> 让<strong>父进程等待</strong>子进程结束后再继续</li>
+<li><code>p.daemon = True</code> 设为守护进程(必须在 start <strong>之前</strong>):父进程结束,守护子进程立即终止,且设置了 daemon 就不能再 join</li>
+<li>数据隔离:子进程是父进程数据的一份<strong>拷贝</strong>,子进程里改全局变量,父进程完全看不到</li>
+<li>进程间通信用 <code>multiprocessing.Queue</code>(put &#x2F; get),数据经过 pickle <strong>复制传递</strong>,而不是共享内存</li>
+<li>Windows 下创建进程用 spawn 方式(重新 import 主模块),主逻辑必须放在 <code>if __name__ == &quot;__main__&quot;:</code> 里,否则递归创建报错</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">work</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(name, <span class="string">&quot;子进程执行中&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:   <span class="comment"># Windows 下必须加这行</span></span><br><span class="line">    p = Process(target=work, args=(<span class="string">&quot;p1&quot;</span>,))</span><br><span class="line">    p.start()     <span class="comment"># 启动子进程</span></span><br><span class="line">    p.join()      <span class="comment"># 父进程等待子进程结束</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;父进程结束&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><em>多进程基本用法</em></p>
+<h3 id="3-threading-多线程与数据竞争"><a href="#3-threading-多线程与数据竞争" class="headerlink" title="3. threading 多线程与数据竞争"></a>3. threading 多线程与数据竞争</h3><blockquote>
+<p>🎬 对应视频:P473、P475~P479</p>
+</blockquote>
+<p><strong><code>Thread(target=函数)</code> 创建线程,线程</strong>共享进程数据**,多个线程同时改同一变量会产生<strong>竞争</strong>,必须加锁。**</p>
+<ul>
+<li><code>t = Thread(target=work, args=(n,))</code>;<code>t.start()</code> 启动,<code>t.join()</code> 等待该线程结束</li>
+<li><code>t.setDaemon(True)</code> 设为守护线程(须在 start <strong>之前</strong>):主线程结束,守护线程立即死亡,适合日志、心跳等辅助任务</li>
+<li>线程共享全局变量,但 <code>x += 1</code> 这类操作<strong>不是原子的</strong>(读、加、写三步可能被打断),多线程并发修改结果会出错</li>
+<li>不加锁时两个线程各加 100 万次,最终结果往往<strong>小于</strong> 200 万,且每次运行可能不同</li>
+<li>主线程要等所有<strong>非守护</strong>线程结束才会退出</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line">x = <span class="number">0</span></span><br><span class="line">lock = threading.Lock()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">work</span>():</span><br><span class="line">    <span class="keyword">global</span> x</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000000</span>):</span><br><span class="line">        lock.acquire()</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line">        lock.release()</span><br><span class="line"></span><br><span class="line">t1 = threading.Thread(target=work)</span><br><span class="line">t2 = threading.Thread(target=work)</span><br><span class="line">t1.start(); t2.start()</span><br><span class="line">t1.join(); t2.join()</span><br><span class="line"><span class="built_in">print</span>(x)   <span class="comment"># 加锁后一定是 2000000,不加锁则可能小于它</span></span><br></pre></td></tr></table></figure>
+
+<p><em>线程竞争与同步锁</em></p>
+<h3 id="4-GIL-全局解释器锁"><a href="#4-GIL-全局解释器锁" class="headerlink" title="4. GIL 全局解释器锁"></a>4. GIL 全局解释器锁</h3><blockquote>
+<p>🎬 对应视频:P480~P482</p>
+</blockquote>
+<p><strong>GIL 保证</strong>同一进程同一时刻只有一个线程执行 Python 字节码**;因此 IO 密集用多线程、计算密集用多进程。**</p>
+<ul>
+<li>GIL 是 <strong>CPython 解释器</strong>的实现细节,不是 Python 语言规范;JPython 等其他解释器没有 GIL</li>
+<li>线程执行 IO 操作时会<strong>释放 GIL</strong>,其他线程可以趁机运行——所以爬虫、文件读写、socket 等 IO 密集任务用多线程依然有效</li>
+<li>计算密集任务(纯数学运算)吃 CPU,GIL 让多线程无法并行计算,应改用 <code>multiprocessing</code> 多进程,每个进程有<strong>自己独立的 GIL</strong>,可利用多核</li>
+<li>GIL 不等于业务安全:它只保证同一时刻只有一个线程执行字节码,但一条语句中间仍可能被切换,共享数据<strong>仍需自己加锁</strong></li>
+<li>一句话选型:IO 多 → 多线程 &#x2F; 协程;计算多 → 多进程</li>
+</ul>
+<h3 id="5-锁、信号量、事件与安全队列"><a href="#5-锁、信号量、事件与安全队列" class="headerlink" title="5. 锁、信号量、事件与安全队列"></a>5. 锁、信号量、事件与安全队列</h3><blockquote>
+<p>🎬 对应视频:P466<del>P469、P485</del>P489</p>
+</blockquote>
+<p><strong><code>Lock</code> 保证临界区互斥,<code>Semaphore</code> 限流,<code>Event</code> 发通知,<code>Queue</code> 自带锁、天生线程安全,是</strong>生产者消费者模型<strong>的首选。</strong></p>
+<ul>
+<li>Lock:<code>acquire()</code> 抢锁、<code>release()</code> 放锁,同一时刻只放一个线程进临界区;抢不到就阻塞</li>
+<li><strong>死锁</strong>:两个线程各自持有一把锁、又都在等对方手里的锁,谁都不放,程序卡死;RLock(可重入锁)允许同一线程多次 acquire,可缓解嵌套场景</li>
+<li>Semaphore(n):<strong>最多允许 n 个线程</strong>同时访问,比如限制同时只有 3 个线程连数据库</li>
+<li>Event:<code>wait()</code> 等待信号、<code>set()</code> 发出信号,用于线程间的<strong>通知</strong>机制</li>
+<li>Queue 内部已加锁,多线程 put &#x2F; get 不会乱:<code>q.put()</code>、<code>q.get()</code>、<code>q.qsize()</code>、<code>q.task_done()</code>、<code>q.join()</code></li>
+<li>生产者消费者模型:生产者只管往队列放任务,消费者只管取任务处理,用 Queue 解耦、削峰</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> queue <span class="keyword">import</span> Queue</span><br><span class="line"></span><br><span class="line">q = Queue()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">producer</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">        q.put(<span class="string">f&quot;任务<span class="subst">&#123;i&#125;</span>&quot;</span>)          <span class="comment"># 生产者:放任务</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">consumer</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        item = q.get()             <span class="comment"># 消费者:取任务(线程安全)</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;处理&quot;</span>, item)</span><br><span class="line">        q.task_done()</span><br></pre></td></tr></table></figure>
+
+<p><em>生产者消费者模型(Queue)</em></p>
+<h3 id="6-进程池线程池与协程"><a href="#6-进程池线程池与协程" class="headerlink" title="6. 进程池线程池与协程"></a>6. 进程池线程池与协程</h3><blockquote>
+<p>🎬 对应视频:P490~P494</p>
+</blockquote>
+<p><strong>池用 <code>concurrent.futures</code> 的 <code>ThreadPoolExecutor / ProcessPoolExecutor</code>(<code>submit / map / result</code>);协程是</strong>单线程内的并发**,gevent 遇 IO 就切换任务。**</p>
+<ul>
+<li>用池的意义:复用线程&#x2F;进程,省去频繁创建销毁的开销,还能<strong>限制最大并发数</strong></li>
+<li><code>executor.submit(fn, 参数)</code> 返回 Future 对象,<code>fut.result()</code> 拿结果(没完成会阻塞);<code>executor.map(fn, 列表)</code> 按提交顺序返回全部结果</li>
+<li>协程:单线程内遇到 IO <strong>主动切换</strong>去执行别的任务,让 CPU 不闲着,切换开销最小,本质是程序自己调度的假并发</li>
+<li>gevent 三件套:<code>from gevent import monkey; monkey.patch_all()</code>(把 socket、time 等改成协作式,要放最前面)、<code>gevent.spawn(函数)</code> 创建、<code>gevent.joinall()</code> 等待全部完成</li>
+<li>asyncio 是 py3.4+ 原生方案:<code>async def</code> 定义协程、<code>await</code> 处处让出执行权</li>
+<li>生成器的 <code>yield</code> 能让出执行权又记得恢复位置,正是协程切换的思想来源</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">down</span>(<span class="params">url</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;url&#125;</span> 下载完成&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(<span class="number">3</span>) <span class="keyword">as</span> ex:</span><br><span class="line">    <span class="keyword">for</span> res <span class="keyword">in</span> ex.<span class="built_in">map</span>(down, [<span class="string">&quot;a.jpg&quot;</span>, <span class="string">&quot;b.jpg&quot;</span>, <span class="string">&quot;c.jpg&quot;</span>]):</span><br><span class="line">        <span class="built_in">print</span>(res)   <span class="comment"># 按提交顺序输出,不会乱序</span></span><br></pre></td></tr></table></figure>
+
+<p><em>线程池 map 批量任务</em></p>
+<h3 id="7-操作系统发展史与多道技术"><a href="#7-操作系统发展史与多道技术" class="headerlink" title="7. 操作系统发展史与多道技术"></a>7. 操作系统发展史与多道技术</h3><blockquote>
+<p>🎬 对应视频:P453~P454</p>
+</blockquote>
+<p><strong>操作系统为解决 <strong>CPU 在等 IO 时空转</strong>的问题发展出</strong>多道技术**:内存同时驻留多道程序,<strong>空间复用</strong>分内存、<strong>时间复用</strong>切 CPU。**</p>
+<ul>
+<li>发展脉络:手工操作(穿孔卡片,人机矛盾大)→ 单道批处理(内存里只有一道程序)→ 多道批处理 → 分时系统(时间片轮转、人机交互)→ 实时系统(要求及时响应)</li>
+<li>核心矛盾:CPU 速度远快于 IO,单道程序等 IO 时 CPU 只能干等,利用率极低;于是让多道程序’互相填坑’</li>
+<li><strong>空间上的复用</strong>:内存划分给多道程序同时驻留,靠硬件支持内存隔离,各进程互不越界</li>
+<li><strong>时间上的复用</strong>:CPU 在多道程序间切换——某程序遇到 IO 或时间片用完就切出去,切走前保存上下文(寄存器、执行状态),轮回来再恢复现场</li>
+<li>效果:宏观上多道程序’同时’运行,微观上 CPU 串行切换;进程、线程、并发这些概念都源于此</li>
+</ul>
+<h3 id="8-进程三状态与调度算法"><a href="#8-进程三状态与调度算法" class="headerlink" title="8. 进程三状态与调度算法"></a>8. 进程三状态与调度算法</h3><blockquote>
+<p>🎬 对应视频:P455~P456</p>
+</blockquote>
+<p><strong>进程在</strong>就绪、运行、阻塞<strong>三态间流转:缺 CPU 是就绪、等 IO 是阻塞;调度算法里</strong>多级反馈队列<strong>综合表现最好。</strong></p>
+<ul>
+<li>三状态:就绪(万事俱备,只差 CPU)、运行(正在被 CPU 执行)、阻塞(等 IO、等锁、等事件——CPU 让给它也没法干活)</li>
+<li>流转规则:就绪→运行(被调度);运行→就绪(时间片用完&#x2F;被抢占);运行→阻塞(等 IO);<strong>阻塞只能等 IO 完成后回到就绪,不能直接回运行</strong></li>
+<li>先来先服务 FCFS:简单公平,但长作业排在前面会把短作业拖死</li>
+<li>短作业优先 SJF:平均等待时间最优,但长作业可能一直被插队、甚至’饿死’</li>
+<li>时间片轮转 RR:轮流执行一个时间片,响应快、适合交互系统,但频繁切换有开销</li>
+<li><strong>多级反馈队列</strong>:多个优先级队列,新任务进最高级(时间片短),用完时间片就降到下一级(时间片变长);IO 密集任务因频繁让出 CPU 留在高优先级被及时响应——兼顾长短作业,是最常用的综合方案</li>
+</ul>
+<h3 id="9-僵尸进程、孤儿进程与守护进程"><a href="#9-僵尸进程、孤儿进程与守护进程" class="headerlink" title="9. 僵尸进程、孤儿进程与守护进程"></a>9. 僵尸进程、孤儿进程与守护进程</h3><blockquote>
+<p>🎬 对应视频:P464~P465</p>
+</blockquote>
+<p>*<em><strong>子先死、父不收尸 &#x3D; 僵尸进程;父先死、子被 1 号进程收养 &#x3D; 孤儿进程;daemon&#x3D;True 的守护进程随主进程代码结束而立即终止</strong>。</em>*</p>
+<ul>
+<li>僵尸进程:子进程先结束,父进程还活着却一直不回收(不调用 join&#x2F;wait),子进程的 PID 和退出状态会<strong>残留在进程表</strong>里;大量堆积会占用系统 PID 资源</li>
+<li>回收僵尸:父进程调用 join() 即可’收尸’;或等父进程结束后,僵尸被 init&#x2F;systemd(1 号进程)收养并回收</li>
+<li>孤儿进程:父进程先结束、子进程还在运行,<strong>被 1 号进程收养</strong>,之后由它负责回收——无害,后台服务常主动利用这一点脱离终端</li>
+<li>守护进程:<code>p.daemon = True</code>(必须在 start 之前设置),<strong>主进程代码一结束,守护子进程立即被强制终止</strong>;适合’主进程只负责监控、子进程是辅助’的场景</li>
+<li>对比记忆:僵尸是’死了没人收尸’占着资源;孤儿是’父死有人接管’继续活;守护是’主死随死’的跟班</li>
+</ul>
+<h3 id="10-IO-模型-阻塞、非阻塞、多路复用与-asyncio"><a href="#10-IO-模型-阻塞、非阻塞、多路复用与-asyncio" class="headerlink" title="10. IO 模型:阻塞、非阻塞、多路复用与 asyncio"></a>10. IO 模型:阻塞、非阻塞、多路复用与 asyncio</h3><blockquote>
+<p>🎬 对应视频:P499~P505</p>
+</blockquote>
+<p><strong><strong>阻塞 IO 干等、非阻塞 IO 轮询、IO 多路复用一个线程看多个连接、异步 IO 内核全办好再通知</strong>;asyncio 用事件循环在单线程内调度协程扛高并发 IO。</strong></p>
+<ul>
+<li>阻塞 IO(默认):recv&#x2F;accept 没数据就一直卡着,线程从运行态进入阻塞态,一个线程同一时刻只能伺候一个连接</li>
+<li>非阻塞 IO:<code>conn.setblocking(False)</code>,没数据立刻返回错误,程序在 while 里<strong>轮询</strong>反复问;线程不被卡死但 CPU 空转,浪费严重</li>
+<li>IO 多路复用:用 <code>selectors</code>&#x2F;<code>select</code> 模块把<strong>多个连接交给内核监视</strong>,哪个就绪就处理哪个,单线程也能管成百上千连接;socketserver 底层、Nginx、Redis 都是这套机制</li>
+<li>同步&#x2F;异步看<strong>结果的通知方式</strong>(主动等或主动问是同步,内核完成后通知你是异步),阻塞&#x2F;非阻塞看<strong>等待时能不能干别的</strong>;按此标准,阻塞、非阻塞、多路复用都属于同步 IO,真正异步的只有异步 IO 模型</li>
+<li>asyncio:<code>async def</code> 定义协程,<code>await</code> 处遇到 IO 主动让出,事件循环(event loop)单线程调度所有协程;<code>asyncio.run(main())</code> 启动,<code>asyncio.gather()</code> 并发跑多个协程并<strong>按传入顺序</strong>收集结果</li>
+<li>选型:连接很多、每个连接大部分时间在等数据的高并发服务,用多路复用&#x2F;协程;实际项目中 aiohttp、FastAPI 等都构建在 asyncio 之上</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">fetch</span>(<span class="params">name, sec</span>):</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(sec)     <span class="comment"># 遇 IO 让出控制权,事件循环去跑别的协程</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 完成&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># gather 并发执行多个协程,结果按传入顺序收集</span></span><br><span class="line">    res = <span class="keyword">await</span> asyncio.gather(fetch(<span class="string">&quot;A&quot;</span>, <span class="number">2</span>), fetch(<span class="string">&quot;B&quot;</span>, <span class="number">1</span>))</span><br><span class="line">    <span class="built_in">print</span>(res)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())   <span class="comment"># 总耗时约 2 秒,而不是 3 秒</span></span><br></pre></td></tr></table></figure>
+
+<p><em>asyncio 事件循环并发执行两个协程</em></p>
+<h3 id="11-同步-异步与阻塞-非阻塞"><a href="#11-同步-异步与阻塞-非阻塞" class="headerlink" title="11. 同步&#x2F;异步与阻塞&#x2F;非阻塞"></a>11. 同步&#x2F;异步与阻塞&#x2F;非阻塞</h3><blockquote>
+<p>🎬 对应视频:P457</p>
+</blockquote>
+<p>*<em><strong>同步&#x2F;异步看「结果如何通知你」</strong>(主动等&#x2F;主动问 vs 内核完成后回调),<strong>阻塞&#x2F;非阻塞看「等待时能不能干别的」</strong>——两组概念正交,组合出四种调用姿态。</em>*</p>
+<ul>
+<li>同步:发起调用后需要<strong>主动等待或主动轮询</strong>结果,结果不会自己送上门;异步:调用立即返回,<strong>内核完成后主动通知&#x2F;回调</strong>你,期间线程可以干别的</li>
+<li>阻塞:结果没好之前,当前线程被挂起、CPU 让给别人,什么都做不了;非阻塞:调用<strong>立刻返回</strong>,没好就返回错误&#x2F;空值,线程继续往下跑</li>
+<li>四种组合:同步阻塞(recv 卡死等,最常见)、同步非阻塞(setblocking(False) 后 while 轮询)、异步非阻塞(理想形态,真正的异步 IO 才是);「异步阻塞」基本只在程序级等待(join、Event.wait)里口头一提</li>
+<li>判断口诀:先问「有没有人通知我」分同步&#x2F;异步,再问「等的时候线程是不是被挂死」分阻塞&#x2F;非阻塞</li>
+<li>定位:这是 Day38 的前置理论,Day42 讲 IO 模型时按这个标准给五种模型归类——<strong>阻塞、非阻塞、多路复用都属于同步 IO</strong>,因为数据拷贝阶段还得自己等&#x2F;自己问</li>
+</ul>
+<h3 id="12-TCP-服务端实现并发效果"><a href="#12-TCP-服务端实现并发效果" class="headerlink" title="12. TCP 服务端实现并发效果"></a>12. TCP 服务端实现并发效果</h3><blockquote>
+<p>🎬 对应视频:P474</p>
+</blockquote>
+<p><strong>单线程服务端 accept 一个客户端后就被通信循环缠住;把每个 conn 的通信循环交给</strong>子线程(或子进程)<strong>,主循环专职 accept,就能同时服务多个客户端。</strong></p>
+<ul>
+<li>问题:手写 TCP 服务端是「链接循环套通信循环」,accept 到第一个客户端后就陷在通信循环里 recv&#x2F;send,第二个客户端只能干等</li>
+<li>改造:accept 拿到 conn 后,<code>t = Thread(target=talk, args=(conn,))</code> + <code>t.start()</code>,把通信循环交给线程;主线程<strong>立刻回头继续 accept</strong></li>
+<li>talk 函数里就是原来的 while recv&#x2F;send 逻辑,异常要 try 住:客户端强制断开会抛 ConnectionResetError,不处理会拖垮服务端</li>
+<li>选型:每连接一线程(共享数据、切换快,IO 场景够用)vs 每连接一进程(稳定隔离,但开销大、Windows 启动慢)</li>
+<li>隐患:连接数不受控,线程一多内存和调度开销爆炸;受控方案 &#x3D; socketserver 模块(P447)和后面的线程池(P491)</li>
+</ul>
+<h3 id="13-协程实现-TCP-并发"><a href="#13-协程实现-TCP-并发" class="headerlink" title="13. 协程实现 TCP 并发"></a>13. 协程实现 TCP 并发</h3><blockquote>
+<p>🎬 对应视频:P495</p>
+</blockquote>
+<p><strong><code>monkey.patch_all()</code> 打补丁后,accept 到连接就用 <code>gevent.spawn(talk, conn)</code> 派一个协程,单线程遇 IO 自动切换,轻量实现 TCP 并发。</strong></p>
+<ul>
+<li>写法顺序:<code>from gevent import monkey; monkey.patch_all()</code> 必须在 import socket 之前执行,把 recv&#x2F;send 等 IO 改造成协作式</li>
+<li>服务端照常 socket → bind → listen → accept;链接循环里 <code>gevent.spawn(talk, conn)</code> 把通信循环交给协程,主循环马上回去 accept 下一个</li>
+<li>原理:某连接的 recv 没数据时,补丁后的代码<strong>自动切给其他连接的协程</strong>;单线程就能「同时」和多个客户端收发</li>
+<li>对比:每连接一线程,几百连接就是几百线程,内存和切换开销大;每连接一协程,单线程扛上千连接,协程栈开销只有 KB 级</li>
+<li>软肋:协程靠「遇 IO 让出」驱动,某个协程里有<strong>纯计算死循环</strong>,整个线程被它占死,所有连接都卡住——所以协程只适合 IO 密集</li>
+</ul>
+<h3 id="14-开启进程-线程的两种方式"><a href="#14-开启进程-线程的两种方式" class="headerlink" title="14. 开启进程&#x2F;线程的两种方式"></a>14. 开启进程&#x2F;线程的两种方式</h3><blockquote>
+<p>🎬 对应视频:P458、P473</p>
+</blockquote>
+<p><strong>除了 <code>Process/Thread(target=函数)</code>,还可以</strong>自定义类继承 Process&#x2F;Thread<strong>、重写 run 方法,start() 之后自动执行 run——两种方式本质相同。</strong></p>
+<ul>
+<li>方式一(函数式):<code>p = Process(target=work, args=(x,))</code>,把要执行的函数交给 target、参数交给 args,最常用</li>
+<li>方式二(继承式):<code>class MyProcess(Process):</code> 重写 <code>run(self)</code>,参数通过自定义 <code>__init__(self, x)</code> 传进来;<code>p = MyProcess(x)</code> 后 <code>p.start()</code> <strong>自动调用 run</strong></li>
+<li>Thread 完全同理:<code>class MyThread(Thread): def run(self)</code>,继承式适合逻辑复杂、要携带大量状态的场景,把数据和行为封装在一个类里</li>
+<li>本质相同:Process&#x2F;Thread 内部定义了 run,target&#x3D;函数 时 run 的默认实现就是执行这个函数——继承式只是覆盖了 run</li>
+<li>无论哪种方式,Windows(spawn 启动)下创建进程的代码都必须放在 <code>if __name__ == &quot;__main__&quot;:</code> 里,否则子进程 import 主模块时递归创建进程报错</li>
+</ul>
+<h2 id="📖-并发逐集精讲-Day38-39"><a href="#📖-并发逐集精讲-Day38-39" class="headerlink" title="📖 并发逐集精讲(Day38~39)"></a>📖 并发逐集精讲(Day38~39)</h2><blockquote>
+<p>🎬 对应课程:Day38~39 逐集精讲(操作系统&#x2F;多道技术&#x2F;进程&#x2F;线程理论)</p>
+</blockquote>
+<h3 id="1-章节说明-按集精讲与「并发编程」章节的关系"><a href="#1-章节说明-按集精讲与「并发编程」章节的关系" class="headerlink" title="1. 章节说明:按集精讲与「并发编程」章节的关系"></a>1. 章节说明:按集精讲与「并发编程」章节的关系</h3><blockquote>
+<p>🎬 对应视频:P449~P470</p>
+</blockquote>
+<p><strong>本章节把 Day38~39 的 <strong>16 个内容小节逐集拆分</strong>,一集一个知识点(title 以集数开头、video 标注单集 P 号),方便</strong>按集查找**;系统性学习并发仍以「并发编程」章节为主,本章节是它的逐集精讲版。**</p>
+<ul>
+<li>组织方式:Day38-05 ~ Day39-10 共 16 个内容小节,每集对应一个知识点,如「Day38-06 多道技术」对应 P454;听课时按集数或 P 号即可快速定位到对应讲义</li>
+<li>与「并发编程」章节的关系:「并发编程」章(py-concurrent)按<strong>主题</strong>系统讲解(进程&#x2F;线程&#x2F;GIL&#x2F;锁&#x2F;池&#x2F;协程),本章节按<strong>视频集数</strong>逐集精讲——先看前者建立知识体系,再按集复习对照</li>
+<li>Day38 脉络:操作系统发展史 → 多道技术 → 进程调度 → 三状态图 → 同步异步 → 创建进程 → join → 数据隔离;Day39 脉络:进程对象 → 僵尸&#x2F;孤儿 → 守护进程 → 互斥锁 → 队列 → IPC → 生产者消费者 → 线程理论</li>
+<li>行政小节(课程安排、自我介绍、今日内容概要、知识回顾,即 P449<del>P452、P461</del>P462)不设知识点,只收录 16 个知识小节</li>
+<li>代码片段均在 Windows(Python 3)下实际运行验证;<strong>Windows 开子进程必须写在 if <strong>name</strong> &#x3D;&#x3D; “<strong>main</strong>“: 里</strong>,这个坑已在对应知识点反复标注</li>
+</ul>
+<h3 id="2-Day38-05-操作系统发展史"><a href="#2-Day38-05-操作系统发展史" class="headerlink" title="2. Day38-05 操作系统发展史"></a>2. Day38-05 操作系统发展史</h3><blockquote>
+<p>🎬 对应视频:P453</p>
+</blockquote>
+<p><strong>操作系统从</strong>手工操作(穿孔卡片)→ 批处理系统 → 多道程序系统 → 分时系统<strong>一路演化,核心矛盾始终是「昂贵的 CPU 别闲着」;理解这段历史,才能理解并发技术为什么长成今天这样。</strong></p>
+<ul>
+<li>手工阶段(穿孔卡片):程序打在纸卡片上排队上机,<strong>一人独占整台计算机</strong>;机器等人装卡片、CPU 大量空转,利用率极低</li>
+<li>批处理系统:把一批作业提前攒到磁带上,由<strong>监督程序</strong>自动一个接一个执行,省去人工装卸;联机批处理 CPU 仍要亲自管输入输出,脱机批处理用外围机先把数据倒上磁带,CPU 专心计算</li>
+<li>多道程序系统:内存里同时放多道程序,CPU 在它们之间切换,一道程序等 IO 时立刻去跑另一道——<strong>CPU 利用率大幅提升</strong>,是现代操作系统和并发编程的基石(下一集展开)</li>
+<li>分时系统:把 CPU 时间切成小片轮流服务多个终端,每个用户都感觉自己在独占计算机;著名的 <strong>UNIX</strong> 就诞生于分时系统 Multics 项目之后</li>
+<li>现代操作系统(Windows&#x2F;Linux&#x2F;Mac)是多道 + 分时的集大成者;后面的进程、线程、锁、队列,全是操作系统为了「高效且安全地并发」提供的机制</li>
+</ul>
+<h3 id="3-Day38-06-多道技术"><a href="#3-Day38-06-多道技术" class="headerlink" title="3. Day38-06 多道技术"></a>3. Day38-06 多道技术</h3><blockquote>
+<p>🎬 对应视频:P454</p>
+</blockquote>
+<p><strong>多道技术 &#x3D; <strong>空间上的复用 + 时间上的复用</strong>:内存同时驻留多道程序(空间复用),CPU 在多道程序间快速切换(时间复用),让单核也能「宏观同时、微观轮流」地跑多个程序。</strong></p>
+<ul>
+<li>要解决的问题:单道程序独占计算机时,遇到 IO(读盘、等输入)CPU 只能干等;多道技术在内存里<strong>同时放多道程序</strong>,一家等 IO 就切给另一家,把 CPU 喂饱</li>
+<li>空间上的复用:把内存划分成多个区域,每个区域放一道程序,<strong>各占各的内存、物理隔离</strong>(后来进程隔离的雏形)</li>
+<li>时间上的复用:CPU 在多道程序间来回切换,切换时机有两种——① 某程序<strong>遇到 IO</strong> 时切换(把等待时间利用起来,最划算);② 某程序<strong>占用 CPU 时间过长</strong>时切换(切换有开销,但不切别的程序会饿死)</li>
+<li>并发 vs 并行:单核 CPU 靠切换实现<strong>并发</strong>(微观轮流执行,宏观像同时跑);<strong>并行</strong>才是真同时执行,只有多核 CPU 才做得到</li>
+<li>切换前要保存当前程序的状态、切回时再恢复(上下文切换),所以并发不是免费的;操作系统就是这套复用机制的总管家</li>
+</ul>
+<h3 id="4-Day38-07-进程的调度"><a href="#4-Day38-07-进程的调度" class="headerlink" title="4. Day38-07 进程的调度"></a>4. Day38-07 进程的调度</h3><blockquote>
+<p>🎬 对应视频:P455</p>
+</blockquote>
+<p><strong>多个进程抢一个 CPU,操作系统用</strong>调度算法<strong>决定下一个谁上:<strong>先来先服务、短作业优先、时间片轮转、多级反馈队列</strong>;多级反馈队列兼顾长短作业,综合表现最好。</strong></p>
+<ul>
+<li>先来先服务(FCFS):按排队顺序执行,公平简单,但<strong>对短作业不友好</strong>——前面一个长作业能把后面一串短作业堵死</li>
+<li>短作业优先(SJF):谁省时间谁先上,平均等待时间最短;但<strong>对长作业不友好</strong>,长作业可能不断被新来的短作业插队而「饿死」</li>
+<li>时间片轮转(RR):每个程序轮流执行一个固定时间片(几十毫秒),到点强制切换;响应快、体验公平,是分时系统的基础</li>
+<li>多级反馈队列:设多个不同优先级的队列,新任务进最高优先级队列;一个时间片内没跑完就<strong>降到下一级</strong>(低级队列时间片更长)——短作业被快速完成,长作业也总能分到时间,综合表现最好</li>
+<li>现代操作系统的调度都是这些思想的综合改进;记住结论:<strong>没有对所有人都公平的算法,只有权衡</strong></li>
+</ul>
+<h3 id="5-Day38-08-进程三状态图"><a href="#5-Day38-08-进程三状态图" class="headerlink" title="5. Day38-08 进程三状态图"></a>5. Day38-08 进程三状态图</h3><blockquote>
+<p>🎬 对应视频:P456</p>
+</blockquote>
+<p><strong>进程在</strong>就绪 → 运行 → 阻塞<strong>三个状态间流转:万事俱备只欠 CPU 是</strong>就绪**,占着 CPU 在跑是<strong>运行</strong>,等 IO 等锁是<strong>阻塞</strong>;阻塞后必须先回就绪重新排队,不能直接跳回运行。**</p>
+<ul>
+<li>就绪态(Ready):除 CPU 以外的资源都已到位,在就绪队列里排队等调度——缺的只是 CPU</li>
+<li>运行态(Running):真正占有 CPU 执行代码;单核机器同一时刻最多只有一个进程处于运行态</li>
+<li>阻塞态(Blocked):在等<strong>非 CPU 资源</strong>——磁盘读写、网络数据、锁等;这时候给它 CPU 也没用</li>
+<li>流转规则:就绪 →(被调度)→ 运行 →(时间片用完)→ 就绪;运行 →(发起 IO)→ 阻塞 →(IO 完成)→ 就绪;<strong>阻塞态不能直接进运行态</strong>,IO 完成后也要回就绪排队</li>
+<li>这张图是后面一切的基础:join 让主进程阻塞等子进程;同步异步、阻塞非阻塞讨论的正是「等待时进程处于什么状态、能不能干别的」</li>
+</ul>
+<h3 id="6-Day38-09-同步异步与阻塞非阻塞"><a href="#6-Day38-09-同步异步与阻塞非阻塞" class="headerlink" title="6. Day38-09 同步异步与阻塞非阻塞"></a>6. Day38-09 同步异步与阻塞非阻塞</h3><blockquote>
+<p>🎬 对应视频:P457</p>
+</blockquote>
+<p><strong><strong>同步&#x2F;异步关注「结果如何拿到」</strong>(自己盯着等 vs 对方做完通知你),<strong>阻塞&#x2F;非阻塞关注「等的时候能不能干别的」</strong>(被挂起 vs 立刻返回)——两组概念相互独立,组合出四种调用姿态。</strong></p>
+<ul>
+<li>同步:调用发出后,调用方要<strong>主动等待或主动查询</strong>结果才算完成(排队买奶茶,自己站在柜台前盯着做)</li>
+<li>异步:调用发出后调用方就走,<strong>结果由被调用方做完后主动通知</strong>(扫码下单做好叫号,该干嘛干嘛;常用回调函数实现)</li>
+<li>阻塞:结果没回来之前,当前进程&#x2F;线程被<strong>挂起</strong>,CPU 让给别人,自己什么都干不了(对应三状态图里的「阻塞态」)</li>
+<li>非阻塞:结果没好也<strong>立刻返回</strong>,不挂起,调用方可以接着干别的(通常要配合反复轮询确认结果)</li>
+<li>两组概念正交:同步不等于阻塞(同步 + 轮询 &#x3D; 同步非阻塞),异步一般配合非阻塞使用;日常最常见的是「同步阻塞」,高并发服务追求「异步 + 非阻塞」</li>
+</ul>
+<h3 id="7-Day38-10-创建进程的两种方式"><a href="#7-Day38-10-创建进程的两种方式" class="headerlink" title="7. Day38-10 创建进程的两种方式"></a>7. Day38-10 创建进程的两种方式</h3><blockquote>
+<p>🎬 对应视频:P458</p>
+</blockquote>
+<p><strong>multiprocessing 开子进程两种写法:① <code>Process(target=函数, args=(参数,))</code>;② 自定义类</strong>继承 Process 重写 run**;Windows 下创建进程<strong>必须</strong>写在 <code>if __name__ == &quot;__main__&quot;:</code> 里,否则无限递归报错。**</p>
+<ul>
+<li>方式一(常用):<code>p = Process(target=task, args=(&quot;甲&quot;,))</code>,target 指定子进程要执行的函数,<strong>args 必须是元组</strong>(只传一个参数也要写逗号);<code>p.start()</code> 告诉操作系统开进程,主进程<strong>不等它</strong>、继续往下走</li>
+<li>方式二:自定义类继承 Process,把逻辑写在 <code>run</code> 方法里(逻辑复杂、需要更多自定义属性时用);<code>p.start()</code> 后操作系统自动执行 run——注意<strong>直接调 p.run() 不会开新进程</strong>,那只是普通函数调用,start() 才是真正创建进程</li>
+<li>Windows 大坑(课程反复强调):Windows 创建子进程采用<strong>导入父进程模块</strong>的方式(spawn),子进程会重新执行模块顶层代码;不加 <code>if __name__ == &quot;__main__&quot;:</code> 保护,一运行就无限递归创建进程直接报错;Linux&#x2F;Mac(fork)不写也能跑,但代码要跨平台就必须写</li>
+<li>保护生效的原理:子进程导入模块时 <code>__name__</code> 不是 “<strong>main</strong>“,所以保护块里的创建代码在子进程里不会执行;两种方式本质相同,都要 start() → 操作系统分配资源 → 执行函数或 run</li>
+<li>start 之后父子进程<strong>并发执行</strong>,谁先打印由操作系统调度决定,不要依赖输出顺序</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"><span class="keyword">import</span> os, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;子进程<span class="subst">&#123;name&#125;</span>运行中,pid=<span class="subst">&#123;os.getpid()&#125;</span>,父进程pid=<span class="subst">&#123;os.getppid()&#125;</span>&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyProcess</span>(<span class="title class_ inherited__">Process</span>):          <span class="comment"># 方式二:自定义类继承 Process</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(name=name)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):                 <span class="comment"># start() 之后自动执行 run()</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;子进程<span class="subst">&#123;self.name&#125;</span>运行中,pid=<span class="subst">&#123;os.getpid()&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:         <span class="comment"># Windows 下必须写,否则无限递归报错</span></span><br><span class="line">    p1 = Process(target=task, args=(<span class="string">&quot;甲&quot;</span>,))   <span class="comment"># 方式一:指定函数</span></span><br><span class="line">    p2 = MyProcess(<span class="string">&quot;乙&quot;</span>)</span><br><span class="line">    p1.start()</span><br><span class="line">    p2.start()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;主进程继续往下执行,不等子进程&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>创建子进程的两种方式(Windows 必须加 <strong>main</strong> 保护)</em></p>
+<h3 id="8-Day38-11-join方法"><a href="#8-Day38-11-join方法" class="headerlink" title="8. Day38-11 join方法"></a>8. Day38-11 join方法</h3><blockquote>
+<p>🎬 对应视频:P459</p>
+</blockquote>
+<p><strong><code>p.join()</code> 让主进程</strong>阻塞等待子进程真正结束<strong>再往下执行;想保持子进程并发,要</strong>先统一 start、再统一 join<strong>——start 一个就立刻 join 一个,并发会退化成串行。</strong></p>
+<ul>
+<li>start() 只是「下单开进程」,主进程立刻继续往下;join() 则让主进程停在原地等子进程执行完毕(可传 timeout 只等指定秒数,配合 is_alive() 判断)</li>
+<li>本质对应三状态图:join 时主进程进入<strong>阻塞态</strong>,子进程终止后才恢复运行——join 是拿「主进程的时间」换「确定的顺序」</li>
+<li>经典错误:for 循环里 start 一个就 join 一个,子进程被迫一个接一个跑(<strong>串行</strong>),并发白开了</li>
+<li>正确姿势:第一个循环把所有子进程 start 完(它们并发执行),第二个循环再统一 join(主进程等全部结束);主进程最后一句代码一定最后打印</li>
+<li>不 join 行不行?行——子进程照样跑完,但主进程后续代码与子进程的先后顺序不确定;需要「等结果再继续」的场景必须 join</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 开始干活&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 干完了&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    ps = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>):</span><br><span class="line">        p = Process(target=task, args=(<span class="string">f&quot;子进程<span class="subst">&#123;i&#125;</span>&quot;</span>,))</span><br><span class="line">        p.start()                  <span class="comment"># 先把 3 个子进程全部开起来</span></span><br><span class="line">        ps.append(p)</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> ps:</span><br><span class="line">        p.join()                   <span class="comment"># 再统一等待,主进程最后才往下走</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;所有子进程结束,主进程才打印这句话&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>先统一 start,再统一 join</em></p>
+<h3 id="9-Day38-12-进程间数据相互隔离"><a href="#9-Day38-12-进程间数据相互隔离" class="headerlink" title="9. Day38-12 进程间数据相互隔离"></a>9. Day38-12 进程间数据相互隔离</h3><blockquote>
+<p>🎬 对应视频:P460</p>
+</blockquote>
+<p><strong><strong>进程是资源分配的最小单位</strong>,各自拥有独立内存:子进程对全局变量的修改只改了自己那份拷贝,<strong>父进程完全看不见</strong>;想传数据必须用 IPC(队列&#x2F;管道)。</strong></p>
+<ul>
+<li>实验:父进程定义全局 x &#x3D; 100,子进程里改成 200 并打印——子进程打印 200,父进程 join 后打印的仍是 100,两边互不影响</li>
+<li>原因:创建子进程时,子进程拿到的是父进程数据的<strong>一份拷贝</strong>(Windows 下相当于把模块重新导入一遍),从此两套内存各过各的</li>
+<li>对比线程:同一进程内的多个线程<strong>共享</strong>同一份内存,改全局变量彼此都看得见(Day39-10 细讲)——这就是「线程通信方便但有竞争、进程隔离安全但通信麻烦」的根源</li>
+<li>所以「改全局变量传数据」在进程间行不通;进程通信只能借助操作系统提供的 IPC 机制(multiprocessing 的 Queue&#x2F;Pipe,见 Day39-08),或文件、socket 等外部介质</li>
+<li>隔离的好处是安全:一个进程崩溃不会污染其他进程的内存;代价是通信要「过一道系统」,成本比线程高</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"></span><br><span class="line">x = <span class="number">100</span>                              <span class="comment"># 全局变量</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">change</span>():</span><br><span class="line">    <span class="keyword">global</span> x</span><br><span class="line">    x = <span class="number">200</span>                          <span class="comment"># 子进程改的只是自己那份拷贝</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;子进程里 x =&quot;</span>, x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    p = Process(target=change)</span><br><span class="line">    p.start()</span><br><span class="line">    p.join()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;主进程里 x =&quot;</span>, x)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>验证进程间数据隔离</em></p>
+<h3 id="10-Day39-03-进程对象及其他方法"><a href="#10-Day39-03-进程对象及其他方法" class="headerlink" title="10. Day39-03 进程对象及其他方法"></a>10. Day39-03 进程对象及其他方法</h3><blockquote>
+<p>🎬 对应视频:P463</p>
+</blockquote>
+<p><strong>进程对象常用成员:<code>p.pid</code> 进程号、<code>p.name</code> 进程名、<code>p.is_alive()</code> 是否存活、<code>p.terminate()</code> 杀进程、<code>p.join()</code> 等结束;子进程内用 <code>os.getpid()/os.getppid()</code>、<code>current_process()</code> 查看自己。</strong></p>
+<ul>
+<li>父子互查:父进程用 <code>p.pid</code> 拿子进程号;子进程内 <code>os.getpid()</code> 看自己、<code>os.getppid()</code> 看父进程,两者能对得上;<code>multiprocessing.current_process()</code> 拿当前进程对象(主进程默认名 MainProcess)</li>
+<li><code>p.name</code>:创建时用 Process(target&#x3D;…, name&#x3D;”甲进程”) 起名,方便日志调试;<code>p.is_alive()</code> 判断进程是否还在运行</li>
+<li><code>p.terminate()</code>:给操作系统发<strong>终止信号</strong>——它是异步的,发完不会立刻生效,要 <code>p.join()</code> 等操作系统处理完,<code>is_alive()</code> 才变成 False</li>
+<li>实测注意:Windows 下子进程启动比主进程慢,terminate 发得太早,子进程可能还没来得及执行就没了;被 terminate 杀掉的进程不会执行任何收尾代码,正常结束还是要让子进程自己跑完</li>
+<li>主进程退出前会自动回收(等)自己创建的非守护子进程——这就是脚本跑完不「扔下」子进程的原因,详见僵尸进程一集</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process, current_process</span><br><span class="line"><span class="keyword">import</span> os, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;子进程 <span class="subst">&#123;current_process().name&#125;</span> 运行中,pid=<span class="subst">&#123;os.getpid()&#125;</span>&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">5</span>)                    <span class="comment"># 睡 5 秒,给 terminate 制造机会</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    p = Process(target=task, name=<span class="string">&quot;甲进程&quot;</span>)</span><br><span class="line">    p.start()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;子进程pid:&quot;</span>, p.pid, <span class="string">&quot;| 存活:&quot;</span>, p.is_alive())</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    p.terminate()                    <span class="comment"># 异步发终止信号,由操作系统执行</span></span><br><span class="line">    p.join()                         <span class="comment"># 等操作系统真正处理完</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;terminate 并 join 后存活:&quot;</span>, p.is_alive())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>进程对象常用属性与方法(pid &#x2F; is_alive &#x2F; terminate &#x2F; join)</em></p>
+<h3 id="11-Day39-04-僵尸进程与孤儿进程"><a href="#11-Day39-04-僵尸进程与孤儿进程" class="headerlink" title="11. Day39-04 僵尸进程与孤儿进程"></a>11. Day39-04 僵尸进程与孤儿进程</h3><blockquote>
+<p>🎬 对应视频:P464</p>
+</blockquote>
+<p><strong><strong>子进程死了、父进程不收尸 &#x3D; 僵尸进程</strong>(占着进程号不放,有害);<strong>父进程先死、子进程被 1 号进程收养 &#x3D; 孤儿进程</strong>(无害);口诀:僵尸有害,孤儿无害。</strong></p>
+<ul>
+<li>进程死后不会立刻消失:会留下一条「死亡记录」(pid、退出状态等)等父进程来<strong>收尸</strong>(wait&#x2F;join);没被收尸之前它就处于僵尸状态</li>
+<li>僵尸进程的危害:占着 pid 和进程表空间不释放,pid 是有限资源,僵尸堆积会导致<strong>新进程开不出来</strong>;主要在 Unix&#x2F;Linux 下讨论(Windows 机制不同,但「父进程要获取子进程退出状态」的概念一致)</li>
+<li>僵尸的成因与解决:父进程一直活着却从不 join&#x2F;wait 子进程;解决就是父进程及时 join,或让父进程先退出、由 1 号进程接管收尸</li>
+<li>孤儿进程:父进程先退出,子进程还活着——会被 **1 号进程(init&#x2F;systemd)**收养并负责回收,运行不受影响,<strong>无害</strong>;后台服务常以孤儿状态运行</li>
+<li>Python 贴心之处:主进程正常结束前会<strong>自动 join</strong> 所有非守护子进程,所以正常写法基本不会留僵尸;要警惕的是「长期存活的父进程 + 从不 join」的写法</li>
+</ul>
+<h3 id="12-Day39-05-守护进程"><a href="#12-Day39-05-守护进程" class="headerlink" title="12. Day39-05 守护进程"></a>12. Day39-05 守护进程</h3><blockquote>
+<p>🎬 对应视频:P465</p>
+</blockquote>
+<p><strong><code>p.daemon = True</code>(<strong>必须在 start() 之前设置</strong>)把子进程设为守护进程:<strong>主进程代码一结束它就被强制带走</strong>,不会拖住主进程退出;适合心跳、监控这类辅助任务。</strong></p>
+<ul>
+<li>普通子进程:主进程代码跑完后,还要<strong>等所有普通子进程结束</strong>才真正退出(自动回收);守护进程则随主进程代码结束<strong>立即被终止</strong>,不等它跑完</li>
+<li>设置时机:<code>p.daemon = True</code> 必须写在 <code>p.start()</code> <strong>之前</strong>,进程已开启再设置会报错;守护的是「主进程的代码」,主进程代码结束的那一刻它就没了</li>
+<li>典型用途:为主程序打下手的长循环任务——心跳上报、监控、日志收集;主程序一停它们就没有存在的意义,正好一起带走</li>
+<li>两个限制:守护进程<strong>不允许再开子进程</strong>(会报错);也别指望对它 join 能等到它跑完——主进程代码一结束它就终止了</li>
+<li>和孤儿进程的区别:守护进程是「主动陪葬」(设计如此),孤儿进程是「被动失怙、被 1 号进程收养」;两者都别和僵尸进程(死了没人收尸)混为一谈</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">guard</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;守护进程还在运行&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    p = Process(target=guard)</span><br><span class="line">    p.daemon = <span class="literal">True</span>                  <span class="comment"># 必须在 start() 之前设置</span></span><br><span class="line">    p.start()</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;主进程代码结束,守护进程被立刻带走&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>守护进程随主进程代码结束而立刻终止</em></p>
+<h3 id="13-Day39-06-互斥锁"><a href="#13-Day39-06-互斥锁" class="headerlink" title="13. Day39-06 互斥锁"></a>13. Day39-06 互斥锁</h3><blockquote>
+<p>🎬 对应视频:P466</p>
+</blockquote>
+<p><strong>多个进程并发改同一份数据会产生</strong>竞争**(如抢票超卖):用 <code>Lock</code> 把「读-改-写」这段关键代码锁起来,改成<strong>串行</strong>执行,谁先抢到锁谁先操作。**</p>
+<ul>
+<li>竞争场景:多个进程同时「查余票 → 减 1 → 写回文件」,不加锁时大家都在写回前读到「还剩 1 张」,于是<strong>超卖</strong>;本质是并发修改共享数据(文件)没有保护</li>
+<li>用法:<code>lock = Lock()</code>;<code>lock.acquire()</code> 上锁、<code>lock.release()</code> 释放;<strong>谁先抢到锁谁先执行,其他进程在 acquire 处阻塞等待</strong>;推荐 <code>with lock:</code> 写法,代码块结束自动释放</li>
+<li>加锁原则:<strong>锁的粒度尽量小</strong>——只圈真正改数据的那几行(购票),查票这类只读操作不必锁;锁的范围越大,并发性越差</li>
+<li>经典坑:acquire 之后忘了 release(或中间抛异常),其他进程永远等不到锁,程序卡死——用 with 最稳</li>
+<li>锁保护的是<strong>外部共享资源</strong>(文件、打印终端等),与「进程内存隔离」并不矛盾:进程内存依旧各是各的,只是大家都访问的那份数据需要锁来排队</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json, time</span><br><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process, Lock</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">name</span>):</span><br><span class="line">    dic = json.load(<span class="built_in">open</span>(<span class="string">&quot;db.json&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 查到余票 <span class="subst">&#123;dic[<span class="string">&#x27;count&#x27;</span>]&#125;</span> 张&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">buy</span>(<span class="params">name, lock</span>):</span><br><span class="line">    <span class="keyword">with</span> lock:                       <span class="comment"># 抢到锁才能进入购票环节</span></span><br><span class="line">        dic = json.load(<span class="built_in">open</span>(<span class="string">&quot;db.json&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">        <span class="keyword">if</span> dic[<span class="string">&quot;count&quot;</span>] &gt; <span class="number">0</span>:</span><br><span class="line">            dic[<span class="string">&quot;count&quot;</span>] -= <span class="number">1</span></span><br><span class="line">            time.sleep(<span class="number">0.3</span>)          <span class="comment"># 模拟写文件耗时(不加锁时漏洞就在这)</span></span><br><span class="line">            json.dump(dic, <span class="built_in">open</span>(<span class="string">&quot;db.json&quot;</span>, <span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 购票成功&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 没抢到,票已售罄&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name, lock</span>):</span><br><span class="line">    search(name)                     <span class="comment"># 查票可以并发</span></span><br><span class="line">    buy(name, lock)                  <span class="comment"># 买票必须串行</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    lock = Lock()</span><br><span class="line">    ps = [Process(target=task, args=(<span class="string">f&quot;用户<span class="subst">&#123;i&#125;</span>&quot;</span>, lock)) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> ps:</span><br><span class="line">        p.start()</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> ps:</span><br><span class="line">        p.join()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>互斥锁保护抢票:购票环节串行,不再超卖</em></p>
+<h3 id="14-Day39-07-队列介绍"><a href="#14-Day39-07-队列介绍" class="headerlink" title="14. Day39-07 队列介绍"></a>14. Day39-07 队列介绍</h3><blockquote>
+<p>🎬 对应视频:P467</p>
+</blockquote>
+<p><strong><code>multiprocessing.Queue</code> 是</strong>进程安全<strong>的先进先出(FIFO)队列,底层 &#x3D; <strong>管道(存数据的路)+ 锁(保证读写互斥)</strong>;<code>put()</code> 存、<code>get()</code> 取,没空位&#x2F;没数据时</strong>阻塞<strong>。</strong></p>
+<ul>
+<li>为什么需要它:进程内存隔离,普通变量、全局变量都传不了数据;队列把「存数据的管道」和「保证安全的锁」打包好,天生可以跨进程使用</li>
+<li><code>q = Queue(3)</code> 指定最多同时存 3 条(不传则只受内存限制);put 时<strong>满了会阻塞</strong>等空位,get 时<strong>空了会阻塞</strong>等数据——这正是三状态图里进程的「阻塞态」</li>
+<li>先进先出:先 put 的先被 get;能放任何<strong>可以被 pickle</strong> 的对象(字符串、数字、列表、字典都行)</li>
+<li>常用方法:q.put()&#x2F;q.get() 阻塞版(可传 timeout);q.put_nowait()&#x2F;q.get_nowait() 不等待,满&#x2F;空直接抛异常;q.qsize()&#x2F;q.empty()&#x2F;q.full() 查看状态——多进程并发下读到的只是参考值</li>
+<li>本集先在单个进程内体会 put&#x2F;get 的行为,下一集把同一个 Queue 传给子进程,就是正式的 IPC 机制</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Queue</span><br><span class="line"></span><br><span class="line">q = Queue(<span class="number">3</span>)               <span class="comment"># 最多同时存 3 条数据,先进先出</span></span><br><span class="line">q.put(<span class="string">&quot;first&quot;</span>)</span><br><span class="line">q.put(<span class="number">2</span>)</span><br><span class="line">q.put(&#123;<span class="string">&quot;k&quot;</span>: <span class="string">&quot;v&quot;</span>&#125;)</span><br><span class="line"><span class="built_in">print</span>(q.get(), q.get(), q.get())   <span class="comment"># first 2 &#123;&#x27;k&#x27;: &#x27;v&#x27;&#125;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;取空后 qsize/empty:&quot;</span>, q.qsize(), q.empty())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>Queue 先进先出与取空行为</em></p>
+<h3 id="15-Day39-08-IPC机制"><a href="#15-Day39-08-IPC机制" class="headerlink" title="15. Day39-08 IPC机制"></a>15. Day39-08 IPC机制</h3><blockquote>
+<p>🎬 对应视频:P468</p>
+</blockquote>
+<p><strong>IPC(Inter-Process Communication,进程间通信)专治进程数据隔离:<code>multiprocessing.Queue</code> 最常用——把</strong>同一个队列对象<strong>通过 args 传给子进程,一端 put、另一端 get,数据就跨进程过去了。</strong></p>
+<ul>
+<li>三步用法:主进程 <code>q = Queue()</code> 创建 → 把 q 作为参数传给子进程 <code>Process(target=child, args=(q,))</code> → 一端 <code>q.put(数据)</code>、另一端 <code>q.get()</code> 取;<strong>传的是队列对象,不是数据本身</strong></li>
+<li>管道 + 锁的封装让 put&#x2F;get 天然进程安全;数据在 put 时被 <strong>pickle</strong> 序列化、get 时反序列化,所以只能放可 pickle 的对象(socket、文件句柄这类放不进去)</li>
+<li>双向通信:主进程 put 子进程 get,子进程也能 put 主进程 get,适合「父发任务、子交结果」的模式(实测:子进程收到任务、处理完把结果传回主进程)</li>
+<li>另一选择 Pipe(管道):只支持<strong>两个</strong>进程点对点通信,速度略快;Queue 更通用、多进程都能用,日常首选 Queue,了解 Pipe 即可</li>
+<li>小坑提醒:主进程 put 之后立刻 get,可能<strong>把自己 put 的数据取回来</strong>(大家都在读同一个队列);想让「子进程先收走再回复」,主进程应先 join 再 get</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process, Queue</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">child</span>(<span class="params">q</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;子进程收到:&quot;</span>, q.get())     <span class="comment"># 队列没数据就阻塞等待</span></span><br><span class="line">    q.put(<span class="string">&quot;子进程:收到,已处理&quot;</span>)       <span class="comment"># 通过同一个队列把结果传回去</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    q = Queue()</span><br><span class="line">    p = Process(target=child, args=(q,))   <span class="comment"># 把队列对象传给子进程</span></span><br><span class="line">    p.start()</span><br><span class="line">    q.put([<span class="string">&quot;主进程的任务&quot;</span>, <span class="number">42</span>])       <span class="comment"># 数据被 pickle 后跨进程传递</span></span><br><span class="line">    p.join()                         <span class="comment"># 先等子进程收走消息并回复</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;主进程收到:&quot;</span>, q.get())     <span class="comment"># 再从队列取回复</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>主进程与子进程通过 Queue 双向通信</em></p>
+<h3 id="16-Day39-09-生产者消费者模型"><a href="#16-Day39-09-生产者消费者模型" class="headerlink" title="16. Day39-09 生产者消费者模型"></a>16. Day39-09 生产者消费者模型</h3><blockquote>
+<p>🎬 对应视频:P469</p>
+</blockquote>
+<p><strong>生产者只管产数据放进队列、消费者只管取数据处理,Queue 做中间</strong>缓冲**:两边解耦、各自并发、忙闲互补;结束时<strong>有几个消费者就发几个 None 结束信号</strong>,否则消费者会永远阻塞在 get 上。**</p>
+<ul>
+<li>三要素:<strong>生产者</strong>(造数据的进程)、<strong>消费者</strong>(用数据的进程)、<strong>队列</strong>(中间缓冲);解决生产快慢不均——生产者不必等消费者腾手,消费者也不怕断粮</li>
+<li>三大好处:解耦(两边互不认识也能配合)、并发(生产和消费同时进行)、缓冲(高峰排队、低谷不空转)</li>
+<li>标准写法:生产者循环 put 数据,全部做完后 <code>q.put(None)</code> 作为<strong>结束信号</strong>;消费者 <code>while True: dish = q.get()</code>,取到 None 就 break 退出</li>
+<li>结束信号数量 &#x3D; 消费者数量:2 个消费者就 put 2 个 None,少一个就有消费者永远 get 不到东西、卡死在阻塞里;多个生产者时先 join 所有生产者,再统一发信号</li>
+<li>进阶:用 <code>JoinableQueue</code> 配合 task_done()&#x2F;join() 可以让主进程等「所有数据被消费完」再结束(了解);这套模型在线程、消息队列(MQ)里还会反复出现</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process, Queue</span><br><span class="line"><span class="keyword">import</span> time, random</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">producer</span>(<span class="params">name, food, q</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">        time.sleep(random.random() * <span class="number">0.5</span>)</span><br><span class="line">        dish = <span class="string">f&quot;<span class="subst">&#123;food&#125;</span>#<span class="subst">&#123;i + <span class="number">1</span>&#125;</span>&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 做好了 <span class="subst">&#123;dish&#125;</span>&quot;</span>)</span><br><span class="line">        q.put(dish)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">consumer</span>(<span class="params">name, q</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        dish = q.get()</span><br><span class="line">        <span class="keyword">if</span> dish <span class="keyword">is</span> <span class="literal">None</span>:             <span class="comment"># 收到结束信号才退出</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 吃了 <span class="subst">&#123;dish&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    q = Queue()</span><br><span class="line">    ps = [Process(target=producer, args=(<span class="string">&quot;厨师甲&quot;</span>, <span class="string">&quot;红烧肉&quot;</span>, q)),</span><br><span class="line">          Process(target=producer, args=(<span class="string">&quot;厨师乙&quot;</span>, <span class="string">&quot;清蒸鱼&quot;</span>, q))]</span><br><span class="line">    cs = [Process(target=consumer, args=(<span class="string">f&quot;食客<span class="subst">&#123;c&#125;</span>&quot;</span>, q)) <span class="keyword">for</span> c <span class="keyword">in</span> <span class="string">&quot;AB&quot;</span>]</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> ps + cs:</span><br><span class="line">        p.start()</span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> ps:</span><br><span class="line">        p.join()                     <span class="comment"># 先等所有生产者做完</span></span><br><span class="line">    q.put(<span class="literal">None</span>)</span><br><span class="line">    q.put(<span class="literal">None</span>)                      <span class="comment"># 几个消费者就放几个结束信号</span></span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> cs:</span><br><span class="line">        c.join()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>生产者消费者模型(队列做缓冲,None 作结束信号)</em></p>
+<h3 id="17-Day39-10-线程理论"><a href="#17-Day39-10-线程理论" class="headerlink" title="17. Day39-10 线程理论"></a>17. Day39-10 线程理论</h3><blockquote>
+<p>🎬 对应视频:P470</p>
+</blockquote>
+<p><strong><strong>进程是资源分配的最小单位,线程是 CPU 调度的最小单位</strong>:进程像车间、线程像车间里的工人;同一进程内的线程**共享内存</strong>,创建和切换开销远小于进程。**</p>
+<ul>
+<li>分工:进程负责「圈资源」(内存空间、打开的文件等),线程负责「真正干活」;一个进程至少有一个主线程,也可以开多个线程共享这份资源</li>
+<li>类比:进程 &#x3D; 车间(彼此隔离),线程 &#x3D; 车间里的工人(共用车间设备和原料);工人之间交流方便(共享内存),车间之间搬东西麻烦(要走 IPC)</li>
+<li>开销对比:线程的创建、切换不需要换内存空间、不需要重建资源,比进程<strong>轻量得多</strong>;所以线程适合轻量并发和 IO 密集任务,进程适合隔离性、稳定性要求高的场景</li>
+<li>线程共享数据是把双刃剑:多个线程改同一个全局变量会产生<strong>竞争</strong>(和进程抢票一个道理),必须加锁——进程隔离所以安全,线程共享所以高效但危险</li>
+<li>Python 的 threading 模块提供多线程,接口和 multiprocessing 几乎一致(Process→Thread);由于 GIL 的存在,同一进程内多线程不能并行执行字节码——这个问题后续单独讲</li>
+</ul>
+<h2 id="📖-并发逐集精讲-Day40-42"><a href="#📖-并发逐集精讲-Day40-42" class="headerlink" title="📖 并发逐集精讲(Day40~42)"></a>📖 并发逐集精讲(Day40~42)</h2><blockquote>
+<p>🎬 对应课程:Day40~42 逐集精讲(线程&#x2F;GIL&#x2F;锁&#x2F;池&#x2F;协程&#x2F;IO模型)</p>
+</blockquote>
+<h3 id="1-章节说明-按集精讲与「并发编程」章节的关系-1"><a href="#1-章节说明-按集精讲与「并发编程」章节的关系-1" class="headerlink" title="1. 章节说明:按集精讲与「并发编程」章节的关系"></a>1. 章节说明:按集精讲与「并发编程」章节的关系</h3><blockquote>
+<p>🎬 对应视频:P471~P506</p>
+</blockquote>
+<p><strong>本章节把 Day40~42 的 <strong>27 个内容小节逐集拆分</strong>,一集一个知识点(title 以集数开头、video 标注单集 P 号),方便</strong>按集查找**;系统性学习并发仍以「并发编程」章为主,本章节是它的逐集精讲版。**</p>
+<ul>
+<li>组织方式:Day40-03 ~ Day42-08 共 27 个内容小节,每集对应一个知识点,如「Day 40 - 09 线程互斥锁」对应 P479;听课时按集数或 P 号即可快速定位到对应讲义</li>
+<li>与「并发编程」章的关系:「并发编程」章(py-concurrent)按<strong>主题</strong>系统讲解(pc-3 线程与数据竞争、pc-4 GIL、pc-5 锁&#x2F;信号量&#x2F;事件、pc-6 池与协程、pc-10 IO模型),本章节按<strong>视频集数</strong>逐集精讲——先看前者建立知识体系,再按集复习对照</li>
+<li>三天脉络:<strong>Day40 线程实操</strong>(开启方式 → TCP并发 → join → 数据共享 → 线程对象 → 守护线程 → 互斥锁 → GIL三连问 → 进程线程比较)→ <strong>Day41 同步工具与池协程</strong>(死锁 → 递归锁 → 信号量 → Event → 线程q → 池的概念 → 线程池&#x2F;进程池 → 协程原理 → gevent → 协程TCP并发)→ <strong>Day42 IO模型</strong>(简介 → 阻塞 → 非阻塞理论&#x2F;演示 → 多路复用 → asyncio)</li>
+<li>行政小节不设知识点:P471<del>P472、P483</del>P484、P496~P498(复习&#x2F;今日内容&#x2F;总结);P505「IO模型总结」的核心对比结论已并入最后一点(Day 42 - 08),P506 为课程收尾</li>
+<li>代码片段在 Windows(Python 3)下验证:多线程&#x2F;线程池&#x2F;进程池&#x2F;非阻塞&#x2F;asyncio 实际运行验证(进程池在 Windows 必须 if <strong>name</strong> &#x3D;&#x3D; “<strong>main</strong>“);含 socket 阻塞调用或依赖第三方的片段只做语法校验(gevent 需 pip install gevent)</li>
+</ul>
+<h3 id="2-Day-40-03-开启线程的两种方式"><a href="#2-Day-40-03-开启线程的两种方式" class="headerlink" title="2. Day 40 - 03 开启线程的两种方式"></a>2. Day 40 - 03 开启线程的两种方式</h3><blockquote>
+<p>🎬 对应视频:P473</p>
+</blockquote>
+<p><strong>threading 开线程与 multiprocessing 开进程写法几乎一致:① <code>Thread(target=函数, args=(参数,))</code>;② 自定义类</strong>继承 Thread 重写 run**;开线程轻量得多,且 Windows 下<strong>不需要</strong> <code>if __name__ == &quot;__main__&quot;:</code> 保护。**</p>
+<ul>
+<li>方式一(常用):<code>t = Thread(target=task, args=(&quot;甲&quot;,))</code>,target 指定子线程要执行的函数,<strong>args 必须是元组</strong>(单个参数也带逗号);<code>t.start()</code> 通知操作系统开线程,主线程立刻继续往下,不等它</li>
+<li>方式二:自定义类继承 Thread,逻辑写在 run 里(任务复杂或要自带属性时用);start() 后自动执行 run——注意<strong>直接调 t.run() 不开新线程</strong>,那只是普通函数调用,与进程的 run 同理</li>
+<li>与进程的关键差异:线程共享同一进程的内存,子线程里 <code>os.getpid()</code> 与主线程<strong>相同</strong>;开线程只是「进程里加个人」,创建开销远小于造一个新进程</li>
+<li>Windows 对比:开进程(spawn 导入父模块)不加保护会无限递归报错;开线程<strong>没有这个问题</strong>,顶层直接 start 也不报错(工程上仍建议把入口写在 <strong>main</strong> 里,便于统一管理)</li>
+<li>start 之后主线程与子线程并发执行,谁先打印由操作系统调度决定,不要依赖输出顺序</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;线程<span class="subst">&#123;name&#125;</span>运行中,pid=<span class="subst">&#123;os.getpid()&#125;</span>&quot;</span>, flush=<span class="literal">True</span>)   <span class="comment"># 与主线程同进程,pid 相同</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyThread</span>(<span class="title class_ inherited__">Thread</span>):                 <span class="comment"># 方式二:自定义类继承 Thread,逻辑写进 run</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">run</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;子类线程 <span class="subst">&#123;self.name&#125;</span> 运行中,pid=<span class="subst">&#123;os.getpid()&#125;</span>&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">t1 = Thread(target=task, args=(<span class="string">&quot;甲&quot;</span>,))   <span class="comment"># 方式一:target 指定函数,args 必须是元组</span></span><br><span class="line">t2 = MyThread()</span><br><span class="line">t1.start()                              <span class="comment"># 通知开线程,主线程立刻继续往下</span></span><br><span class="line">t2.start()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;主线程继续执行,不等子线程&quot;</span>, flush=<span class="literal">True</span>)   <span class="comment"># 开线程不需要 __main__ 保护(对比开进程)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>开启线程的两种方式(线程无需 <strong>main</strong> 保护,对比进程)</em></p>
+<h3 id="3-Day-40-04-TCP服务端实现并发的效果"><a href="#3-Day-40-04-TCP服务端实现并发的效果" class="headerlink" title="3. Day 40 - 04 TCP服务端实现并发的效果"></a>3. Day 40 - 04 TCP服务端实现并发的效果</h3><blockquote>
+<p>🎬 对应视频:P474</p>
+</blockquote>
+<p><strong>单线程 socket 服务端的 accept&#x2F;recv 都是</strong>阻塞<strong>的,一个客户端不断开别人就进不来;改成</strong>主线程专门 accept、每个连接开一个线程去服务**,就实现了同时服务多个客户端。**</p>
+<ul>
+<li>痛点:accept() 等新连接、recv() 等数据都是阻塞调用——单线程服务端同一时刻只能伺候一个客户端,其他连接全堵着;这是前面 socket 章遗留的工程问题</li>
+<li>解法:主线程 <code>while True</code> 专门 accept 收新客,每来一个就 <code>Thread(target=working, args=(conn,)).start()</code> 把连接交给子线程;各线程各 recv 各的,一个卡住不影响别人</li>
+<li>代码结构:socket() → bind((“IP”, 端口)) → listen(5) → 循环 accept + 开线程;子线程 working 里 recv 到<strong>空字节串</strong>说明客户端断开,close 收尾退出循环</li>
+<li>为什么用线程不用进程:服务连接是 IO 密集(等数据多、算得少),线程开销小、还天然共享变量(比如在线名单);这套「工人」结构后面还会换成协程(P495),写法几乎不变</li>
+<li>本片段含阻塞式 socket 调用,仅做语法校验;实测时先跑服务端,再开多个客户端窗口同时收发,观察互不影响——对比单线程版一个客户端独占服务端的现象</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line">server = socket.socket()</span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">working</span>(<span class="params">conn</span>):</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        data = conn.recv(<span class="number">1024</span>)          <span class="comment"># 阻塞调用:各线程各等各的,互不影响</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data:                    <span class="comment"># 收到空字节串 = 客户端断开</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        conn.send(data.upper())</span><br><span class="line">    conn.close()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    conn, addr = server.accept()        <span class="comment"># 主线程专门接待新连接</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;客户端 <span class="subst">&#123;addr&#125;</span> 上线&quot;</span>)</span><br><span class="line">    Thread(target=working, args=(conn,)).start()   <span class="comment"># 每个连接交给一个子线程服务</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>每连接开一个线程实现并发服务(含阻塞调用,仅语法校验)</em></p>
+<h3 id="4-Day-40-05-线程对象join方法"><a href="#4-Day-40-05-线程对象join方法" class="headerlink" title="4. Day 40 - 05 线程对象join方法"></a>4. Day 40 - 05 线程对象join方法</h3><blockquote>
+<p>🎬 对应视频:P475</p>
+</blockquote>
+<p><strong><code>t.join()</code> 让当前线程(通常是主线程)<strong>阻塞等待 t 真正结束</strong>再往下;和进程的 join 一样要</strong>先统一 start、再统一 join<strong>——start 一个立刻 join 一个,并发就退化成串行。</strong></p>
+<ul>
+<li>start() 只是「通知开线程」,主线程立刻往下走;join() 才是「等它干完」——调用 join 的线程在等待点阻塞(对应三状态图的阻塞态),被 join 的线程结束后才恢复</li>
+<li>经典错误:for 循环里 start 一个立刻 join 一个——第一个线程干完才轮到第二个 start,三个线程实际<strong>串行</strong>,并发白开了</li>
+<li>正确姿势:第一个循环把所有线程 start 完(它们并发跑),第二个循环逐个 join;主线程最后一句代码一定最后打印</li>
+<li>join 可传 timeout 只等指定秒数,配合 is_alive() 判断是否还在跑;主线程默认会等所有非守护子线程结束进程才退出,join 的意义是「主线程要在等待点<strong>之后</strong>继续干活」</li>
+<li>与进程的 join 同名同义、行为一致——threading 的 API 就是照着 multiprocessing 设计的,学过进程版可直接平移</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 开始干活&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 干完了&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">ts = [Thread(target=task, args=(<span class="string">f&quot;线程<span class="subst">&#123;i&#125;</span>&quot;</span>,)) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.start()                  <span class="comment"># 三个线程先全部启动(并发跑起来)</span></span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.join()                   <span class="comment"># 主线程再统一等待:join 哪个就等哪个结束</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;所有子线程结束,主线程最后打印&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>先统一 start 再统一 join</em></p>
+<h3 id="5-Day-40-06-同一个进程下的多个线程数据共享"><a href="#5-Day-40-06-同一个进程下的多个线程数据共享" class="headerlink" title="5. Day 40 - 06 同一个进程下的多个线程数据共享"></a>5. Day 40 - 06 同一个进程下的多个线程数据共享</h3><blockquote>
+<p>🎬 对应视频:P476</p>
+</blockquote>
+<p><strong>同一进程下的多个线程</strong>共享同一份内存**:子线程改了全局变量,主线程立刻看得见——与「进程间数据隔离」正好相反;通信方便了,但并发修改就有竞争,引出后面的互斥锁。**</p>
+<ul>
+<li>实验:全局 x &#x3D; 100,子线程里 global x; x &#x3D; 200,join 后主线程打印的也是 200——同一进程内的线程操作的是<strong>同一个变量</strong>,不是各自的拷贝</li>
+<li>原因:线程没有独立的内存空间(只有栈等少量私有数据),代码段、数据段、堆都属于进程、由所有线程共享;所以线程间传数据<strong>不必</strong>再走队列&#x2F;管道那套 IPC</li>
+<li>对比记忆(并发部分的中心对照):进程 &#x3D; 数据<strong>隔离</strong>(安全但通信贵,要 Queue&#x2F;Pipe);线程 &#x3D; 数据<strong>共享</strong>(通信零成本但不安全,要加锁)</li>
+<li>坑:多个线程同时执行 x +&#x3D; 1 这种「读-改-写」会互相覆盖,结果小于预期——这就是<strong>数据竞争</strong>;GIL 并不能替你解决业务数据的安全(P480~481 专门辨析),必须自己加互斥锁(下一集)</li>
+<li>复现建议:开两个线程各对同一个全局变量 +1 十万次,结果常常小于二十万——「共享」不等于「算得对」,这是理解锁存在的最好实验</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line">x = <span class="number">100</span>                        <span class="comment"># 全局变量:同一进程内所有线程共享同一份</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">change</span>():</span><br><span class="line">    <span class="keyword">global</span> x</span><br><span class="line">    x = <span class="number">200</span>                    <span class="comment"># 子线程改的就是那份共享的 x</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;子线程里 x =&quot;</span>, x, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">t = Thread(target=change)</span><br><span class="line">t.start()</span><br><span class="line">t.join()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;主线程里 x =&quot;</span>, x)       <span class="comment"># 也是 200 —— 与进程的数据隔离正好相反</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>验证同进程内线程共享数据(与进程隔离相反)</em></p>
+<h3 id="6-Day-40-07-线程对象及其他方法"><a href="#6-Day-40-07-线程对象及其他方法" class="headerlink" title="6. Day 40 - 07 线程对象及其他方法"></a>6. Day 40 - 07 线程对象及其他方法</h3><blockquote>
+<p>🎬 对应视频:P477</p>
+</blockquote>
+<p><strong>线程对象常用成员:<code>t.name</code>、<code>t.is_alive()</code>、<code>t.join()</code>;模块级工具 <code>current_thread()</code>(我是谁)、<code>active_count()</code>&#x2F;<code>enumerate()</code>(全场还有谁);同一进程内所有线程的 <strong>pid 相同</strong>。</strong></p>
+<ul>
+<li><code>t.name</code>:创建时 <code>Thread(target=..., name=&quot;甲&quot;)</code> 命名,不写默认 Thread-1、Thread-2…;旧的 getName()&#x2F;setName() 已不推荐,直接用 t.name 属性即可</li>
+<li><code>t.is_alive()</code>:线程是否还在运行(start 之后、run 结束之前为 True);<code>t.join(timeout=...)</code> 等待结束——与进程对象同名方法一致</li>
+<li>线程看自己:<code>threading.current_thread()</code> 返回当前线程对象,主线程名字固定是 <strong>MainThread</strong>,子线程里可用它打印「我是谁」;类比进程的 current_process()</li>
+<li>看全场:<code>active_count()</code> 返回存活线程数(含主线程),<code>enumerate()</code> 返回存活线程对象列表——排查「线程是否没退出&#x2F;泄漏」的调试利器</li>
+<li>有趣证据:所有线程里 <code>os.getpid()</code> 打印都相同——它们同属一个进程;线程是 CPU 调度的最小单位,自己不拥有资源,只借用进程的,这一集从代码层面验证了这句理论</li>
+</ul>
+<h3 id="7-Day-40-08-守护线程"><a href="#7-Day-40-08-守护线程" class="headerlink" title="7. Day 40 - 08 守护线程"></a>7. Day 40 - 08 守护线程</h3><blockquote>
+<p>🎬 对应视频:P478</p>
+</blockquote>
+<p><strong><code>t.daemon = True</code>(<strong>必须在 start() 之前设置</strong>)把线程设为守护线程:<strong>所有非守护线程一结束它就被强制带走</strong>;主线程代码跑完不算数,进程要等同伙里最后一个非守护线程。</strong></p>
+<ul>
+<li>退出规则(与守护进程有个微妙差别):主线程代码跑完后进程并不立刻退出,而是<strong>等所有非守护线程结束</strong>;那一刻一到,守护线程无论执行到哪一行都被直接杀死</li>
+<li>设置时机:<code>t.daemon = True</code> 必须写在 <code>t.start()</code> <strong>之前</strong>,线程已启动再设置直接报错;写法与进程一致,含义也是「陪主程序生、陪主程序死」</li>
+<li>典型用途:心跳上报、定时监控、日志刷新这类「主程序没了它就失去意义」的后台循环任务;关闭它们不需要优雅退出逻辑时,守护线程最省事</li>
+<li>实测现象:守护线程 while True 打印,主线程睡 1 秒后结束——守护线程打印若干次后戛然而止,最后几条输出可能来不及刷出(被强杀,不给收尾机会)</li>
+<li>注意:守护线程里别操作需要收尾的外部资源(写文件、数据库事务),它被带走时 finally 都不执行;需要优雅收尾的任务交给普通线程并设计好退出信号</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">say_hello</span>():</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;守护线程第<span class="subst">&#123;i&#125;</span>次问候&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">        time.sleep(<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line">t = Thread(target=say_hello)</span><br><span class="line">t.daemon = <span class="literal">True</span>                <span class="comment"># 必须在 start() 之前设置</span></span><br><span class="line">t.start()</span><br><span class="line">time.sleep(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;主线程代码运行结束&quot;</span>)</span><br><span class="line"><span class="comment"># 进程要等所有非守护线程结束才退出;那一刻守护线程被强行带走,收尾代码都不会执行</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>守护线程随进程(所有非守护线程)结束被带走</em></p>
+<h3 id="8-Day-40-09-线程互斥锁"><a href="#8-Day-40-09-线程互斥锁" class="headerlink" title="8. Day 40 - 09 线程互斥锁"></a>8. Day 40 - 09 线程互斥锁</h3><blockquote>
+<p>🎬 对应视频:P479</p>
+</blockquote>
+<p><strong>多个线程并发修改共享数据(抢票、计数)会互相覆盖,用 <code>threading.Lock</code> 把「查-改-写」整段</strong>锁成串行**,谁抢到锁谁先改;<strong>GIL 保证不了解释器之外你业务数据的安全,必须自己加锁</strong>。**</p>
+<ul>
+<li>竞争复现:n &#x3D; 10 张票,三个线程各抢 5 次——不加锁时「查票 → 减 1 → 写回」三步会被别的线程插队,大家都在有票时读到 n、再各自减写,<strong>超卖</strong>;计数器任务结果小于预期同理</li>
+<li>用法:<code>lock = Lock()</code>;<code>with lock:</code> 包住关键代码——进入时 acquire、出来自动 release;谁先抢到谁执行,其他线程阻塞在锁上排队,等于把这一段<strong>由并发改成串行</strong></li>
+<li>加锁原则:<strong>粒度尽量小</strong>,只锁真正改数据的那几行;查票这类只读操作不必锁进里;锁得太多太粗,多线程退化成单线程还搭上切换开销</li>
+<li>两个大坑:① acquire 后忘 release(或中间抛异常)→ 其他人永远等锁 → 卡死,坚持用 with;② 锁必须<strong>全局唯一</strong>——每个线程各自新建一把 Lock 等于没锁</li>
+<li>与 GIL 的关系(下一集展开):GIL 只保证同一时刻一个线程执行字节码,「查-改-写」跨多条字节码仍可能被切走,业务数据照样错——所以解释器有 GIL,你还得有 Lock</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, Lock</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">n = <span class="number">10</span>                         <span class="comment"># 10 张票:全局变量被三个线程共享</span></span><br><span class="line">lock = Lock()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">grab</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="keyword">global</span> n</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">        <span class="keyword">with</span> lock:             <span class="comment"># 把「查票-扣票」整体锁成串行</span></span><br><span class="line">            <span class="keyword">if</span> n &gt; <span class="number">0</span>:</span><br><span class="line">                n -= <span class="number">1</span></span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 抢到一张,剩余 <span class="subst">&#123;n&#125;</span> 张&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 没抢到,票已售罄&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">        time.sleep(<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">ts = [Thread(target=grab, args=(<span class="string">f&quot;用户<span class="subst">&#123;i&#125;</span>&quot;</span>,)) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.start()</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.join()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>互斥锁把「查票-扣票」锁成串行,不再超卖</em></p>
+<h3 id="9-Day-40-10-GIL全局解释器锁理论介绍"><a href="#9-Day-40-10-GIL全局解释器锁理论介绍" class="headerlink" title="9. Day 40 - 10 GIL全局解释器锁理论介绍"></a>9. Day 40 - 10 GIL全局解释器锁理论介绍</h3><blockquote>
+<p>🎬 对应视频:P480</p>
+</blockquote>
+<p><strong>GIL(全局解释器锁)是 CPython 的历史设计:<strong>同一进程内同一时刻只允许一个线程执行 Python 字节码</strong>——多线程无法利用多核做并行计算,但线程遇到 IO 阻塞时会释放 GIL 让给别人。</strong></p>
+<ul>
+<li>是什么:CPython 解释器里的一把<strong>全局大锁</strong>,任何线程执行字节码前都必须拿到 GIL;效果 &#x3D; 单进程内的多线程在 CPU 执行层面串行,核再多,同一时刻也只有一个核在跑你的 Python 线程</li>
+<li>为什么存在:CPython 的内存管理(引用计数)<strong>非线程安全</strong>,用一把全局锁保护最省事;注意它是<strong>解释器的实现细节</strong>,不是 Python 语言特性——Jython、IronPython 就没有 GIL(去掉它会拖慢单线程,官方多年权衡未动)</li>
+<li>关键机制:线程遇到 IO(recv&#x2F;read&#x2F;sleep 等)会<strong>释放 GIL</strong>,或时间片到(默认 5ms,sys.getswitchinterval 可查)被强制让出——所以 <strong>IO 密集任务多线程依然有效,计算密集任务多线程毫无加速</strong></li>
+<li>必背结论:<strong>计算密集用多进程</strong>(多个进程各有各的 GIL,真并行吃满多核);<strong>IO 密集用多线程&#x2F;协程</strong>(等待时让出 GIL,切换又便宜)——这一条直接决定 P482 的比较结论</li>
+<li>澄清边界:GIL 针对的是<strong>同一进程内</strong>的线程;多进程之间各持各的 GIL 互不影响——想真并行就开多个进程,这是进程池存在的根本理由</li>
+</ul>
+<h3 id="10-Day-40-11-GIL与普通互斥锁的区别"><a href="#10-Day-40-11-GIL与普通互斥锁的区别" class="headerlink" title="10. Day 40 - 11 GIL与普通互斥锁的区别"></a>10. Day 40 - 11 GIL与普通互斥锁的区别</h3><blockquote>
+<p>🎬 对应视频:P481</p>
+</blockquote>
+<p><strong>GIL 是</strong>解释器级、自动<strong>的锁,保护 CPython 内部数据同一时刻只有一个线程跑;互斥锁是</strong>用户级、手动<strong>的锁,保护你的业务数据不被「查-改-写」打断——</strong>GIL 保护的是解释器,不是你的数据<strong>。</strong></p>
+<ul>
+<li>类比:GIL 像公司唯一的大门(自动管理,大家排队轮流进);你自己的保险柜还得配自己的钥匙(手动管理)——大门管得了人流,管不了你柜里的账本</li>
+<li>为什么有 GIL 还会数据不安全:线程执行途中可能<strong>释放 GIL</strong>(时间片到&#x2F;遇 IO),「查票-减1-写回」三步被切在中间,另一个线程拿着<strong>旧数据</strong>继续算——GIL 保证「同一时刻只有一个线程在跑」,不保证「我的三步没人插队」</li>
+<li>区别清单:GIL 全局唯一、解释器自动加&#x2F;释放;Lock 用户创建、手动(或 with)加&#x2F;释放;GIL 的临界区是字节码执行,Lock 的临界区<strong>由你圈定</strong>;GIL 何时释放不可控,Lock 何时释放完全听你的</li>
+<li>验证思路:两个线程对同一变量各加十万次,理论上应等于二十万;若在「读-改-写」之间人为插入 sleep(模拟时间片切换&#x2F;IO),<strong>稳定</strong>出现少加——说明错账来自竞争而非 GIL 失效</li>
+<li>一句话:GIL 管解释器的安全,Lock 管数据的安全;层级不同,谁也替代不了谁——这集是 GIL 三连问(P480~482)里最容易被面试问到的一问</li>
+</ul>
+<h3 id="11-Day-40-12-多进程与多线程比较"><a href="#11-Day-40-12-多进程与多线程比较" class="headerlink" title="11. Day 40 - 12 多进程与多线程比较"></a>11. Day 40 - 12 多进程与多线程比较</h3><blockquote>
+<p>🎬 对应视频:P482</p>
+</blockquote>
+<p><strong><strong>计算密集用多进程</strong>(绕开 GIL、多核真并行),<strong>IO 密集用多线程&#x2F;协程</strong>(等待时让出、切换便宜);线程开销小、共享内存但要加锁,进程开销大、数据隔离但更稳——按任务类型选型。</strong></p>
+<ul>
+<li>计算密集(纯 CPU:数值运算、压缩、加密):多线程在 GIL 下串行执行,毫无加速还搭上线程切换;多进程各有 GIL、<strong>真并行</strong>,核越多越快——选多进程</li>
+<li>IO 密集(网络、磁盘、sleep 多:爬虫、socket 服务):大部分时间在<strong>等</strong>,等的时候线程让出 GIL&#x2F;进程让出 CPU,多线程切换比进程便宜得多;更轻的还有协程(Day41 后半)——首选多线程&#x2F;协程</li>
+<li>开销对比:进程创建要复制资源、独立内存,切换要换内存空间;线程只在进程内加一份栈和寄存器上下文,<strong>创建和切换都便宜</strong>——轻并发、高频创建选线程</li>
+<li>数据与稳定性:线程共享内存,通信方便但共享数据要加锁(危险);进程内存隔离,通信要走 Queue&#x2F;Pipe,但<strong>一个崩不连累另一个</strong>(安全)——稳定性优先(如浏览器多标签)选进程</li>
+<li>记忆口诀:<strong>重计算开进程,重等待开线程(或协程)</strong>;真实项目常见组合拳——进程池铺满各核,每个进程里再开线程&#x2F;协程处理 IO,两层并发各取所长</li>
+</ul>
+<h3 id="12-Day-41-03-死锁现象"><a href="#12-Day-41-03-死锁现象" class="headerlink" title="12. Day 41 - 03 死锁现象"></a>12. Day 41 - 03 死锁现象</h3><blockquote>
+<p>🎬 对应视频:P485</p>
+</blockquote>
+<p><strong>两个线程</strong>各持一把锁、又都想拿对方那把**,谁也不撒手 → 互相等待、永远阻塞,这就是死锁;典型成因:多把锁加锁顺序不一致,或同一线程对同一把普通锁重复 acquire。**</p>
+<ul>
+<li>经典场景(筷子吃面):线程1 拿了筷子锁 A 想拿面锁 B,线程2 拿了 B 想拿 A——各自握一把、互等对方,程序<strong>卡死不再有任何输出</strong>,CPU 占用为零(都在阻塞)</li>
+<li>成因一:多把锁的<strong>加锁顺序不一致</strong>——约定「所有线程都先拿 A 再拿 B」就不会死锁;成因二:同一个线程对同一把 Lock 连续 acquire 两次,第二次等自己释放,<strong>自死锁</strong>(下一集递归锁专治)</li>
+<li>复现要点:两个线程先 sleep 1 秒错开,保证各自拿到第一把锁后再去抢第二把,死锁 100% 出现;本集代码故意保留死锁,运行后需强制结束进程</li>
+<li>预防四板斧:① 统一加锁顺序;② 全部用 with 锁,保证异常时也释放;③ acquire(timeout&#x3D;…) 加超时,拿不到就放弃重试;④ 需要重入就用 RLock</li>
+<li>可怕之处:死锁<strong>不报错、不退出、不耗 CPU</strong>,线上问题往往要 dump 线程栈才能定位——所以「怎么加锁」从设计起就要讲纪律,而不是出了事再补</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, Lock</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">lockA = Lock()</span><br><span class="line">lockB = Lock()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">thread_1</span>():</span><br><span class="line">    lockA.acquire()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;线程1 拿到A,还想拿B&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)              <span class="comment"># 错开时间,保证线程2先拿到B</span></span><br><span class="line">    lockB.acquire()            <span class="comment"># B在线程2手里,永远等不到 —— 死锁</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;线程1 同时拿到A和B&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    lockB.release()</span><br><span class="line">    lockA.release()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">thread_2</span>():</span><br><span class="line">    lockB.acquire()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;线程2 拿到B,还想拿A&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    lockA.acquire()            <span class="comment"># A在线程1手里,也永远等不到 —— 互相等,程序卡死</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;线程2 同时拿到B和A&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    lockA.release()</span><br><span class="line">    lockB.release()</span><br><span class="line"></span><br><span class="line">t1 = Thread(target=thread_1)</span><br><span class="line">t2 = Thread(target=thread_2)</span><br><span class="line">t1.start()</span><br><span class="line">t2.start()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>两人各持一把锁互等对方:死锁(运行后程序将卡死,仅供观察)</em></p>
+<h3 id="13-Day-41-04-递归锁"><a href="#13-Day-41-04-递归锁" class="headerlink" title="13. Day 41 - 04 递归锁"></a>13. Day 41 - 04 递归锁</h3><blockquote>
+<p>🎬 对应视频:P486</p>
+</blockquote>
+<p><strong><code>RLock</code>(递归锁&#x2F;可重入锁)允许</strong>同一线程多次 acquire**,内部计数器记层数,<strong>release 同样次数才真正开锁</strong>——专治「同一线程重复拿同一把锁」造成的死锁。**</p>
+<ul>
+<li>原理:RLock 记录持有者与计数;同一线程再来 acquire 不阻塞、<strong>计数 +1</strong>;每 release 一次计数 -1,<strong>减到 0 才真正释放</strong>,别的线程才能进</li>
+<li>解决的问题:函数 a 拿锁后调用也要拿<strong>同一把锁</strong>的函数 b——普通 Lock 在 b 里永久等待(自己等自己);RLock 可重入,计数到 2,退出时 release 两次即可</li>
+<li>也能解救上一集的筷子面条死锁:两把 Lock 换成<strong>一把 RLock</strong>,两个线程各 acquire 两次——同一线程可重入,不会互卡;但工程上更优先「统一加锁顺序」</li>
+<li>代价:能跑 ≠ 正确,递归锁可能掩盖「不该嵌套加锁」的设计问题;把它当工具,别当免死金牌</li>
+<li>记法:Lock &#x3D; 一人进了门,没出来谁也进不去(包括自己);RLock &#x3D; 同一个人可以反复进,<strong>进几次就要出几次</strong>,门才真正打开</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, RLock</span><br><span class="line"></span><br><span class="line">rlock = RLock()                <span class="comment"># 递归锁:同一线程可重复 acquire,内部计数器记录层数</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">eat</span>(<span class="params">name</span>):</span><br><span class="line">    rlock.acquire()            <span class="comment"># 计数 1</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 拿到筷子&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    rlock.acquire()            <span class="comment"># 计数 2 —— 换成普通 Lock 这里就把自己锁死了</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 拿到面条,开吃&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    rlock.release()            <span class="comment"># 计数 1</span></span><br><span class="line">    rlock.release()            <span class="comment"># 计数 0,别的线程才有机会进</span></span><br><span class="line"></span><br><span class="line">ts = [Thread(target=eat, args=(<span class="string">f&quot;食客<span class="subst">&#123;i&#125;</span>&quot;</span>,)) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.start()</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.join()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;三人都吃上了,没有死锁&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>RLock 可重入:同一线程 acquire 多次不卡死</em></p>
+<h3 id="14-Day-41-05-信号量"><a href="#14-Day-41-05-信号量" class="headerlink" title="14. Day 41 - 05 信号量"></a>14. Day 41 - 05 信号量</h3><blockquote>
+<p>🎬 对应视频:P487</p>
+</blockquote>
+<p><strong><code>Semaphore(N)</code> 允许同一时刻</strong>最多 N 个线程<strong>进入(互斥锁的多人版):第 N+1 个开始排队,有人 release 才放行下一个——适合限流,如最多 5 个并发连接、10 个坑位。</strong></p>
+<ul>
+<li>概念:互斥锁本质是 N&#x3D;1 的信号量;<code>Semaphore(5)</code> 相当于锁箱里有 <strong>5 把钥匙</strong>——acquire() 拿钥匙(没钥匙就阻塞),release() 还钥匙,同时最多 5 个线程在临界区里</li>
+<li>计数语义:内部计数器初始为 N,acquire 减 1(到 0 后再 acquire 阻塞),release 加 1;日常用 <code>with sm:</code> 最稳,进出自动配对</li>
+<li>典型场景:限并发数——数据库连接池上限、爬虫同时最多抓 20 个页面、KTV 只有 5 个包间;注意它只管「同时几个」,不管先后顺序(排队顺序交给队列)</li>
+<li>与池的辨析(下一集展开):信号量限的是「<strong>进入代码段的并发数</strong>」,线程本身早就开好了;池限的是「干活的<strong>工人数量</strong>」,工人还复用——两者层次不同</li>
+<li>坑:release 多于 acquire 会让计数悄悄超过 N,「最多 N 个」的约束被放大;acquire 了忘 release 会饿死后来的线程——依然推荐 with 写法</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, Semaphore</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">sm = Semaphore(<span class="number">5</span>)              <span class="comment"># 同一时刻最多 5 个线程进入(类比 5 个坑位)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">toilet</span>(<span class="params">name</span>):</span><br><span class="line">    sm.acquire()               <span class="comment"># 第 6 个开始要在这一行排队等</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 占到一个坑位&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 腾出坑位&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    sm.release()</span><br><span class="line"></span><br><span class="line">ts = [Thread(target=toilet, args=(<span class="string">f&quot;顾客<span class="subst">&#123;i&#125;</span>&quot;</span>,)) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.start()</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.join()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;10 人分两批用完 5 个坑位&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>Semaphore(5):10 人抢 5 个坑位,分两批放行</em></p>
+<h3 id="15-Day-41-06-Event事件"><a href="#15-Day-41-06-Event事件" class="headerlink" title="15. Day 41 - 06 Event事件"></a>15. Day 41 - 06 Event事件</h3><blockquote>
+<p>🎬 对应视频:P488</p>
+</blockquote>
+<p><strong>Event 是线程间的「红绿灯」:一把全局旗子默认 <strong>False</strong>,<code>wait()</code> 的线程在旗子没立起来时阻塞;<code>set()</code> 一立,<strong>所有等待者同时放行</strong>——适合「多个线程等同一个信号」的联动场景。</strong></p>
+<ul>
+<li>核心四方法:<code>event.set()</code> 立旗(True)、<code>event.wait()</code> 旗子为 False 就阻塞(可传 timeout)、<code>event.clear()</code> 收旗复位 False、<code>event.is_set()</code> 查看当前状态</li>
+<li>课程场景(老板喊开饭):多个食客线程 <code>wait()</code> 干等,老板线程备菜 2 秒后 <code>set()</code>,<strong>所有食客同时开动</strong>——一对一通知用不上它,「一对多同时放行」才是它的主场</li>
+<li>另一经典场景:多个 worker 线程 wait() 等主线程完成初始化(连数据库、加载配置)再统一开工,避免「边初始化边干活」的错乱;也可做「等所有连接就绪再发车」的起跑线</li>
+<li>三工具分工:Lock 管互斥(别一起改)、Semaphore 管限量(最多几个一起)、Event 管通知(到点一起走)——线程协作的三个维度各配一把手</li>
+<li>坑:set() 之后旗子一直立着,<strong>新来的 wait() 直接通过</strong>;要重复发令就得 clear() 复位;更精细的「等待某条件成立」可用 Condition(条件变量)——课程点到为止</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread, Event</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">event = Event()                <span class="comment"># 全局唯一的事件,旗子默认 False = 还没开饭</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">diner</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 坐下等开饭&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    event.wait()               <span class="comment"># 旗子是 False 就阻塞在这里</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 开始干饭&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">boss</span>():</span><br><span class="line">    time.sleep(<span class="number">2</span>)              <span class="comment"># 老板花 2 秒上菜</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;菜上齐了,开饭!&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    event.<span class="built_in">set</span>()                <span class="comment"># 旗子立成 True,所有等饭的人同时放行</span></span><br><span class="line"></span><br><span class="line">ts = [Thread(target=diner, args=(<span class="string">f&quot;食客<span class="subst">&#123;i&#125;</span>&quot;</span>,)) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">ts.append(Thread(target=boss))</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.start()</span><br><span class="line"><span class="keyword">for</span> t <span class="keyword">in</span> ts:</span><br><span class="line">    t.join()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>Event:老板 set 一声喊,全体食客同时开饭</em></p>
+<h3 id="16-Day-41-07-线程q"><a href="#16-Day-41-07-线程q" class="headerlink" title="16. Day 41 - 07 线程q"></a>16. Day 41 - 07 线程q</h3><blockquote>
+<p>🎬 对应视频:P489</p>
+</blockquote>
+<p><strong>线程间通信用 <strong>queue 模块</strong>(不是 multiprocessing.Queue):<code>Queue</code> 先进先出、<code>LifoQueue</code> 后进先出、<code>PriorityQueue</code> 按优先级出——自带锁、线程安全,是线程版生产者消费者的标配。</strong></p>
+<ul>
+<li>为什么不用 list:裸 list 的「判空再取」这类组合操作没有锁保护,多线程下照样竞态;<code>queue.Queue</code> 把锁和条件变量封装好,put&#x2F;get 可直接放心用</li>
+<li>三种队列:<code>Queue()</code> FIFO 排队;<code>LifoQueue()</code> 像栈后进先出;<code>PriorityQueue()</code> 放 <strong>(优先级, 数据)</strong> 元组,数字越小越先出(同级再按内容排)</li>
+<li>常用方法:put&#x2F;get 阻塞版(满&#x2F;空时等待,可传 timeout);put_nowait&#x2F;get_nowait 满&#x2F;空直接抛 queue.Full&#x2F;Empty;qsize()&#x2F;empty()&#x2F;full() 查状态(并发下仅作参考)</li>
+<li>别和 multiprocessing.Queue 混:queue.Queue 服务<strong>同一进程内</strong>的线程(共享内存直接传对象);multiprocessing.Queue 要跨进程 <strong>pickle</strong> 传输;两者不可互相替代</li>
+<li>线程版生产者消费者:结构与 Day39-09 完全一致(生产者 put、消费者 while True get、None 作结束信号,几个消费者放几个 None),只是 Process 换 Thread、Queue 换 queue.Queue——模型跨进程&#x2F;线程通用</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> queue</span><br><span class="line"></span><br><span class="line">q = queue.Queue()              <span class="comment"># FIFO:先进先出,线程安全的普通队列</span></span><br><span class="line">q.put(<span class="string">&quot;first&quot;</span>)</span><br><span class="line">q.put(<span class="number">2</span>)</span><br><span class="line">q.put((<span class="number">3</span>, <span class="string">&quot;third&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;FIFO :&quot;</span>, q.get(), q.get(), q.get())</span><br><span class="line"></span><br><span class="line">lq = queue.LifoQueue()         <span class="comment"># LIFO:后进先出,像栈</span></span><br><span class="line">lq.put(<span class="number">1</span>)</span><br><span class="line">lq.put(<span class="number">2</span>)</span><br><span class="line">lq.put(<span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;LIFO :&quot;</span>, lq.get(), lq.get(), lq.get())</span><br><span class="line"></span><br><span class="line">pq = queue.PriorityQueue()     <span class="comment"># 优先级队列:数字越小越先出</span></span><br><span class="line">pq.put((<span class="number">2</span>, <span class="string">&quot;普通任务&quot;</span>))</span><br><span class="line">pq.put((<span class="number">1</span>, <span class="string">&quot;紧急任务&quot;</span>))</span><br><span class="line">pq.put((<span class="number">3</span>, <span class="string">&quot;闲杂任务&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;优先级:&quot;</span>, pq.get(), pq.get(), pq.get())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>线程安全的三种队列:Queue&#x2F;LifoQueue&#x2F;PriorityQueue</em></p>
+<h3 id="17-Day-41-08-池的概念介绍"><a href="#17-Day-41-08-池的概念介绍" class="headerlink" title="17. Day 41 - 08 池的概念介绍"></a>17. Day 41 - 08 池的概念介绍</h3><blockquote>
+<p>🎬 对应视频:P490</p>
+</blockquote>
+<p><strong>池 &#x3D; <strong>预先创建固定数量的工人</strong>(进程&#x2F;线程)蹲坑待命,任务来了分给空闲工人,干完</strong>回池复用<strong>——省去「临时创建、用完销毁」的开销,还天然给系统限流兜底。</strong></p>
+<ul>
+<li>没有池的问题:来一个任务开一个进程&#x2F;线程,创建销毁都是系统级开销;任务洪峰一来,成百上千个进程&#x2F;线程把内存和调度拖垮(线程过多还会疯狂上下文切换,越切越慢)</li>
+<li>池的机制:启动先开 N 个工人等着 → 任务提交进池 → <strong>空闲工人</strong>领任务执行 → 干完不销毁、回池等下一个——「复用」是池的灵魂,代价都摊薄了</li>
+<li>附加好处:池天然<strong>限流</strong>——最多 N 个并发,系统压力可控;类似上一集的信号量,但池连工人带限制一起管,还省了反复创建</li>
+<li>N 怎么定:计算密集开 <strong>CPU 核数</strong>(os.cpu_count())个即可,多了也抢不到核;IO 密集可以开更多(几十上百)——等待多、真干活的少;实践中从「核数 ~ 2×核数」试起</li>
+<li>Python 的两代池:老的 <code>multiprocessing.Pool</code>(map&#x2F;apply_async)与新标准 <code>concurrent.futures</code> 的 <code>ProcessPoolExecutor</code>&#x2F;<code>ThreadPoolExecutor</code>(统一接口、future 取结果)——接下来两集用新接口分别实操线程池与进程池</li>
+</ul>
+<h3 id="18-Day-41-09-线程池"><a href="#18-Day-41-09-线程池" class="headerlink" title="18. Day 41 - 09 线程池"></a>18. Day 41 - 09 线程池</h3><blockquote>
+<p>🎬 对应视频:P491</p>
+</blockquote>
+<p><strong><code>ThreadPoolExecutor(n)</code> 建 n 个线程的池:<code>submit(fn, *args)</code> 提交任务立刻返回 future,<code>fu.result()</code> 阻塞取结果(任务异常在这里抛出),<code>shutdown()</code> 收摊——IO 密集任务的推荐写法。</strong></p>
+<ul>
+<li>三步走:<code>pool = ThreadPoolExecutor(5)</code> 建池 → <code>fu = pool.submit(job, 参数)</code> 提交(立刻返回 <strong>future</strong> 凭证,不阻塞)→ <code>fu.result()</code> 拿结果(没算完就在这等);用完 <code>pool.shutdown(wait=True)</code> 关池</li>
+<li>future 是「未来结果的凭证」:<code>result()</code> 阻塞等结果并返回、<code>exception()</code> 单独取异常、<code>done()</code> 查是否完成——这是异步任务的标准交互对象,后面异步生态里反复出现</li>
+<li>批量提交:10 个任务 5 个工人,先提交的先被领走,<strong>先干完的工人立刻接下一个</strong>;result() 按提交顺序取结果,谁先算完不影响这个顺序(实测总耗时 ≈ 任务数&#x2F;工人数 × 单任务耗时)</li>
+<li>便捷写法:<code>pool.map(job, range(10))</code> 一次提交整序列、结果按序可迭代;<code>with ThreadPoolExecutor(5) as pool:</code> 语法块结束自动 shutdown,更推荐</li>
+<li>两个注意:① 任务函数里抛的异常<strong>只在 result() 时才重新抛出</strong>,只 submit 不 result 异常会被静默吞掉;② 池不提供数据保护,任务里改共享数据照样要加锁;另外线程池对任务函数没有 pickle 要求(进程池有,下一集)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">job</span>(<span class="params">n</span>):</span><br><span class="line">    time.sleep(<span class="number">1</span>)              <span class="comment"># 模拟耗时任务(IO 等待)</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;任务<span class="subst">&#123;n&#125;</span>的计算结果&quot;</span></span><br><span class="line"></span><br><span class="line">pool = ThreadPoolExecutor(<span class="number">5</span>)                <span class="comment"># 5 个线程伺候所有任务,用完复用</span></span><br><span class="line">futures = [pool.submit(job, i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>)]   <span class="comment"># 提交 10 个任务,立刻返回凭证</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> fu <span class="keyword">in</span> futures:</span><br><span class="line">    <span class="built_in">print</span>(fu.result(), flush=<span class="literal">True</span>)          <span class="comment"># 没算完就阻塞等;结果按提交顺序返回</span></span><br><span class="line"></span><br><span class="line">pool.shutdown(wait=<span class="literal">True</span>)                    <span class="comment"># 收摊:等任务全部干完再关池</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;线程池已关闭&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>ThreadPoolExecutor:submit 提交、result 取结果</em></p>
+<h3 id="19-Day-41-10-进程池"><a href="#19-Day-41-10-进程池" class="headerlink" title="19. Day 41 - 10 进程池"></a>19. Day 41 - 10 进程池</h3><blockquote>
+<p>🎬 对应视频:P492</p>
+</blockquote>
+<p><strong><code>ProcessPoolExecutor(n)</code> 与线程池</strong>同一套接口**,把任务交给 n 个工作进程<strong>真并行</strong>(各自 GIL、各自内存);Windows 下必须写在 <code>if __name__ == &quot;__main__&quot;:</code> 里,任务函数与参数必须可 pickle。**</p>
+<ul>
+<li>接口完全一致:submit&#x2F;result&#x2F;shutdown&#x2F;map 与线程池一模一样——从线程池换进程池常常只改一行(<code>ThreadPoolExecutor</code> → <code>ProcessPoolExecutor</code>),这正是 concurrent.futures 的设计目的</li>
+<li>Windows 大坑(进程绕不开):创建工作进程走 <strong>spawn</strong>、会重新导入主模块,不写 <code>if __name__ == &quot;__main__&quot;:</code> 保护直接报错;任务函数必须定义在<strong>模块顶层</strong>(可被 pickle),lambda 和嵌套函数传不过去</li>
+<li>结果回传:子进程的返回值经 <strong>pickle</strong> 跨进程送回,<code>fu.result()</code> 拿到的就是它;子进程里的异常同样在 result() 时于主进程重新抛出</li>
+<li>计算密集的收益:纯计算任务 4 核开 4 进程,总耗时约为单进程的 1&#x2F;4(实测可对拍);IO 密集用进程池收益有限,还多付进程创建与序列化的成本——选型记 P482 的结论</li>
+<li>工程习惯:池大小计算密集取 os.cpu_count();<code>shutdown(wait=True)</code> 等全部任务完成再关,<code>with ProcessPoolExecutor(n) as pool:</code> 自动收摊;别在任务里再开同类型池,小心进程爆炸</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ProcessPoolExecutor</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">job</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;任务<span class="subst">&#123;n&#125;</span> 由进程 <span class="subst">&#123;os.getpid()&#125;</span> 完成&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:      <span class="comment"># Windows 下开进程必须写这行,否则 spawn 报错</span></span><br><span class="line">    pool = ProcessPoolExecutor(<span class="number">3</span>)           <span class="comment"># 最多 3 个工作进程真并行(各自 GIL)</span></span><br><span class="line">    futures = [pool.submit(job, i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">6</span>)]</span><br><span class="line">    <span class="keyword">for</span> fu <span class="keyword">in</span> futures:</span><br><span class="line">        <span class="built_in">print</span>(fu.result(), flush=<span class="literal">True</span>)      <span class="comment"># 返回值经 pickle 跨进程送回主进程</span></span><br><span class="line">    pool.shutdown(wait=<span class="literal">True</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;进程池已关闭&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>ProcessPoolExecutor 真并行(Windows 必须 <strong>main</strong> 保护)</em></p>
+<h3 id="20-Day-41-11-协程基本原理"><a href="#20-Day-41-11-协程基本原理" class="headerlink" title="20. Day 41 - 11 协程基本原理"></a>20. Day 41 - 11 协程基本原理</h3><blockquote>
+<p>🎬 对应视频:P493</p>
+</blockquote>
+<p><strong>协程是</strong>单线程内的并发**:切换由程序员(而非操作系统)控制,在任务之间主动跳转、切走的地方下次接着跑;开销极小,但<strong>遇到阻塞调用整个线程全卡</strong>——协程必须搭配「遇到 IO 就让出」。**</p>
+<ul>
+<li>与进程&#x2F;线程的本质区别:进程&#x2F;线程由<strong>操作系统内核抢占式调度</strong>(说切就切,切换要陷入内核,微秒级);协程在<strong>用户态</strong>由程序自己让出,切换只是保存&#x2F;恢复少量上下文,纳秒~微秒级,便宜一到两个数量级</li>
+<li>实现基础:Python 的<strong>生成器 yield</strong> 可以暂停函数、保留现场、恢复执行——最早的协程就是拿生成器拼出来的;greenlet 把「切换」做到 C 层(栈切换);Python 3.5+ 有了 async&#x2F;await 原生语法</li>
+<li>协作式的前提:协程靠大家<strong>自觉让出</strong>才有并发;谁调用了真阻塞调用(time.sleep、阻塞 recv),<strong>整个线程连同所有协程一起卡死</strong>——这是协程最大的坑,所以才有下一集的猴子补丁</li>
+<li>yield 直观演示思路:两个生成器交替 next,各自的循环互相「插队」打印——单线程里出现交替执行的假象;多任务「同时推进」不靠多核,靠等待被别人利用</li>
+<li>定位:协程<strong>不解决并行</strong>(还是一个核一个线程),解决<strong>海量 IO 等待的高并发</strong>——10 万个连接大多在等数据,协程让等待时间被别的任务填满;所以协程 ≈ IO 密集的终极形态(配合事件循环)</li>
+</ul>
+<h3 id="21-Day-41-12-gevent模块"><a href="#21-Day-41-12-gevent模块" class="headerlink" title="21. Day 41 - 12 gevent模块"></a>21. Day 41 - 12 gevent模块</h3><blockquote>
+<p>🎬 对应视频:P494</p>
+</blockquote>
+<p><strong>gevent 是基于 greenlet 的第三方协程库:<code>spawn</code> 创建协程、<code>joinall</code> 等待完成;关键是 <strong>monkey.patch_all()</strong> 把 socket&#x2F;time 等标准库偷换成「遇到 IO 主动让出」的版本——同步写法、异步效果。</strong></p>
+<ul>
+<li>两大件:<code>monkey.patch_all()</code> <strong>必须放在其他 import 之前</strong>(文件最顶部),把 socket&#x2F;time&#x2F;urllib 等打上猴子补丁;<code>spawn(函数, 参数)</code> 创建协程,<code>joinall([g1, g2, ...])</code> 阻塞等这批协程全部干完</li>
+<li>效果验证:3 个各自 <code>time.sleep(1)</code> 的任务并发跑,总耗时 ≈ <strong>1 秒</strong>而不是 3 秒——sleep 已被 patch,等 IO 时让出协程给别人;代码一行没改(还是同步写法),行为已变并发</li>
+<li>第一坑就是补丁位置:忘了 patch_all() 或写在 import time 之后,time.sleep 就还是真阻塞,整个线程所有协程一起干等——「程序变慢但结果正确」的隐蔽问题</li>
+<li>gevent 版服务端套路:主协程 accept,每来一个连接 spawn 一个协程服务它——结构完全复刻线程版 TCP 并发(P474),只是工人从线程换成协程(下一集 P495 实操)</li>
+<li>现状:第三方库需 <code>pip install gevent</code>,常见于老项目和 gunicorn 的 gevent worker;新代码官方路线是 asyncio(P504)——但「把阻塞库偷换成让出式」的思路两者一脉相承</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> monkey</span><br><span class="line">monkey.patch_all()              <span class="comment"># 猴子补丁:必须放在其他 import 之前执行</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> gevent <span class="keyword">import</span> spawn, joinall</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 开始&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)               <span class="comment"># 已被 patch:遇到 IO 让出协程,不是真睡</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 结束&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">start = time.time()</span><br><span class="line">gs = [spawn(task, <span class="string">f&quot;协程<span class="subst">&#123;i&#125;</span>&quot;</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">3</span>)]</span><br><span class="line">joinall(gs)                     <span class="comment"># 等所有协程跑完</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;3 个各睡 1 秒的任务,总耗时约 <span class="subst">&#123;time.time() - start:<span class="number">.1</span>f&#125;</span> 秒&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>gevent 并发:3 个各睡 1 秒的任务约 1 秒完成(需 pip install gevent)</em></p>
+<h3 id="22-Day-41-13-协程实现TCP并发"><a href="#22-Day-41-13-协程实现TCP并发" class="headerlink" title="22. Day 41 - 13 协程实现TCP并发"></a>22. Day 41 - 13 协程实现TCP并发</h3><blockquote>
+<p>🎬 对应视频:P495</p>
+</blockquote>
+<p><strong>把线程版并发服务端的「每连接开一个线程」换成「</strong>每连接 spawn 一个协程<strong>」:accept 主循环 + spawn(handler, conn),被 patch 过的 recv 遇 IO 自动让出——</strong>单线程<strong>撑起大量并发连接。</strong></p>
+<ul>
+<li>三步改造(对照 P474 线程版):① 文件顶部先 <code>monkey.patch_all()</code> 再 import socket;② 主协程 <code>while True: conn, addr = server.accept()</code>,每来一个连接 <code>gevent.spawn(working, conn)</code>;③ working 里 recv&#x2F;send 照常写——patch 过的 recv 没数据时<strong>让出协程</strong>,别的连接照常被服务</li>
+<li>并发效果:多个客户端同时连接、各自收发互不影响;服务端从头到尾<strong>只有一个线程</strong>——没有线程创建销毁的开销,没有 GIL 之争,没有线程过多导致调度崩溃的问题</li>
+<li>为什么快:上万个连接大多阻塞在各自 recv 上,gevent 的事件循环只在「谁就绪了」之间切换——<strong>等待被合并</strong>,单线程吞吐反而高;这就是「IO 密集选协程」的落地样板</li>
+<li>三版对照:多进程版(每连接一进程,隔离稳但贵)、多线程版(P474,通用够用)、协程版(单线程,海量连接)——<strong>写法结构一模一样,换的只是工人</strong>;这个对照是 Day40~42 并发主线的一次大汇合</li>
+<li>边界与提醒:协程只适合 IO 密集,handler 里一段纯计算大循环会把整个服务端卡死(没人能让出);上生产还要处理超时、异常捕获、半链接上限这些工程细节</li>
+</ul>
+<h3 id="23-Day-42-03-IO模型简介"><a href="#23-Day-42-03-IO模型简介" class="headerlink" title="23. Day 42 - 03 IO模型简介"></a>23. Day 42 - 03 IO模型简介</h3><blockquote>
+<p>🎬 对应视频:P499</p>
+</blockquote>
+<p><strong>一次 IO(以 recv 为例)分两阶段:<strong>① 等数据就绪</strong>(数据到内核缓冲区)、</strong>② 拷贝数据**(内核 → 用户空间);阻塞&#x2F;非阻塞&#x2F;多路复用&#x2F;异步四个模型的差别,全在「等的方式」和「拷贝谁来干」。**</p>
+<ul>
+<li>前置知识:用户空间与内核空间隔离;网卡收到的数据<strong>先进内核缓冲区</strong>,recv 实际是「等内核有数据 → 内核把数据拷到你的变量」;你的 Python 代码跑在用户态,碰不到网卡</li>
+<li>两阶段框架:阶段一<strong>等待数据就绪</strong>(数据从网络到达内核缓冲区),阶段二<strong>内核拷贝到用户进程缓冲区</strong>,此后代码才能处理 data——四个模型就按这两阶段分类记忆</li>
+<li>四模型速览:<strong>阻塞 IO</strong>(两阶段全傻等)、<strong>非阻塞 IO</strong>(阶段一轮询问、阶段二阻塞)、<strong>IO 多路复用</strong>(一个监督员帮你看一堆 fd,就绪了再自己去拷)、<strong>异步 IO</strong>(连拷贝都不用你管,完事通知你)</li>
+<li>同步&#x2F;异步的分界线:<strong>拷贝阶段要不要自己动手</strong>——前三个模型拷贝都得自己 recv,都是同步家族(同步阻塞&#x2F;同步非阻塞);只有异步 IO 连拷贝都不管,才是真异步</li>
+<li>本集是 Day42 的地图:P500 拆阻塞、P501~502 拆非阻塞(理论+演示)、P503 拆多路复用、P504 拆 asyncio(异步),最后 P505 总结对比(结论已并入 P504 一点)</li>
+</ul>
+<h3 id="24-Day-42-04-阻塞IO模型"><a href="#24-Day-42-04-阻塞IO模型" class="headerlink" title="24. Day 42 - 04 阻塞IO模型"></a>24. Day 42 - 04 阻塞IO模型</h3><blockquote>
+<p>🎬 对应视频:P500</p>
+</blockquote>
+<p><strong>阻塞 IO <strong>两个阶段全程挂起</strong>:recv 发出后先阻塞等数据、再阻塞等拷贝,期间线程什么都干不了——写法最简单、最常用,但一个线程只能伺候一个连接。</strong></p>
+<ul>
+<li>流程:调用 recv → 无数据就<strong>阻塞</strong>(线程挂起、让出 CPU,对应三状态图的阻塞态)→ 数据到达内核缓冲区 → 内核拷贝到用户空间 → recv 返回;「等」和「拷贝」调用方全程被动</li>
+<li>优点:编程模型最简单,代码顺序执行、最好理解;<strong>默认 socket 就是阻塞的</strong>,前面 socket 章(P432~P447)和线程版 TCP 并发(P474)全在这个模型上</li>
+<li>缺点:一个线程同一时刻只能等<strong>一个</strong> recv;服务端单线程时一个客户端不说话,别的客户端全堵死——所以才有「每连接一线程」的补救(P474),但线程本身是资源,连接一多照样崩</li>
+<li>别看不起它:阻塞等待时线程<strong>睡死不耗 CPU</strong>,比后面非阻塞模型的空转轮询省电;它的缺点只在「占着线程名额」和「不能一人管多个 IO」</li>
+<li>改进方向(后面三集的故事线):等的时候能干别的(非阻塞轮询)→ 别自己盯、找人替你盯(select 多路复用)→ 连拷贝都不用管(异步 IO)——每个模型都是对阻塞 IO 某个痛点的回应</li>
+</ul>
+<h3 id="25-Day-42-05-非阻塞IO模型理论"><a href="#25-Day-42-05-非阻塞IO模型理论" class="headerlink" title="25. Day 42 - 05 非阻塞IO模型理论"></a>25. Day 42 - 05 非阻塞IO模型理论</h3><blockquote>
+<p>🎬 对应视频:P501</p>
+</blockquote>
+<p><strong>非阻塞 IO 把</strong>第一阶段<strong>改成「问一下就走」:没数据</strong>立刻返回** BlockingIOError、不挂起;轮询间隙能干别的,但反复空问烧 CPU,第二阶段拷贝依旧自己做——所以只是「<strong>同步非阻塞</strong>」。**</p>
+<ul>
+<li>开关:<code>sk.setblocking(False)</code> 一行把套接字切成非阻塞;此后 accept&#x2F;recv&#x2F;connect 没有好消息<strong>不等待</strong>,立刻抛 BlockingIOError(Windows 下是 WSAEWOULDBLOCK 错误码的映射)</li>
+<li>两阶段账单:阶段一从「挂起死等」变成「<strong>轮询询问</strong>」(不阻塞,但要不要轮询、轮询多勤是你的事);阶段二数据就绪后的 recv 拷贝<strong>照样自己调、照样阻塞</strong>——所以它是同步家族</li>
+<li>优点:单线程能在等 A 的间隙去伺候 B——把「等」的时间利用起来;程序从被动等变成主动查,IO 之外的事(处理别的连接、算点东西)都能插空干</li>
+<li>缺点:白问一次烧一次 CPU(<strong>忙等 busy-waiting</strong>);连接多了轮询列表变长、响应延迟上升;还要自己维护「哪些连接还没就绪」的状态,代码复杂度上来了</li>
+<li>定位:纯非阻塞轮询工程上很少直接用,它是理解「就绪通知」的垫脚石——自然引出的问题:「能不能我不问、有事你叫我?」答案就是 IO 多路复用(P503)</li>
+</ul>
+<h3 id="26-Day-42-06-非阻塞IO模型代码演示"><a href="#26-Day-42-06-非阻塞IO模型代码演示" class="headerlink" title="26. Day 42 - 06 非阻塞IO模型代码演示"></a>26. Day 42 - 06 非阻塞IO模型代码演示</h3><blockquote>
+<p>🎬 对应视频:P502</p>
+</blockquote>
+<p><strong><code>setblocking(False)</code> + <code>try accept / except BlockingIOError</code> 的循环就是非阻塞轮询:没有客户端时 accept <strong>立刻抛异常返回</strong>,循环刷得飞快——实测亲眼看到「不阻塞」与「空转烧 CPU」一体两面。</strong></p>
+<ul>
+<li>核心写法:先 <code>server.setblocking(False)</code>,循环里 <code>try: conn, addr = server.accept() except BlockingIOError: 干别的</code>——<strong>异常不是错误</strong>,是「暂时没消息」的信号,捕获后继续循环</li>
+<li>实测现象:没有客户端连入时,1 秒内这个空循环能转几十上百万次(计数就是证据):accept 不挂起、程序始终<strong>活着</strong>——但也始终<strong>占着 CPU</strong> 干没用的事</li>
+<li>扩展成单线程多连接的骨架:非阻塞 accept 拿到连接就收进列表;循环遍历列表逐个 try recv,谁就绪处理谁、没就绪跳过——单线程「看起来」同时伺候多个客户端,这就是课程演示的完整效果</li>
+<li>本演示的价值:用计数器把「轮询的代价」变成肉眼可见的数字——CPU 被空转吃满;解决思路:别自己盯,让内核帮你盯(select&#x2F;poll&#x2F;epoll,下一集)</li>
+<li>细节坑:非阻塞下 Windows&#x2F;Linux 抛的都是 BlockingIOError,注意和 ConnectionResetError 等<strong>真错误</strong>分开处理;非阻塞 connect 的行为各平台差异更大,演示主线聚焦 accept&#x2F;recv</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket, time</span><br><span class="line"></span><br><span class="line">server = socket.socket()</span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line">server.setblocking(<span class="literal">False</span>)       <span class="comment"># 关键一步:关掉阻塞开关</span></span><br><span class="line"></span><br><span class="line">start = time.time()</span><br><span class="line">polls = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> time.time() - start &lt; <span class="number">1</span>:  <span class="comment"># 没有客户端连入时,观察 accept 的行为</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        conn, addr = server.accept()   <span class="comment"># 有连接立刻拿到</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;客户端上线:&quot;</span>, addr)</span><br><span class="line">    <span class="keyword">except</span> BlockingIOError:</span><br><span class="line">        polls += <span class="number">1</span>               <span class="comment"># 没消息不等待,立刻抛异常返回</span></span><br><span class="line">server.close()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;1 秒内空转轮询了 <span class="subst">&#123;polls&#125;</span> 次:非阻塞不挂起,但空转白烧 CPU&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>非阻塞 accept:没连接立刻抛 BlockingIOError(空转计数)</em></p>
+<h3 id="27-Day-42-07-IO多路复用"><a href="#27-Day-42-07-IO多路复用" class="headerlink" title="27. Day 42 - 07 IO多路复用"></a>27. Day 42 - 07 IO多路复用</h3><blockquote>
+<p>🎬 对应视频:P503</p>
+</blockquote>
+<p><strong><code>select.select(rlist, wlist, xlist, timeout)</code> 把一堆套接字</strong>交给内核监督**:任一就绪(可读&#x2F;可写&#x2F;异常)才返回,程序只处理就绪的——「一个人替你等一堆」,拷贝阶段仍是自己的(还是同步)。**</p>
+<ul>
+<li>原理:把「轮询问每个连接好了没」的活<strong>外包给内核</strong>;select 阻塞直到监听列表里至少一个 fd 就绪,返回就绪子集;程序只处理返回的——不空转、不漏事,单线程可管成百上千连接</li>
+<li>经典服务器骨架:<code>rlist = [server]</code>;循环 <code>readable, _, _ = select.select(rlist, [], [])</code> → 遍历 readable:<strong>是 server 就 accept 新连接并入 rlist;是已连接 socket 就 recv 处理</strong>,recv 为空则 close 并移出 rlist</li>
+<li>就绪语义:监听套接字「可读」&#x3D; 有新连接可 accept;连接套接字「可读」&#x3D; 有数据可 recv <strong>或对方断开</strong>(recv 返回空);一个 select 同时看住两类动静——这就是「复用」的含义</li>
+<li>三兄弟与平台:<strong>select</strong> 跨平台但监听数量有 FD_SETSIZE(1024)上限、每次全列表拷进内核;<strong>poll</strong> 去掉数量上限;<strong>epoll</strong>(Linux)内核事件表 + 回调,海量连接首选;Python 的 selectors 模块自动挑当前平台最优实现</li>
+<li>定位:IO 多路复用<strong>依旧同步</strong>——就绪后还得自己 recv 拷贝;它解决的是「等的效率」,配合回调&#x2F;协程才拼成完整高并发方案(asyncio 底层正是 selectors + 事件循环,下一集)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> select</span><br><span class="line"></span><br><span class="line">server = socket.socket()</span><br><span class="line">server.bind((<span class="string">&quot;127.0.0.1&quot;</span>, <span class="number">8080</span>))</span><br><span class="line">server.listen(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">rlist = [server]                <span class="comment"># 要监督「可读动静」的套接字列表</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    readable, _, _ = select.select(rlist, [], [], <span class="number">1</span>)   <span class="comment"># 有动静才返回,最多等1秒</span></span><br><span class="line">    <span class="keyword">for</span> sk <span class="keyword">in</span> readable:</span><br><span class="line">        <span class="keyword">if</span> sk <span class="keyword">is</span> server:        <span class="comment"># 监听套接字可读 = 有新连接</span></span><br><span class="line">            conn, addr = sk.accept()</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;客户端上线:&quot;</span>, addr)</span><br><span class="line">            rlist.append(conn)  <span class="comment"># 新连接也纳入监督</span></span><br><span class="line">        <span class="keyword">else</span>:                   <span class="comment"># 已连接套接字可读 = 有数据(或对方断开)</span></span><br><span class="line">            data = sk.recv(<span class="number">1024</span>)</span><br><span class="line">            <span class="keyword">if</span> data:</span><br><span class="line">                sk.send(data.upper())</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;客户端下线&quot;</span>)</span><br><span class="line">                rlist.remove(sk)</span><br><span class="line">                sk.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>select 同时监督监听与已连接套接字(含阻塞调用,仅语法校验)</em></p>
+<h3 id="28-Day-42-08-asyncio模块"><a href="#28-Day-42-08-asyncio模块" class="headerlink" title="28. Day 42 - 08 asyncio模块"></a>28. Day 42 - 08 asyncio模块</h3><blockquote>
+<p>🎬 对应视频:P504~P505</p>
+</blockquote>
+<p><strong>asyncio 是官方协程框架:<strong>async def 定义协程、await 在可等处让出、事件循环调度</strong>;<code>asyncio.gather</code> 并发跑一组任务,总耗时取决于最慢的那个;至此四模型凑齐——</strong>asyncio 是 Python 异步 IO 的落地<strong>。</strong></p>
+<ul>
+<li>三件套:<code>async def task()</code> 定义协程函数(<strong>调用它不执行</strong>,只生成协程对象);<code>await</code> 是让出点,只能写在 async 函数里——等 IO(asyncio.sleep、异步网络库)时把控制权还给事件循环;<code>asyncio.run(main())</code> 启动事件循环跑入口协程</li>
+<li>gather 并发:<code>await asyncio.gather(t1(), t2(), t3())</code> 同时调度多个协程,结果<strong>按传入顺序</strong>返回;实测 2s+1s+1s 三个任务总耗时 ≈ <strong>2s</strong>(等最慢的)而不是 4s——单线程并发成立,对照 gevent 的 joinall</li>
+<li>库的纪律:asyncio.sleep 是「让出式」等待,time.sleep 是<strong>真阻塞、会卡死整个事件循环</strong>——协程世界必须全链路用异步库(asyncio.open_connection、aiohttp 等);这正是 gevent 用猴子补丁解决、asyncio 用原生生态解决的问题</li>
+<li>P505「IO模型总结」核心结论(并入本点):按两阶段记——<strong>阻塞IO</strong> 等待+拷贝全傻等;<strong>非阻塞IO</strong> 等待变轮询(烧CPU)、拷贝自己来;<strong>多路复用</strong> select&#x2F;epoll 替你等一堆 fd、拷贝自己来(以上皆同步);<strong>异步IO</strong> 等和拷贝都不用管、完事通知;高并发能力:阻塞(一线程一连接)&lt; 非阻塞&#x2F;多路复用(单线程多连接)&lt; 异步(等待+拷贝都不占调用方)</li>
+<li>现实建议:asyncio 适合 <strong>IO 密集高并发</strong>(爬虫、Web 服务、websocket),CPU 密集回到多进程;注意 async 会「传染」(调用它的也得 async),工程上常配套 aiohttp&#x2F;httpx 等异步全家桶——这是 Day40~42 并发主线的终点,也是异步编程的起点</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">name, seconds</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 开始&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(seconds)      <span class="comment"># 遇到 await 让出事件循环,切去跑别的协程</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 结束&quot;</span>, flush=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;name&#125;</span> 的结果&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    start = time.time()</span><br><span class="line">    results = <span class="keyword">await</span> asyncio.gather(   <span class="comment"># 单线程内并发调度 3 个协程</span></span><br><span class="line">        task(<span class="string">&quot;协程甲&quot;</span>, <span class="number">2</span>),</span><br><span class="line">        task(<span class="string">&quot;协程乙&quot;</span>, <span class="number">1</span>),</span><br><span class="line">        task(<span class="string">&quot;协程丙&quot;</span>, <span class="number">1</span>),</span><br><span class="line">    )</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;总耗时约&quot;</span>, <span class="built_in">round</span>(time.time() - start, <span class="number">1</span>), <span class="string">&quot;秒&quot;</span>)   <span class="comment"># 2秒(最慢的),而非4秒</span></span><br><span class="line">    <span class="built_in">print</span>(results)                    <span class="comment"># 结果按传入顺序返回</span></span><br><span class="line"></span><br><span class="line">asyncio.run(main())                   <span class="comment"># 启动事件循环跑 main</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>asyncio.gather 单线程并发:总耗时取决于最慢任务</em></p>
+<hr>
+<p><strong>系列目录 &#x2F; 工具获取方式见文末 👇</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ln996.github.io">李宁</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ln996.github.io/2026/11/06/python-06/">https://ln996.github.io/2026/11/06/python-06/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ln996.github.io" target="_blank">李宁的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.svg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/11/07/python-07/" title="异常处理与代码模板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">异常处理与代码模板</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 异常处理 🎬 对应课程:Python基础(异常处理+日志)  1. 为什么要处理异常 🎬 对应视频:P418  异常就是程序运行时发生的错误,不处理程序会当场崩溃,处理了就能给出友好提示并继续运行。  异常发生后若不捕获,程序立即终止,并打印异常类型、位置和描述(堆栈信息) Python 中一切异常都是异常类的实例,不同错误对应不同类型 崩溃是不可接受的,尤其是服务端程序:一个用户请求出错不能拖垮整个服务  2. try &#x2F; except &#x2F; else &#x2F; finally 完整结构 🎬 对应视频:P419~P420  try 包可能出错的代码,except 捕获并处理,else 在没异常时执行,finally 无论如何都执行。  except 可以写多个,从上到下匹配,子类异常要写在父类前面 except 后不写类型 &#x3D; 捕获所有异常(方便但危险,不推荐用于生产) except XxxError as e 可以拿到异常对象,print...</div></div></div></a><a class="pagination-related" href="/2026/11/05/python-05/" title="网络编程逐集精讲"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">网络编程逐集精讲</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 网络编程 🎬 对应课程:Python基础 第8章(网络基础、socket、黏包、socketserver)  1. 网络基础(IP、端口、子网掩码) 🎬 对应视频:P421  网络通信三要素:IP 定位主机、端口定位程序、协议约定数据格式;子网掩码用来区分 IP 的网络位与主机位。  局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网 IP 地址:标识网络中的一台主机,如 192.168.1.10;127.0.0.1 是本机回环地址,永远代表自己,常用于本机测试 端口:范围 0~65535,标识主机上的一个应用程序;0~1023 是知名端口(80 HTTP、443 HTTPS、3306 MySQL),自写程序避开 子网掩码:如 255.255.255.0,与 IP 做按位与运算,得到网络位,用来判断两台机器是否在同一网段 MAC 地址:网卡的物理地址,用于局域网内定位设备;发送数据实际是 IP 找主机、MAC 找网卡、端口找程序  2. 网络分...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/11/09/python-09/" title="MySQL数据库"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-09</div><div class="info-item-2">MySQL数据库</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 MySQL基础与进阶 🎬 对应课程:数据库阶段(MySQL安装、库表操作、增删改查、连表、pymysql、事务、索引)  1. 库表操作与常用数据类型 🎬 对应视频:P527~P528、P538、P550  用 create/drop/alter 管理库和表;字符串定长用 char、变长用 varchar**,区别是空间和速度的取舍。**  库操作:create database db1 charset utf8mb4;、drop database db1;、show databases;、use db1; 表操作:create table t(id int, name varchar(16));、drop table t;、show tables;、desc t; 查看表结构 改表:alter table t add 列名 类型; 加列、alter table t drop 列名; 删列、alter table t modify 列名 新类型; 改类型 常用类型:int&#...</div></div></div></a><a class="pagination-related" href="/2026/10/31/python-00/" title="Python全栈学习笔记:课程导读与目录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-31</div><div class="info-item-2">Python全栈学习笔记:课程导读与目录</div></div><div class="info-2"><div class="info-item-1"> 最近跟完一套 Python 全栈课程,顺手给自己做了一个可刷题的本地学习系统:6 个阶段 &#x2F; 37 个章节 &#x2F; 453 道题(带解析) &#x2F; 22 页课堂板书笔记 &#x2F; 51 段课堂代码。本系列文章就是它的全部知识点笔记,按阶段拆成 15 篇,欢迎收藏追更。  本系列目录  Python入门与数据类型(笔记合集)(25 个知识点)    流程控制与文件操作(笔记合集)(16 个知识点)    函数与模块(笔记合集)(30 个知识点)    面向对象编程(笔记合集)(13 个知识点)    网络编程·逐集精讲(Day34~37)(37 个知识点)    并发编程·逐集精讲(Day38~42)(59 个知识点)    异常处理与代码模板速查(21 个知识点)    经典练习与课后作业(Python基础)(4 个知识点)    MySQL数据库(笔记+作业)(24 个知识点)    前端三件套:HTML&#x2F;CSS&#x2F;JS(笔记+作业)(39 个知识点)    Django与DRF(笔记+作业)(39 个知识点)    项目实战:选课...</div></div></div></a><a class="pagination-related" href="/2026/11/11/python-11/" title="Django与DRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-11</div><div class="info-item-2">Django与DRF</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 HTTP协议与Web框架本质 🎬 对应课程:框架开始前(HTTP协议、wsgiref、手写web框架)  1. HTTP协议特点(基于TCP、无状态、长连接) 🎬 对应视频:P585~P586  HTTP 是基于 TCP 的应用层协议**,本身无状态;HTTP&#x2F;1.1 默认通过 keep-alive 复用 TCP 连接,但每次请求的内容仍然相互独立。**  HTTP 工作在应用层,底层依赖 TCP 提供可靠传输(默认端口 80,HTTPS 默认 443) 无状态:协议本身不记住上一次请求是谁发的,每次请求相互独立;登录状态是靠 cookie&#x2F;session 机制额外补充的 短连接:HTTP&#x2F;1.0 每次请求都新建一条 TCP 连接,用完就断,频繁握手开销大 keep-alive(长连接):HTTP&#x2F;1.1 默认开启,一条 TCP 连接可以连续承载多次 HTTP 请求&#x2F;响应 无状态说的是”不保存上下文”,长&#x2F;短连接说的...</div></div></div></a><a class="pagination-related" href="/2026/11/05/python-05/" title="网络编程逐集精讲"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-05</div><div class="info-item-2">网络编程逐集精讲</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 网络编程 🎬 对应课程:Python基础 第8章(网络基础、socket、黏包、socketserver)  1. 网络基础(IP、端口、子网掩码) 🎬 对应视频:P421  网络通信三要素:IP 定位主机、端口定位程序、协议约定数据格式;子网掩码用来区分 IP 的网络位与主机位。  局域网:交换机把多台电脑连成一个内网;广域网:路由器把不同的网连接起来,就是互联网 IP 地址:标识网络中的一台主机,如 192.168.1.10;127.0.0.1 是本机回环地址,永远代表自己,常用于本机测试 端口:范围 0~65535,标识主机上的一个应用程序;0~1023 是知名端口(80 HTTP、443 HTTPS、3306 MySQL),自写程序避开 子网掩码:如 255.255.255.0,与 IP 做按位与运算,得到网络位,用来判断两台机器是否在同一网段 MAC 地址:网卡的物理地址,用于局域网内定位设备;发送数据实际是 IP 找主机、MAC 找网卡、端口找程序  2. 网络分...</div></div></div></a><a class="pagination-related" href="/2026/11/02/python-02/" title="流程控制与文件操作"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-02</div><div class="info-item-2">流程控制与文件操作</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 流程控制(if &#x2F; while &#x2F; for) 🎬 对应课程:Python基础 第3章(if判断、while循环、for循环)  1. if 分支结构 🎬 对应视频:P86、P89~P92  Python 用缩进**(推荐4空格)表示代码块,if / elif / else 从上到下命中一个分支后其余不再执行。**  条件为真的值:非0数字、非空字符串&#x2F;列表&#x2F;字典;None 为假 多条件用 and &#x2F; or 连接;判断区间可连写 90 &gt; score &gt;= 80 elif 可以有多个,else 最多一个且可不写 三元表达式:值1 if 条件 else 值2  12345678score = 85if score &gt;= 90:    print(&quot;A&quot;)elif score &gt;= 80:    print(&quot;B&quot;)else:    print(&quot;C&quot...</div></div></div></a><a class="pagination-related" href="/2026/11/08/python-08/" title="经典练习与课后作业"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-08</div><div class="info-item-2">经典练习与课后作业</div></div><div class="info-2"><div class="info-item-1"> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。   📖 课堂经典练习(视频例题) 🎬 对应课程:Python基础阶段课堂练习与作业(视频里反复练的经典例题整理,可对照B站视频)  1. 编程题四步法读题 → 想思路(先写注释伪代码) → 写代码 → 测边界,视频里反复强调:先想清楚再动手。  读题:把题面要求逐句圈出来,明确输入是什么、输出是什么 想思路:用中文注释把步骤写下来,再逐行翻译成代码 写代码:小步走,每写一小段就运行验证 测边界:空输入、错误输入(如数字位置输入了字母)、极端值(0、负数)  12345# 例:购物车思路伪代码# 1. 输入工资# 2. 循环:展示商品 -&gt; 输入编号# 3. 判断余额够不够 -&gt; 够:扣钱加入购物车# 4. 输入 q 退出,打印购物清单和余额  2. 经典练习与考点对照每个经典练习都对应固定的知识点,练一题等于复习一片。  九九乘法表:双层for + end参数;斐波那契:多重赋值 a, b &#x3D; b, a+b 猜年龄 &#x2F; 登录锁定:while循环 + br...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.svg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">李宁</div><div class="author-info-description">Python 学习笔记、技术与生活</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">📖 并发编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">1. 进程与线程基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-multiprocessing-%E5%A4%9A%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">2. multiprocessing 多进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-threading-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%AB%9E%E4%BA%89"><span class="toc-number">1.3.</span> <span class="toc-text">3. threading 多线程与数据竞争</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-GIL-%E5%85%A8%E5%B1%80%E8%A7%A3%E9%87%8A%E5%99%A8%E9%94%81"><span class="toc-number">1.4.</span> <span class="toc-text">4. GIL 全局解释器锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%94%81%E3%80%81%E4%BF%A1%E5%8F%B7%E9%87%8F%E3%80%81%E4%BA%8B%E4%BB%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E9%98%9F%E5%88%97"><span class="toc-number">1.5.</span> <span class="toc-text">5. 锁、信号量、事件与安全队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%BF%9B%E7%A8%8B%E6%B1%A0%E7%BA%BF%E7%A8%8B%E6%B1%A0%E4%B8%8E%E5%8D%8F%E7%A8%8B"><span class="toc-number">1.6.</span> <span class="toc-text">6. 进程池线程池与协程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95%E5%8F%B2%E4%B8%8E%E5%A4%9A%E9%81%93%E6%8A%80%E6%9C%AF"><span class="toc-number">1.7.</span> <span class="toc-text">7. 操作系统发展史与多道技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E8%BF%9B%E7%A8%8B%E4%B8%89%E7%8A%B6%E6%80%81%E4%B8%8E%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95"><span class="toc-number">1.8.</span> <span class="toc-text">8. 进程三状态与调度算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E3%80%81%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.9.</span> <span class="toc-text">9. 僵尸进程、孤儿进程与守护进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-IO-%E6%A8%A1%E5%9E%8B-%E9%98%BB%E5%A1%9E%E3%80%81%E9%9D%9E%E9%98%BB%E5%A1%9E%E3%80%81%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E4%B8%8E-asyncio"><span class="toc-number">1.10.</span> <span class="toc-text">10. IO 模型:阻塞、非阻塞、多路复用与 asyncio</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%90%8C%E6%AD%A5-%E5%BC%82%E6%AD%A5%E4%B8%8E%E9%98%BB%E5%A1%9E-%E9%9D%9E%E9%98%BB%E5%A1%9E"><span class="toc-number">1.11.</span> <span class="toc-text">11. 同步&#x2F;异步与阻塞&#x2F;非阻塞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-TCP-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8F%91%E6%95%88%E6%9E%9C"><span class="toc-number">1.12.</span> <span class="toc-text">12. TCP 服务端实现并发效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E5%8D%8F%E7%A8%8B%E5%AE%9E%E7%8E%B0-TCP-%E5%B9%B6%E5%8F%91"><span class="toc-number">1.13.</span> <span class="toc-text">13. 协程实现 TCP 并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E5%BC%80%E5%90%AF%E8%BF%9B%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">1.14.</span> <span class="toc-text">14. 开启进程&#x2F;线程的两种方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E5%B9%B6%E5%8F%91%E9%80%90%E9%9B%86%E7%B2%BE%E8%AE%B2-Day38-39"><span class="toc-number">2.</span> <span class="toc-text">📖 并发逐集精讲(Day38~39)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%AB%A0%E8%8A%82%E8%AF%B4%E6%98%8E-%E6%8C%89%E9%9B%86%E7%B2%BE%E8%AE%B2%E4%B8%8E%E3%80%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E3%80%8D%E7%AB%A0%E8%8A%82%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.1.</span> <span class="toc-text">1. 章节说明:按集精讲与「并发编程」章节的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Day38-05-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="toc-number">2.2.</span> <span class="toc-text">2. Day38-05 操作系统发展史</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Day38-06-%E5%A4%9A%E9%81%93%E6%8A%80%E6%9C%AF"><span class="toc-number">2.3.</span> <span class="toc-text">3. Day38-06 多道技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Day38-07-%E8%BF%9B%E7%A8%8B%E7%9A%84%E8%B0%83%E5%BA%A6"><span class="toc-number">2.4.</span> <span class="toc-text">4. Day38-07 进程的调度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Day38-08-%E8%BF%9B%E7%A8%8B%E4%B8%89%E7%8A%B6%E6%80%81%E5%9B%BE"><span class="toc-number">2.5.</span> <span class="toc-text">5. Day38-08 进程三状态图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Day38-09-%E5%90%8C%E6%AD%A5%E5%BC%82%E6%AD%A5%E4%B8%8E%E9%98%BB%E5%A1%9E%E9%9D%9E%E9%98%BB%E5%A1%9E"><span class="toc-number">2.6.</span> <span class="toc-text">6. Day38-09 同步异步与阻塞非阻塞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Day38-10-%E5%88%9B%E5%BB%BA%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">2.7.</span> <span class="toc-text">7. Day38-10 创建进程的两种方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-Day38-11-join%E6%96%B9%E6%B3%95"><span class="toc-number">2.8.</span> <span class="toc-text">8. Day38-11 join方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-Day38-12-%E8%BF%9B%E7%A8%8B%E9%97%B4%E6%95%B0%E6%8D%AE%E7%9B%B8%E4%BA%92%E9%9A%94%E7%A6%BB"><span class="toc-number">2.9.</span> <span class="toc-text">9. Day38-12 进程间数据相互隔离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-Day39-03-%E8%BF%9B%E7%A8%8B%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95"><span class="toc-number">2.10.</span> <span class="toc-text">10. Day39-03 进程对象及其他方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Day39-04-%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%AD%A4%E5%84%BF%E8%BF%9B%E7%A8%8B"><span class="toc-number">2.11.</span> <span class="toc-text">11. Day39-04 僵尸进程与孤儿进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-Day39-05-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B"><span class="toc-number">2.12.</span> <span class="toc-text">12. Day39-05 守护进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-Day39-06-%E4%BA%92%E6%96%A5%E9%94%81"><span class="toc-number">2.13.</span> <span class="toc-text">13. Day39-06 互斥锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-Day39-07-%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.14.</span> <span class="toc-text">14. Day39-07 队列介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-Day39-08-IPC%E6%9C%BA%E5%88%B6"><span class="toc-number">2.15.</span> <span class="toc-text">15. Day39-08 IPC机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-Day39-09-%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.16.</span> <span class="toc-text">16. Day39-09 生产者消费者模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-Day39-10-%E7%BA%BF%E7%A8%8B%E7%90%86%E8%AE%BA"><span class="toc-number">2.17.</span> <span class="toc-text">17. Day39-10 线程理论</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%96-%E5%B9%B6%E5%8F%91%E9%80%90%E9%9B%86%E7%B2%BE%E8%AE%B2-Day40-42"><span class="toc-number">3.</span> <span class="toc-text">📖 并发逐集精讲(Day40~42)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%AB%A0%E8%8A%82%E8%AF%B4%E6%98%8E-%E6%8C%89%E9%9B%86%E7%B2%BE%E8%AE%B2%E4%B8%8E%E3%80%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E3%80%8D%E7%AB%A0%E8%8A%82%E7%9A%84%E5%85%B3%E7%B3%BB-1"><span class="toc-number">3.1.</span> <span class="toc-text">1. 章节说明:按集精讲与「并发编程」章节的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Day-40-03-%E5%BC%80%E5%90%AF%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">2. Day 40 - 03 开启线程的两种方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Day-40-04-TCP%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8F%91%E7%9A%84%E6%95%88%E6%9E%9C"><span class="toc-number">3.3.</span> <span class="toc-text">3. Day 40 - 04 TCP服务端实现并发的效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Day-40-05-%E7%BA%BF%E7%A8%8B%E5%AF%B9%E8%B1%A1join%E6%96%B9%E6%B3%95"><span class="toc-number">3.4.</span> <span class="toc-text">4. Day 40 - 05 线程对象join方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Day-40-06-%E5%90%8C%E4%B8%80%E4%B8%AA%E8%BF%9B%E7%A8%8B%E4%B8%8B%E7%9A%84%E5%A4%9A%E4%B8%AA%E7%BA%BF%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%85%B1%E4%BA%AB"><span class="toc-number">3.5.</span> <span class="toc-text">5. Day 40 - 06 同一个进程下的多个线程数据共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Day-40-07-%E7%BA%BF%E7%A8%8B%E5%AF%B9%E8%B1%A1%E5%8F%8A%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95"><span class="toc-number">3.6.</span> <span class="toc-text">6. Day 40 - 07 线程对象及其他方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Day-40-08-%E5%AE%88%E6%8A%A4%E7%BA%BF%E7%A8%8B"><span class="toc-number">3.7.</span> <span class="toc-text">7. Day 40 - 08 守护线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-Day-40-09-%E7%BA%BF%E7%A8%8B%E4%BA%92%E6%96%A5%E9%94%81"><span class="toc-number">3.8.</span> <span class="toc-text">8. Day 40 - 09 线程互斥锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-Day-40-10-GIL%E5%85%A8%E5%B1%80%E8%A7%A3%E9%87%8A%E5%99%A8%E9%94%81%E7%90%86%E8%AE%BA%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.9.</span> <span class="toc-text">9. Day 40 - 10 GIL全局解释器锁理论介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-Day-40-11-GIL%E4%B8%8E%E6%99%AE%E9%80%9A%E4%BA%92%E6%96%A5%E9%94%81%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.10.</span> <span class="toc-text">10. Day 40 - 11 GIL与普通互斥锁的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-Day-40-12-%E5%A4%9A%E8%BF%9B%E7%A8%8B%E4%B8%8E%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%AF%94%E8%BE%83"><span class="toc-number">3.11.</span> <span class="toc-text">11. Day 40 - 12 多进程与多线程比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-Day-41-03-%E6%AD%BB%E9%94%81%E7%8E%B0%E8%B1%A1"><span class="toc-number">3.12.</span> <span class="toc-text">12. Day 41 - 03 死锁现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-Day-41-04-%E9%80%92%E5%BD%92%E9%94%81"><span class="toc-number">3.13.</span> <span class="toc-text">13. Day 41 - 04 递归锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-Day-41-05-%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="toc-number">3.14.</span> <span class="toc-text">14. Day 41 - 05 信号量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-Day-41-06-Event%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.15.</span> <span class="toc-text">15. Day 41 - 06 Event事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-Day-41-07-%E7%BA%BF%E7%A8%8Bq"><span class="toc-number">3.16.</span> <span class="toc-text">16. Day 41 - 07 线程q</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-Day-41-08-%E6%B1%A0%E7%9A%84%E6%A6%82%E5%BF%B5%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.17.</span> <span class="toc-text">17. Day 41 - 08 池的概念介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-Day-41-09-%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-number">3.18.</span> <span class="toc-text">18. Day 41 - 09 线程池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-Day-41-10-%E8%BF%9B%E7%A8%8B%E6%B1%A0"><span class="toc-number">3.19.</span> <span class="toc-text">19. Day 41 - 10 进程池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#20-Day-41-11-%E5%8D%8F%E7%A8%8B%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">3.20.</span> <span class="toc-text">20. Day 41 - 11 协程基本原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-Day-41-12-gevent%E6%A8%A1%E5%9D%97"><span class="toc-number">3.21.</span> <span class="toc-text">21. Day 41 - 12 gevent模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-Day-41-13-%E5%8D%8F%E7%A8%8B%E5%AE%9E%E7%8E%B0TCP%E5%B9%B6%E5%8F%91"><span class="toc-number">3.22.</span> <span class="toc-text">22. Day 41 - 13 协程实现TCP并发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-Day-42-03-IO%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B"><span class="toc-number">3.23.</span> <span class="toc-text">23. Day 42 - 03 IO模型简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-Day-42-04-%E9%98%BB%E5%A1%9EIO%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.24.</span> <span class="toc-text">24. Day 42 - 04 阻塞IO模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#25-Day-42-05-%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E6%A8%A1%E5%9E%8B%E7%90%86%E8%AE%BA"><span class="toc-number">3.25.</span> <span class="toc-text">25. Day 42 - 05 非阻塞IO模型理论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#26-Day-42-06-%E9%9D%9E%E9%98%BB%E5%A1%9EIO%E6%A8%A1%E5%9E%8B%E4%BB%A3%E7%A0%81%E6%BC%94%E7%A4%BA"><span class="toc-number">3.26.</span> <span class="toc-text">26. Day 42 - 06 非阻塞IO模型代码演示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#27-Day-42-07-IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">3.27.</span> <span class="toc-text">27. Day 42 - 07 IO多路复用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#28-Day-42-08-asyncio%E6%A8%A1%E5%9D%97"><span class="toc-number">3.28.</span> <span class="toc-text">28. Day 42 - 08 asyncio模块</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/hello-world/" title="我的第一篇博客">我的第一篇博客</a><time datetime="2026-11-14T02:00:00.000Z" title="发表于 2026-11-14 10:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/14/python-14/" title="课堂代码精选51段">课堂代码精选51段</a><time datetime="2026-11-14T01:00:00.000Z" title="发表于 2026-11-14 09:00:00">2026-11-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/13/python-13/" title="运维与面试">运维与面试</a><time datetime="2026-11-13T01:00:00.000Z" title="发表于 2026-11-13 09:00:00">2026-11-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/12/python-12/" title="项目实战">项目实战</a><time datetime="2026-11-12T01:00:00.000Z" title="发表于 2026-11-12 09:00:00">2026-11-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/11/11/python-11/" title="Django与DRF">Django与DRF</a><time datetime="2026-11-11T01:00:00.000Z" title="发表于 2026-11-11 09:00:00">2026-11-11</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 李宁</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.2"></script><script src="/js/main.js?v=5.7.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
