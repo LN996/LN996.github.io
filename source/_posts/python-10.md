@@ -1,24 +1,20 @@
 ---
-title: 前端三件套
+title: 前端三件套:HTML/CSS/JS
 date: 2026-11-10 09:00:00
 tags:
   - 前端
   - HTML
   - CSS
-  - JavaScript
 categories:
-  - Python学习笔记
+  - 前端
 ---
-> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。
 
----
+> 我的学习笔记,边学边记,持续修订。最后更新:2026-11。
 
 ## 📖 HTML
 
-> 🎬 对应课程:前端阶段(HTML文档结构、常用标签、表单、表格)
 
 ### 1. HTML文档结构
-> 🎬 对应视频:P587~P588
 
 **页面骨架 = **<!DOCTYPE html> 声明 + `html` 根标签**,`head` 里放给浏览器看的配置,`body` 里放给用户看的内容。**
 
@@ -44,7 +40,6 @@ categories:
 *HTML5 基本骨架*
 
 ### 2. 标签分类:块级 / 行内 / 行内块
-> 🎬 对应视频:P590
 
 **块级元素**独占一行、可设宽高**;行内元素**不独占一行、宽高无效**;行内块**不独占一行但可设宽高**。**
 
@@ -63,7 +58,6 @@ categories:
 *三类标签的排列区别*
 
 ### 3. a 标签与 img 标签
-> 🎬 对应视频:P593
 
 **`a` 用 **href** 指定跳转地址、**target="_blank"** 新窗口打开、`href="#锚点"` 页内跳转;`img` 用 **src** 指定图片,`alt` 是加载失败的替代文字,`title` 是悬停提示。**
 
@@ -81,7 +75,6 @@ categories:
 ```
 
 ### 4. 列表与表格
-> 🎬 对应视频:P594、P598
 
 **列表分**无序 `ul`** 和**有序 `ol`**,子项都是 `li`;表格用 `table > tr > td`,表头用 `th`,`rowspan` 纵向合并、`colspan` 横向合并单元格。**
 
@@ -108,7 +101,6 @@ categories:
 *rowspan/colspan 合并单元格*
 
 ### 5. 表单与表单控件
-> 🎬 对应视频:P599
 
 **`<form action="提交地址" method="提交方式">` 包住控件,**radio 同 name 互斥**、checkbox 可多选,`label` 的 for 对应控件 id 可以点击聚焦。**
 
@@ -140,7 +132,6 @@ categories:
 *注册表单示例*
 
 ### 6. 语义化标签与特殊字符转义
-> 🎬 对应视频:P590、P591
 
 **语义化标签(header/nav/main/footer)让结构清晰利于 SEO;`&lt;` 显示 `<`、`&gt;` 显示 `>`、`&nbsp;` 显示**空格**、`&amp;` 显示 `&`。**
 
@@ -160,13 +151,11 @@ categories:
 ```
 
 ### 7. head 内常用标签详解
-> 🎬 对应视频:P589
 
 **`<head>` 是**给浏览器看的配置区**:`<meta>` 元信息、`<title>` 标签页标题、`<style>` 内嵌样式、`<link>` 引外部资源、`<script>` 引 JS 都写在这里,页面上不直接显示。**
 
 - `<meta charset="UTF-8">` 声明编码;`<meta name="keywords" content="...">` 和 `<meta name="description" content="...">` 写关键词和页面描述,供搜索引擎收录(SEO)
 - `<meta http-equiv="refresh" content="3;url=https://www.xxx.com">`:3 秒后自动跳转到目标页面(老网页常见的自动跳转写法)
-- `<title>` 显示在浏览器标签页、收藏夹和搜索结果里,是 head 中唯一用户能"看到"的标签
 - `<style>` 写内嵌 CSS;`<link rel="stylesheet" href="xx.css">` 引外部 CSS;`<script src="xx.js"></script>` 引外部 JS(script 必须写成双标签,不能自闭合)
 - head 内的标签用户基本看不到,作用是告诉浏览器"怎么解析这个页面":编码、标题、样式、脚本
 
@@ -188,7 +177,6 @@ categories:
 *head 内五个常用标签*
 
 ### 8. 更多特殊符号与 emoji
-> 🎬 对应视频:P591
 
 **除了 `&lt;` `&gt;`,常用实体还有:**`&quot;` 双引号、`&reg;` 注册商标、`&times;` 乘号、`&deg;` 度**;emoji 在 UTF-8 页面可以直接写,也可以用 `&#码点;` 数字实体。**
 
@@ -205,7 +193,6 @@ categories:
 ```
 
 ### 9. div 与 span:布局思想
-> 🎬 对应视频:P592
 
 ****div 是块级"容器",负责把页面切成头部/内容/底部等大区域;span 是行内"范围",负责圈住一行文字里的局部**;两者默认无样式,是布局思想的载体。**
 
@@ -228,7 +215,6 @@ categories:
 *div 划区域 + span 圈局部*
 
 ### 10. body 常用文本标签
-> 🎬 对应视频:P590
 
 ****标题 h1~h6、段落 p、加粗 strong、斜体 em、删除线 del、换行 br、水平线 hr** 是 body 里最常用的文本标签:标题段落独占一行是块级,br 负责强制换行。**
 
@@ -249,12 +235,10 @@ categories:
 *h/p/strong/em/br/hr 常用文本标签*
 
 ### 11. GET 与 POST 提交方式对比
-> 🎬 对应视频:P599
 
 **form 的 method 两种取值:**GET 把数据拼在 URL 后面、可见且有长度限制;POST 把数据放请求体、不显示在地址栏**。敏感数据、上传文件必须用 POST。**
 
 - GET 提交后地址栏形如 /login?user=alex&pwd=123:参数以 ? 拼在 action 后、多个参数用 & 相连,密码直接暴露在 URL 里
-- GET 受 URL 长度限制(几 KB),会被浏览器缓存、能被收藏成书签;POST 理论上没有大小限制
 - POST 的数据放在**请求体**中,地址栏看不到,相对安全:登录密码、身份证号等敏感信息一律 POST
 - **上传文件必须 POST + enctype="multipart/form-data"**,GET 根本带不了文件内容
 - 语义区别:GET 是"要数据"(刷新重发无警告),POST 是"交数据"(刷新会提示重复提交),所以查询用 GET、增删改用 POST
@@ -277,10 +261,8 @@ categories:
 
 ## 📖 CSS
 
-> 🎬 对应课程:前端阶段(选择器、盒子模型、浮动、定位、flex)
 
 ### 1. CSS引入方式与注释
-> 🎬 对应视频:P601
 
 **CSS 有**三种引入方式:行内式 style 属性、内嵌式 `<style>` 标签、外链式 `<link>` 标签**,注释只有 `/* */` 一种。**
 
@@ -299,7 +281,6 @@ categories:
 ```
 
 ### 2. 选择器与优先级
-> 🎬 对应视频:P602~P604、P607、P610
 
 **基础选择器:标签 / 类(`.`)/ id(`#`)/ 通用(`*`);后代用**空格**、子代用 `>`、群组用**逗号**、交集连写;权重 **行内1000 > id100 > class10 > 标签1,!important 最高**。**
 
@@ -322,7 +303,6 @@ categories:
 *选择器权重比较*
 
 ### 3. 盒子模型
-> 🎬 对应视频:P617
 
 **盒子 = **content + padding + border + margin**;默认标准盒模型 width 只含 content,`box-sizing: border-box` 让 width 包含 padding 和 border。**
 
@@ -345,7 +325,6 @@ categories:
 *盒子模型与box-sizing*
 
 ### 4. display 与三种隐藏方式
-> 🎬 对应视频:P616、P626
 
 **display 控制显示模式:block 独占一行、inline 行内、inline-block 行内块、none 隐藏;三种隐藏:**none 不占位、visibility:hidden 占位不可见、opacity:0 占位透明但可交互**。**
 
@@ -362,7 +341,6 @@ span.btn { display: inline-block; width: 80px; height: 30px; } /* 行内块可�
 ```
 
 ### 5. 浮动与清除浮动
-> 🎬 对应视频:P618、P621
 
 **`float: left/right` 让元素脱离文档流去排队,会导致**父级高度塌陷**;清除浮动常用 `clear: both`、父级 `overflow: hidden`(触发BFC)或 `::after` 伪元素。**
 
@@ -384,7 +362,6 @@ span.btn { display: inline-block; width: 80px; height: 30px; } /* 行内块可�
 *clearfix 清除浮动*
 
 ### 6. position 定位与 flex 布局
-> 🎬 对应视频:P623~P624
 
 **position:relative **不脱标**、absolute **相对最近的定位祖先脱标**、fixed **相对视口脱标**;flex 用 `display: flex` + `justify-content`(主轴)+ `align-items`(交叉轴)。**
 
@@ -405,7 +382,6 @@ span.btn { display: inline-block; width: 80px; height: 30px; } /* 行内块可�
 ```
 
 ### 7. 字体属性与文字属性
-> 🎬 对应视频:P611~P613
 
 **字体三件套:**font-family 字体、font-size 大小、font-weight 加粗**;文字排版:**color 颜色、text-align 水平对齐、line-height 行高、text-decoration 装饰线**。**
 
@@ -431,7 +407,6 @@ p {
 *常用字体/文字属性*
 
 ### 8. 背景与边框
-> 🎬 对应视频:P614~P615
 
 **背景图片**默认平铺铺满**,可用 `background: 颜色 url() no-repeat center/cover` 一次性设置;边框三要素**宽度 样式 颜色**,样式常用 solid/dashed/dotted,`border-radius` 做圆角。**
 
@@ -456,7 +431,6 @@ p {
 *背景与边框常用写法*
 
 ### 9. 溢出属性 overflow 与文字省略
-> 🎬 对应视频:P622
 
 **overflow 管"内容装不下怎么办":**visible 溢出照常显示(默认)、hidden 裁掉、scroll 一直有滚动条、auto 装不下才出滚动条**;单行文字省略号三件套:overflow hidden + white-space nowrap + text-overflow ellipsis。**
 
@@ -478,7 +452,6 @@ p {
 *单行文字超出显示省略号*
 
 ### 10. z-index 层级与模态框案例
-> 🎬 对应视频:P625
 
 ****z-index 只有配合定位(position 非 static)才生效**,数值大的盖住数值小的;模态框 = 页面内容(1)+ 全屏半透明遮罩(99)+ 居中弹窗(999)三层叠加。**
 
@@ -506,7 +479,6 @@ p {
 *模态框三层结构与 z-index*
 
 ### 11. 伪类与伪元素详解
-> 🎬 对应视频:P608~P609
 
 **伪类用**单冒号**表示元素的"状态":`:hover` 悬停、`:focus` 聚焦、`:first-child` 第一个子元素;伪元素用**双冒号**创建"虚拟节点":`::before/::after` 必须写 content 才会渲染。**
 
@@ -532,7 +504,6 @@ li:nth-child(even) { background: #f5f5f5; }  /* 隔行变色 */
 *伪类四态、结构伪类与 ::before*
 
 ### 12. 文档流与脱离文档流
-> 🎬 对应视频:P618、P623~P624
 
 **标准文档流:块级**纵向排列**、行内横向排列。**float、position:absolute、position:fixed 三种方式会脱离文档流**,relative 不脱标;脱离后不再占据原位置,父级也"看不见"它。**
 
@@ -551,7 +522,6 @@ li:nth-child(even) { background: #f5f5f5; }  /* 隔行变色 */
 *三种脱流方式与 relative 对比*
 
 ### 13. 透明度 opacity 与 rgba
-> 🎬 对应视频:P626
 
 **opacity 取值 **0~1**,作用于**整个元素连同所有子元素**;rgba 的第四位 alpha 只让**当前这一层颜色**半透明,内容不受影响。做遮罩用 rgba,慎用 opacity。**
 
@@ -576,10 +546,8 @@ li:nth-child(even) { background: #f5f5f5; }  /* 隔行变色 */
 
 ## 📖 JavaScript 与 jQuery
 
-> 🎬 对应课程:前端阶段(JS基础、DOM/BOM、ES6、jQuery、Bootstrap)
 
 ### 1. JS基础:变量与数据类型
-> 🎬 对应视频:P628~P629、P632~P638
 
 **声明变量用 **var(函数作用域)、let(块级作用域)、const(常量)**;基本类型 number/string/boolean/null/undefined,用 `typeof` 检测类型。**
 
@@ -599,7 +567,6 @@ console.log(typeof [1, 2]);    // "object"
 ```
 
 ### 2. 运算与流程控制
-> 🎬 对应视频:P639~P640
 
 ****== 会隐式转换类型,=== 既比值又比类型**;`1 + "1"` 得 "11"(字符串拼接);条件分支用 if,简单判断用三元 `条件 ? 值1 : 值2`。**
 
@@ -619,7 +586,6 @@ var level = score >= 60 ? "及格" : "不及格";  // 及格
 ```
 
 ### 3. 函数与数组方法
-> 🎬 对应视频:P641~P642
 
 **函数用 function 声明或箭头函数 `=>`(箭头函数**没有自己的 this**);数组方法:`push/pop` 尾部增删、`forEach` 遍历、`map` 映射、`filter` 过滤。**
 
@@ -638,7 +604,6 @@ console.log(doubled, odds, add(1, 2));
 ```
 
 ### 4. DOM操作与事件
-> 🎬 对应视频:P654~P658、P661~P662
 
 **`document.getElementById` / `querySelector` 获取元素,**innerText 当纯文本、innerHTML 当 HTML 解析**,`classList` 操作类名,`addEventListener` 绑定事件,冒泡用 `e.stopPropagation()` 阻止。**
 
@@ -660,7 +625,6 @@ box.addEventListener("click", function (e) {
 ```
 
 ### 5. BOM 与定时器
-> 🎬 对应视频:P649~P653
 
 **BOM 操作浏览器,核心对象是 `window`;`setTimeout` **只执行一次**、`setInterval` **循环执行**,分别用 `clearTimeout` / `clearInterval` 清除。**
 
@@ -685,7 +649,6 @@ var s = setInterval(function () {
 ```
 
 ### 6. ES6、jQuery 与 Bootstrap 栅格
-> 🎬 对应视频:P663~P666、P689
 
 **ES6:模板字符串用**反引号**包裹、`${}` 嵌变量,解构赋值,扩展运算符;jQuery 用 `$` 选择器 + **链式操作**;Bootstrap 栅格一行 **12 列**,`col-md-N` 指定占几列。**
 
@@ -712,7 +675,6 @@ $.ajax({
 *ES6模板字符串与$.ajax*
 
 ### 7. jQuery 筛选器与筛选方法
-> 🎬 对应视频:P667~P670
 
 **基本筛选器 `:first` `:eq(2)` `:odd` 在**选中结果里再挑下标**;筛选方法 `.first()/.eq()/.parent()/.children()/.siblings()/.next()/.prev()` 从**当前对象出发找亲戚**。**
 
@@ -731,7 +693,6 @@ $("#box").find("a").attr("target", "_blank");
 ```
 
 ### 8. jQuery 文档处理(取值与节点增删)
-> 🎬 对应视频:P675~P676
 
 **取值三兄弟:**`.html()` 带 HTML、`.text()` 纯文本、`.val()` 表单值**;节点操作:**append/prepend 插到内部末尾/开头、remove 连自己删、empty 只清内部、clone 克隆**。**
 
@@ -752,7 +713,6 @@ $("ul").empty();                  // 清空 ul 内容,ul 还在
 ```
 
 ### 9. jQuery 事件绑定与事件委托
-> 🎬 对应视频:P677~P679、P682~P684
 
 **统一用 **`.on("事件名", fn)` 绑事件**(可绑多个互不覆盖),`.off()` 解绑;**事件委托:`$(父).on("click", "子选择器", fn)`**,动态新增的子元素也能触发;`return false` 同时阻止冒泡和默认行为。**
 
@@ -777,7 +737,6 @@ $("a.delete").on("click", function () {
 *动态列表的事件委托*
 
 ### 10. Bootstrap 常用组件(导航栏/按钮/表单/模态框)
-> 🎬 对应视频:P688、P692~P693、P695~P698
 
 **Bootstrap 是"套 class 就能用"的样式库:**.navbar 导航栏、.btn btn-primary 按钮、.form-control 表单控件、.modal 模态框(配合 data-toggle 触发)**,小图标用 glyphicon 字体图标。**
 
@@ -810,7 +769,6 @@ $("a.delete").on("click", function () {
 *按钮触发模态框*
 
 ### 11. 字符串常用方法
-> 🎬 对应视频:P634~P635
 
 **字符串**不可变**,所有方法都返回新值:`.length` 取长度、`indexOf` 找下标、`slice` 切片、`split` 转数组、`trim` 去两端空白、`replace` 替换、`toUpperCase/toLowerCase` 转大小写。**
 
@@ -831,7 +789,6 @@ console.log("2026-01-01".replace("-", "/"));  // "2026/01-01" 只换第一个
 ```
 
 ### 12. 内置对象:Date 日期、JSON 与 RegExp 正则
-> 🎬 对应视频:P643~P645
 
 **JS 三类常用内置对象:**Date 处理日期与时间戳、JSON 负责"对象⇄字符串"互转、RegExp 正则做模式匹配**,数据传输和表单校验全靠它们。**
 
@@ -859,7 +816,6 @@ console.log(re.test("12345678901"));  // false
 *Date、JSON、RegExp 三件套*
 
 ### 13. 页面加载:window.onload 与 $(function(){})
-> 🎬 对应视频:P685
 
 **原生 **window.onload 等图片等全部资源加载完**才触发、只能绑一个(后写覆盖先写);jQuery 的 **$(function(){}) 等 DOM 树建好就执行**,不用等图片、可写多个,实际开发首选。**
 
@@ -884,7 +840,6 @@ $(function () {
 *两种页面加载时机对比*
 
 ### 14. jQuery 动画效果
-> 🎬 对应视频:P686
 
 **jQuery 内置三组动画:**show()/hide()/toggle() 显示隐藏、slideDown/slideUp 滑动、fadeIn/fadeOut 淡入淡出**,自定义用 `animate({样式: 目标值}, 时长, 回调)`;连续调用会排队,用 stop() 打断。**
 
@@ -909,10 +864,8 @@ $("#box").stop(true);       // 清空动画队列,防止叠加
 
 ## 📖 课后作业（前端）
 
-> 🎬 对应课程:Day57 jQuery练习题(P673)、Day58 图书管理系统前端页面搭建(P699),练习按作业主题原创编写
 
 ### 1. 作业清单与完成顺序
-> 🎬 对应视频:P673、P699
 
 **前端阶段两大作业:**jQuery练习题(Day57,选择器/筛选器/样式操作综合)→ 图书管理系统前端页面搭建(Day58,HTML+CSS+Bootstrap+jQuery 串起来)**,先练零件再装整机。**
 
@@ -933,5 +886,3 @@ $("#box").stop(true);       // 清空动画队列,防止叠加
 ```
 
 ---
-
-**系列目录 / 工具获取方式见文末 👇**

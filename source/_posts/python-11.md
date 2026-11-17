@@ -1,22 +1,19 @@
 ---
-title: Django与DRF
+title: Django 与 DRF
 date: 2026-11-11 09:00:00
 tags:
-  - Python
   - Django
+  - DRF
 categories:
-  - Python学习笔记
+  - Django
 ---
-> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。
 
----
+> 我的学习笔记,边学边记,持续修订。最后更新:2026-11。
 
 ## 📖 HTTP协议与Web框架本质
 
-> 🎬 对应课程:框架开始前(HTTP协议、wsgiref、手写web框架)
 
 ### 1. HTTP协议特点(基于TCP、无状态、长连接)
-> 🎬 对应视频:P585~P586
 
 **HTTP 是**基于 TCP 的应用层协议**,本身**无状态**;HTTP/1.1 默认通过 keep-alive 复用 TCP 连接,但每次请求的内容仍然相互独立。**
 
@@ -27,7 +24,6 @@ categories:
 - 无状态说的是"不保存上下文",长/短连接说的是"TCP 连接怎么复用",两个维度不要混为一谈
 
 ### 2. 请求报文与响应报文格式
-> 🎬 对应视频:P585~P586
 
 **请求报文 = **请求行 + 请求头 + 空行 + 请求体**;响应报文 = **状态行 + 响应头 + 空行 + 响应体**,头和体之间必须用空行分隔。**
 
@@ -38,18 +34,15 @@ categories:
 - 响应报文:状态行(`HTTP/1.1 200 OK`)+ 响应头(Content-Type 等)+ 空行 + 响应体(HTML/JSON 等实际内容)
 
 ### 3. GET 与 POST 的区别、幂等性
-> 🎬 对应视频:P585~P586
 
 **GET 参数在 **URL 查询字符串**里且**幂等**,POST 参数在**请求体**里、一般会改变服务器数据;所谓安全只是"相对"的。**
 
-- GET:`/search/?wd=python`,参数暴露在地址栏,受 URL 长度限制,可被收藏、缓存
 - POST:数据放在请求体中,不显示在地址栏,大小一般只受服务器配置限制
 - **幂等**:同一请求执行一次和执行多次,对服务器数据的影响相同;GET 是幂等的,POST 不幂等(重复提交可能重复建数据)
 - **安全是相对的**:POST 只是不显示在地址栏,明文传输下抓包照样能看到,真正的安全靠 HTTPS
 - 协议并不禁止 GET 带请求体或 POST 用 URL 传参,但**规范用法**是:取数据用 GET,提交数据用 POST
 
 ### 4. 常见状态码与 URL 组成
-> 🎬 对应视频:P585~P586
 
 **200 成功、**301 永久重定向 / 302 临时重定向**、304 缓存、403/404 客户端错误、500 服务器错误;URL = 协议://域名:端口/路径?参数。**
 
@@ -60,7 +53,6 @@ categories:
 - 端口不写时用默认值:http 是 80、https 是 443;多个查询参数用 `&` 连接
 
 ### 5. 手写 Web 框架与 wsgiref
-> 🎬 对应视频:P702~P703
 
 **Web 框架的本质四步:**接收请求 → 路由匹配 → 执行视图函数 → 返回响应字符串**;wsgiref 只是把 socket 收发和报文解析封装好了。**
 
@@ -92,7 +84,6 @@ make_server("127.0.0.1", 8000, app).serve_forever()
 *wsgiref 版最小 Web 框架*
 
 ### 6. MVC/MTV 对应关系与动态页面本质
-> 🎬 对应视频:P705~P706、P783
 
 **Django 采用 **MTV**:Model 管、Template 展示、View 写业务;动态页面的本质就是**字符串替换(模板渲染)**。**
 
@@ -103,7 +94,6 @@ make_server("127.0.0.1", 8000, app).serve_forever()
 - 静态页面内容永远不变;动态页面同一 URL,不同数据(不同登录人、不同页码)返回不同内容
 
 ### 7. 常见请求头与响应头
-> 🎬 对应视频:P585~P586
 
 **请求头是"浏览器的自我介绍":**User-Agent 身份、Referer 来源页、Cookie、Accept 接受类型**;响应头是"服务器的交代":**Content-Type 内容格式、Content-Length 长度、Location 重定向、Set-Cookie 下发 cookie**。**
 
@@ -125,7 +115,6 @@ def meta_view(request):
 *Django 中读取请求头*
 
 ### 8. Python 三大主流 Web 框架对比
-> 🎬 对应视频:P708
 
 ****Django 大而全**(ORM/模板/admin 全自带)、**Flask 小而精**(核心只管路由视图,其余装扩展)、**Tornado 异步非阻塞**(自带异步服务器,抗高并发长连接)。**
 
@@ -136,7 +125,6 @@ def meta_view(request):
 - 选型没有绝对优劣:业务复杂、要后台管理选 Django;轻量灵活选 Flask;高并发实时场景考虑 Tornado
 
 ### 9. 代码封装:从单文件脚本到多文件结构
-> 🎬 对应视频:P704
 
 **单文件脚本写完路由和视图后难以维护,按**职责拆分**:路由表放 urls、视图函数放 views、页面模板放 templates 目录,主文件只负责启动服务——这就是 Django 项目结构 urls.py / views.py / templates 的由来。**
 
@@ -147,7 +135,6 @@ def meta_view(request):
 - Django 的目录结构(templates、urls.py、views.py、settings.py)正是这次拆分的标准化结果,理解了拆分过程,项目结构就不用死记
 
 ### 10. 简易 Web 请求流程图(手写框架版)
-> 🎬 对应视频:P707
 
 **一次请求的完整链路:**浏览器发请求 → wsgi 服务收报文解析 → 取路径查路由表 → 执行视图(查数据、渲染模板)→ 返回响应字符串 → 浏览器渲染展示**;这是 Django 请求生命周期的基础版。**
 
@@ -159,10 +146,8 @@ def meta_view(request):
 
 ## 📖 Django 基础
 
-> 🎬 对应课程:Django阶段(项目创建、路由、视图、模板、ORM)
 
 ### 1. 项目创建、目录结构与常用配置
-> 🎬 对应视频:P710~P711、P716、P718~P719、P942
 
 **`django-admin startproject 项目名` 建项目,`python manage.py runserver` 启动开发服务器;新写的 app 必须在 settings 的 **INSTALLED_APPS** 中注册。**
 
@@ -173,7 +158,6 @@ def meta_view(request):
 - admin 后台:`python manage.py createsuperuser` 建管理员,模型类注册到 admin.py 后即可在后台可视化增删改查数据
 
 ### 2. 路由系统(include、分组、反向解析)
-> 🎬 对应视频:P731~P733、P736~P738
 
 **urls.py 把 URL 映射到视图;`include` 做**路由分发**;`<int:id>` 是**有名分组**,路由配 `name` 后可用 `reverse` **反向解析**出 URL。**
 
@@ -185,7 +169,6 @@ def meta_view(request):
 - include 分发后的路由想区分不同 app 的同名 name,要配合 `namespace`(app_name)使用,反向解析写成 `"app01:detail"`
 
 ### 3. 视图三件套与 request 对象
-> 🎬 对应视频:P713、P717、P742、P745
 
 **视图函数必须接收 `request` 并返回响应:**HttpResponse** 返回字符串、**render** 渲染模板、**redirect** 重定向;请求信息全部从 request 上取。**
 
@@ -211,7 +194,6 @@ def add_book(request):
 *视图三件套典型用法*
 
 ### 4. 模板语法(变量、标签、过滤器、继承)
-> 🎬 对应视频:P750~P752、P754~P755
 
 **`{{ 变量 }}` 输出值,`{% 标签 %}` 写逻辑(for/if);过滤器改显示格式,`extends + block` 实现模板继承,`{% static %}` 引静态文件。**
 
@@ -222,7 +204,6 @@ def add_book(request):
 - `{% include "nav.html" %}` 把公共小组件嵌进来;静态文件先 `{% load static %}`,再 `{% static "css/a.css" %}`
 
 ### 5. Django 请求生命周期
-> 🎬 对应视频:P730
 
 **一次请求:**中间件 process_request → 路由匹配 → 视图(ORM/模板)→ 中间件 process_response → 返回浏览器**,中间件是进出都要路过的关卡。**
 
@@ -233,7 +214,6 @@ def add_book(request):
 - 模板渲染和数据库操作都发生在**视图阶段**;中间件决定请求"放不放行"、响应"改不改"
 
 ### 6. ORM 基础(字段、迁移、CRUD、双下划线)
-> 🎬 对应视频:P720~P723、P726~P729、P758、P760~P765、P773
 
 **模型类对应表、属性对应字段;改模型后 **makemigrations 生成迁移文件、migrate 执行入库**;查询靠 `filter/all/get`,双下划线做条件与跨表,`F`/`Q` 组合逻辑。**
 
@@ -261,7 +241,6 @@ qs = Book.objects.filter(title__contains="Python")  # 模糊查询
 *模型定义与增删改查*
 
 ### 7. JsonResponse 与文件上传
-> 🎬 对应视频:P743~P744
 
 **`JsonResponse` 自动序列化字典并返回 **Content-Type: application/json**;文件上传前端表单必须 **enctype="multipart/form-data"**,后端从 **request.FILES** 取文件,用 chunks() 分块写入。**
 
@@ -289,7 +268,6 @@ def upload(request):
 *文件上传视图*
 
 ### 8. ORM 必知必会查询方法
-> 🎬 对应视频:P759
 
 **除 all/filter/get/create/update/delete 外必会:**count 计数、order_by 排序(加 - 倒序)、exclude 条件取反、first/last 取单个对象、exists 判断存在、distinct 去重**。**
 
@@ -300,7 +278,6 @@ def upload(request):
 - `distinct()` 去重:直接调用按整行去重,配合 `values("title")` 就是按 title 字段去重
 
 ### 9. 聚合、分组、F 与 Q 查询
-> 🎬 对应视频:P768~P771
 
 ****aggregate 整表聚合返回一个字典,annotate 分组统计返回 QuerySet**;`F` 取字段自身的值参与运算,`Q` 用 `|` `&` `~` 组合条件,突破 filter 参数只能 and 的限制。**
 
@@ -320,7 +297,6 @@ Book.objects.update(sales=F("sales") + 1)                 # 字段自增
 ```
 
 ### 10. choices 参数与多对多的三种创建方式
-> 🎬 对应视频:P782、P784
 
 **字段加 **choices=[(存储值, 显示值)]**,模板里 `get_字段_display()` 取显示值;多对多第三张表三种建法:**全自动 ManyToManyField(推荐)、纯手动自己建表、半自动 through 指定中间表**。**
 
@@ -345,7 +321,6 @@ book.authors.add(author)    # add/remove/set/clear 只有全自动才有
 ```
 
 ### 11. 伪静态概念与实现
-> 🎬 对应视频:P739
 
 **伪静态把**动态 URL 伪装成静态页面的样子**(如 /article/3.html),路由照常匹配、视图照常查库渲染;目的是迎合搜索引擎 **SEO**、提高收录友好度,页面本质仍是动态生成的。**
 
@@ -356,7 +331,6 @@ book.authors.add(author)    # add/remove/set/clear 只有全自动才有
 - 代价与取舍:URL 变长、无实际功能收益;面试常问「什么是伪静态、为什么要用」,答出『动态伪装成静态,为了 SEO』即可
 
 ### 12. 自定义过滤器、标签与 inclusion_tag
-> 🎬 对应视频:P753
 
 **模板功能不够用时自己造:app 下建 **templatetags 包**(内含 `__init__.py`),新文件里 `register = template.Library()`,再用 **@register.filter** 定义过滤器、**@register.simple_tag** 定义标签、**@register.inclusion_tag** 定义「带模板的复用组件」;模板里先 `{% load 文件名 %}` 再使用。**
 
@@ -367,7 +341,6 @@ book.authors.add(author)    # add/remove/set/clear 只有全自动才有
 - 使用前必须在模板里 `{% load my_tags %}`(写文件名,不是 app 名);改动自定义代码后记得**重启开发服务器**才生效
 
 ### 13. Django 中开启事务
-> 🎬 对应视频:P772
 
 **把多条 ORM 写操作绑成一个整体:**要么全部成功、要么全部回滚**。常用 `from django.db import transaction` 配合 `with transaction.atomic():` 代码块,块内任何异常都会回滚,适合转账、下单扣库存这类多步写操作。**
 
@@ -378,7 +351,6 @@ book.authors.add(author)    # add/remove/set/clear 只有全自动才有
 - 注意:Django 默认**自动提交**(每条 SQL 立即生效);开启事务后块内代码共享一个连接,块外代码不受事务保护;用 savepoint 可以在块内嵌套局部回滚
 
 ### 14. 数据库查询优化(only/defer 与关联查询)
-> 🎬 对应视频:P774
 
 **核心思路:**少查、按需查、一次查**。`only`/`defer` 控制取哪些列,`select_related`/`prefetch_related` 把跨表查询合并,避免循环里反复查库的 **N+1 问题**;QuerySet 惰性,不迭代不查库。**
 
@@ -390,10 +362,8 @@ book.authors.add(author)    # add/remove/set/clear 只有全自动才有
 
 ## 📖 Django 进阶与 DRF
 
-> 🎬 对应课程:Django进阶(cookie/session、中间件、CSRF、ajax、auth)+DRF(序列化、视图集、认证权限频率)
 
 ### 1. cookie 与 session
-> 🎬 对应视频:P809~P811
 
 **cookie 存**浏览器**端、随请求自动携带;session 存**服务端**,靠 cookie 里的 **sessionid** 找回数据,相对更安全。**
 
@@ -404,7 +374,6 @@ book.authors.add(author)    # add/remove/set/clear 只有全自动才有
 - 对比:cookie 容量小(约 4KB)、在客户端可见可改,**不能放敏感数据**;session 在服务端相对安全,但占服务器存储/内存
 
 ### 2. 中间件(五个方法与执行顺序)
-> 🎬 对应视频:P815~P817
 
 **中间件是请求的必经关卡:`process_request` **从上到下**、`process_response` **从下到上**;继承 MiddlewareMixin 实现方法,注册位置决定顺序。**
 
@@ -429,7 +398,6 @@ class LogMiddleware(MiddlewareMixin):
 *最简自定义中间件*
 
 ### 3. CSRF 跨站请求伪造
-> 🎬 对应视频:P818~P820
 
 **CSRF = 冒用用户已登录身份发请求;Django 靠 **csrftoken** 防御:表单加 `{% csrf_token %}`,ajax 在请求头带 **X-CSRFToken**,个别视图可用 `csrf_exempt` 豁免。**
 
@@ -440,7 +408,6 @@ class LogMiddleware(MiddlewareMixin):
 - 个别接口确实不需要校验(如第三方回调):用 `from django.views.decorators.csrf import csrf_exempt` 装饰该视图,但会降低安全性,慎用
 
 ### 4. CBV/FBV 与 ajax
-> 🎬 对应视频:P746、P749、P785~P786、P812
 
 **FBV 是函数视图,CBV 是类视图(`as_view()` 入口、按请求方法分发到 get/post);CBV 加装饰器要用 **method_decorator**;ajax 局部刷新、success 回调处理结果。**
 
@@ -451,7 +418,6 @@ class LogMiddleware(MiddlewareMixin):
 - ajax 的价值:**不刷新整个页面**就能与服务器交互,回调里拿到返回数据局部更新页面(前后端分离的基础)
 
 ### 5. auth 模块、分页与批量插入
-> 🎬 对应视频:P793~P794、P797、P825~P828
 
 **auth 全家桶:`authenticate` 验密码、`login/logout` 管登录态、`login_required` 限制登录;扩展用户表继承 **AbstractUser**;批量插入用 `bulk_create` 又快又省。**
 
@@ -463,7 +429,6 @@ class LogMiddleware(MiddlewareMixin):
 - 批量插入:`Book.objects.bulk_create([Book(title=t) for t in titles])`,一条 SQL 插多条,比循环 create 快得多
 
 ### 6. DRF 核心(序列化器、视图集、三大组件、JWT)
-> 🎬 对应视频:P901~P905、P907~P913、P915~P919、P923~P927、P930~P933、P950、P953~P954、P956~P957、P959~P967
 
 **DRF(django-rest-framework)做前后端分离接口:**Serializer 负责序列化与校验**,**ModelViewSet + DefaultRouter 自动生成路由**,认证/权限/频率三大组件层层把关。**
 
@@ -475,7 +440,6 @@ class LogMiddleware(MiddlewareMixin):
 - JWT(json web token):登录后签发 token 给前端,之后放在请求头携带认证;与 session 不同,**服务端不存状态**,天然适合分布式和 App/小程序多端
 
 ### 7. form 组件(校验、渲染、错误信息、钩子)
-> 🎬 对应视频:P798~P805、P808
 
 **form 组件三大功能:**校验**(`is_valid()` 通过后从 `cleaned_data` 取干净数据)、**渲染标签**(as_p 或 for 循环自动生成 input)、**展示错误**(`errors`;局部钩子 clean_字段、全局钩子 clean 里 raise ValidationError)。**
 
@@ -510,7 +474,6 @@ class RegForm(forms.Form):
 *form 组件:校验 + 双钩子*
 
 ### 8. 前后端传输数据的编码格式与 ajax 发送 JSON/文件
-> 🎬 对应视频:P789~P791
 
 **POST 请求体三种编码:**urlencoded(默认,request.POST 可解析)、formdata(文件,进 request.FILES)、json(原样躺在 request.body,request.POST 为空)**;ajax 发 json 用 contentType+JSON.stringify,发文件用 FormData+两个 false。**
 
@@ -546,7 +509,6 @@ $.ajax({
 *ajax 发 json 与文件的标准姿势*
 
 ### 9. DRF 过滤、排序与分页组件
-> 🎬 对应视频:P934~P935、P949
 
 **DRF 列表接口三大修饰:**过滤**(按条件筛选)、**排序**(OrderingFilter,参数 ordering)、**分页**(PageNumberPagination,参数 page);支持 settings 全局配置,或视图里 filter_backends / pagination_class 局部覆盖。**
 
@@ -575,7 +537,6 @@ class BookView(ListAPIView):
 ```
 
 ### 10. Django 缓存机制
-> 🎬 对应视频:P968
 
 **缓存把算过的结果存起来下次直接用:按**粒度**分**全站缓存(两条中间件)、视图缓存(@cache_page)、局部缓存({% cache %} 标签)**,按**存储位置**分内存/文件/Redis/Memcached,在 settings 的 CACHES 里配置。**
 
@@ -604,7 +565,6 @@ CACHES = {
 ```
 
 ### 11. Django 自带的序列化组件
-> 🎬 对应视频:P792
 
 **不装 DRF 也能把 QuerySet 转 JSON:`from django.core import serializers`,一句 `serializers.serialize('json', queryset)` 返回 JSON 字符串;但它**格式固定、字段不可定制**,只适合简单场景,复杂需求还是用 DRF 序列化器。**
 
@@ -615,7 +575,6 @@ CACHES = {
 - 选型:临时调试、内部简单接口可以用;正式前后端分离项目一律上 DRF 的 ModelSerializer/Serializer
 
 ### 12. 基于 django 中间件学习编程思想
-> 🎬 对应视频:P822
 
 **中间件的设计藏着一套通用扩展模式:**配置文件里写「包.模块.类」字符串 → 框架启动时 import_module 反射导入 → 按约定调用固定方法**。框架预留扩展点,使用者只改配置不动源码,这是所有插件式设计的原型。**
 
@@ -626,7 +585,6 @@ CACHES = {
 - 自己写可扩展代码时照抄三件套:**定义约定 → 提供默认实现 → 允许配置替换**,就能把「改功能」变成「改配置」
 
 ### 13. web 开发模式、api 接口与 RESTful 规范
-> 🎬 对应视频:P897~P900
 
 **两种开发模式:**前后端混合**(模板渲染整页)与**前后端分离**(后端只出接口、前端独立部署);接口 = **url + 请求参数 + 响应数据**;RESTful 十条规范约定接口怎么写;**postman** 是不写页面就能模拟发请求的调试工具。**
 
@@ -637,7 +595,6 @@ CACHES = {
 - 规范是约定不是强制:团队统一即可;DRF 的 CBV 体系(ModelViewSet + 路由)就是按这套规范设计的落地实现
 
 ### 14. DRF 异常处理与自定义 Response 封装
-> 🎬 对应视频:P936~P937
 
 **统一响应格式是团队规范的落点:自定义 Response 类(继承 rest_framework 的 Response)自动带上 **code / msg / data** 三件套;再自定义 **EXCEPTION_HANDLER**,把 APIException、Http404 等异常统一转成同样结构,视图里只管 raise 和 return。**
 
@@ -649,10 +606,8 @@ CACHES = {
 
 ## 📖 课后作业（DRF接口）
 
-> 🎬 对应课程：Day82~87「作业」小节（P920、P928、P938、P960），练习按作业主题原创编写
 
 ### 1. 作业清单与完成顺序
-> 🎬 对应视频:P920、P928、P938、P960
 
 **DRF 阶段四次作业：**Day82 视图作业**(ModelViewSet+路由) → **Day83 认证作业**(自定义认证类) → **Day84 频率作业**(IP限流) → **Day87 jwt作业**(签发与过期校验)。**
 
@@ -662,5 +617,3 @@ CACHES = {
 - Day87：多方式登录签发 jwt，过期时间可配置
 
 ---
-
-**系列目录 / 工具获取方式见文末 👇**

@@ -24,3 +24,20 @@ darkmode:
 avatar:
   img: /img/avatar.svg
   url: /
+
+# 顶部导航:「笔记」按知识点分栏目
+menu:
+  首页: / || fas fa-home
+  笔记:
+    Python基础: /categories/Python基础/ || fas fa-code
+    面向对象: /categories/面向对象/ || fas fa-cubes
+    网络编程: /categories/网络编程/ || fas fa-network-wired
+    并发编程: /categories/并发编程/ || fas fa-layer-group
+    数据库: /categories/数据库/ || fas fa-database
+    前端: /categories/前端/ || fas fa-html5
+    Django: /categories/Django/ || fas fa-rocket
+    项目实战: /categories/项目实战/ || fas fa-hammer
+    运维与面试: /categories/运维与面试/ || fas fa-server
+    练习与代码: /categories/练习与代码/ || fas fa-keyboard
+  归档: /archives/ || fas fa-archive
+  关于: /about/ || fas fa-user

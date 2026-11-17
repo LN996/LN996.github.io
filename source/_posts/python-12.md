@@ -2,21 +2,18 @@
 title: 项目实战
 date: 2026-11-12 09:00:00
 tags:
-  - Python
-  - 项目实战
+  - Django
+  - 实战
 categories:
-  - Python学习笔记
+  - 项目实战
 ---
-> 本文是「Python全栈学习中心」系列笔记之一,配套可刷题的本地工具(获取方式见文末)。
 
----
+> 我的学习笔记,边学边记,持续修订。最后更新:2026-11。
 
 ## 📖 选课系统项目(面向对象综合)
 
-> 🎬 对应课程:Day31~32 选课系统(面向对象阶段的项目)
 
 ### 1. 项目概览与角色设计
-> 🎬 对应视频:P384~P385
 
 **选课系统是**面向对象思想的综合练习**:管理员/学生/老师三种角色,围绕 学校→班级→课程 的层级组织数据。**
 
@@ -26,7 +23,6 @@ categories:
 - 这个阶段还没有数据库,数据持久化用 **json/pickle 文件**保存对象状态
 
 ### 2. 登录认证装饰器
-> 🎬 对应视频:P389
 
 **每种角色登录后,后续功能都要先校验身份——用**认证装饰器**统一包裹,避免每个功能里重复写判断。**
 
@@ -53,7 +49,6 @@ print(view())
 ```
 
 ### 3. 反射调度功能
-> 🎬 对应视频:P386
 
 **菜单选择用 if/elif 会越写越长,课程教的是**用反射 getattr 按字符串调度功能**,这是该项目最重要的编程思想。**
 
@@ -72,7 +67,6 @@ print(getattr(obj, "login")())   # 按字符串调度方法
 ```
 
 ### 4. 数据持久化与目录规范
-> 🎬 对应视频:P385~P386
 
 **对象数据用 **json/pickle 存到 db 目录**,项目按 软件开发目录规范 组织:src/db/conf/log 各司其职。**
 
@@ -92,7 +86,6 @@ print(len(d["student"]))
 ```
 
 ### 5. 三大角色业务流程:注册、选课与成绩
-> 🎬 对应视频:P395~P403
 
 **三条业务主线落地:学生 注册→选学校→选课程(自动生成分数记录)→查看分数;老师 查看教授课程→选择课程→查看课程下学生→修改分数;登录做成**合并登录**,一个入口区分三种角色。**
 
@@ -126,10 +119,8 @@ print(alex.choose(py), py.scores)
 
 ## 📖 BBS博客项目(Django综合)
 
-> 🎬 对应课程:Day71~75 BBS博客项目
 
 ### 1. 项目概览与技术栈
-> 🎬 对应视频:P829~P830
 
 **BBS 是 Django 知识点的**大汇合**:forms 校验、auth 认证、ORM 多表、模板继承、ajax、中间件全部用上。**
 
@@ -139,7 +130,6 @@ print(alex.choose(py), py.scores)
 - 博客表 Blog 与用户**一对一**,个人站点皮肤/标题存在 Blog 表里
 
 ### 2. 数据库表设计(项目最核心一步)
-> 🎬 对应视频:P830~P833
 
 **8 张表把三种关系用全:**一对一**(User-Blog)、**一对多**(Category-Article)、**多对多**(Article-Tag,通过第三张表 Article2Tag)。**
 
@@ -149,7 +139,6 @@ print(alex.choose(py), py.scores)
 - 设计口诀:先确定实体,再找实体间关系,多对多想清楚要不要自定义第三张表(要存额外字段就必须自定义)
 
 ### 3. 注册与登录
-> 🎬 对应视频:P834~P843
 
 **注册用 **forms 组件校验** + ajax 提交 + **Pillow 生成图片验证码**;登录用 auth 模块,一个接口同时支持用户名/邮箱/手机号登录。**
 
@@ -159,7 +148,6 @@ print(alex.choose(py), py.scores)
 - 多方式登录:Q 查询把 username/email/phone 三个条件 or 起来,再交给 auth.authenticate
 
 ### 4. 个人站点与侧边栏
-> 🎬 对应视频:P849~P854
 
 **每个用户一个个人站点页面,**侧边栏三种筛选**(分类/标签/日期归档)用 inclusion_tag 组件化,一条 ORM 查询带出文章+筛选。**
 
@@ -168,7 +156,6 @@ print(alex.choose(py), py.scores)
 - 筛选本质是给文章查询加不同 filter 条件(分类 id / 标签 id / 年月)
 
 ### 5. 文章详情、点赞点踩与评论
-> 🎬 对应视频:P855~P859
 
 **点赞点踩和评论都走 **ajax + 事务**;子评论要记录 parent 评论;点赞用联合唯一防止重复。**
 
@@ -186,7 +173,6 @@ with transaction.atomic():
 ```
 
 ### 6. 后台管理与富文本安全
-> 🎬 对应视频:P862~P866
 
 **后台用 kindeditor 写文章,富文本内容**必须做 XSS 清洗**再入库,简介截取前也要先处理标签。**
 
@@ -196,7 +182,6 @@ with transaction.atomic():
 - 媒体文件配置 MEDIA_ROOT/MEDIA_URL,头像等上传文件统一管理
 
 ### 7. 导航条、Django admin 与 media 配置
-> 🎬 对应视频:P844~P848
 
 **登录成功后**导航条按 auth 状态渲染**两种样子;Django admin 注册模型即可可视化管理数据;media 配置让头像等上传文件能通过 URL 直接访问,顺带了解图片防盗链思路。**
 
@@ -219,10 +204,8 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 ## 📖 DRF图书接口项目(RestFramework)
 
-> 🎬 对应课程:Day85~87 DRF图书接口项目
 
 ### 1. 项目概览与 RESTful 规范
-> 🎬 对应视频:P939~P941
 
 **围绕图书表写一套**前后端分离的 5 大接口**(查所有/查单条/增/改/删),URL 和方法都遵守 restful 规范。**
 
@@ -232,7 +215,6 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 - 公共字段抽到 **BaseModel 抽象表**(create_time、is_delete、is_show),其他表继承,配合 filter 过滤
 
 ### 2. 序列化器实战
-> 🎬 对应视频:P943~P948
 
 **用 **ModelSerializer** 快速生成序列化器,反序列化走 局部钩子/全局钩子 校验,自定义操作要**重写 create/update**。**
 
@@ -255,7 +237,6 @@ except ValueError:
 ```
 
 ### 3. 视图集与自动路由
-> 🎬 对应视频:P943~P948
 
 **一个 **ModelViewSet + DefaultRouter** 自动生成 5 大接口路由;自定义接口用 `@action` 装饰器挂在视图集上。**
 
@@ -265,7 +246,6 @@ except ValueError:
 - 响应统一用自封装 Response(code/msg/results),配合全局异常处理
 
 ### 4. 认证、权限、频率三大组件
-> 🎬 对应视频:P950~P954、P956~P957、P965~P967
 
 **登录用 **jwt 签发 token**,请求头携带 token 走自定义认证类;权限控制不同角色;频率按 ip 限制防刷。**
 
@@ -282,7 +262,6 @@ print(base64.b64encode(b"admin").decode())   # jwt 的 payload 段就是 base64 
 *base64 编码演示(jwt 组成部分)*
 
 ### 5. 分页与接口文档
-> 🎬 对应视频:P949、P955
 
 **列表接口用 **PageNumberPagination 分页**;用 coreapi 自动生成接口文档,前后端对接不再靠嘴说。**
 
@@ -291,7 +270,6 @@ print(base64.b64encode(b"admin").decode())   # jwt 的 payload 段就是 base64 
 - 接口文档:安装 coreapi,settings 配置,路由挂 OptionalSlashRouter,访问 /docs 查看
 
 ### 6. Django 缓存机制
-> 🎬 对应视频:P968
 
 **把「经常读、很少变」的数据放进缓存,省掉重复的数据库查询与渲染:Django 支持多种缓存后端,生产常配 **redis**;视图/接口层用缓存装饰器或 drf 扩展一行生效。**
 
@@ -312,10 +290,8 @@ print(cache.get("book:1"))          # None(已失效)
 
 ## 📖 课后作业（项目实战）
 
-> 🎬 对应课程:BBS项目(Day71~75)与DRF项目(Day85~87)的功能实现作业,练习按项目功能原创编写
 
 ### 1. 三大项目作业清单
-> 🎬 对应视频:P384~P404、P829~P868、P939~P968
 
 **项目阶段的作业就是把**三个项目亲手落地一遍**:选课系统(面向对象)→ BBS(Django 全家桶)→ DRF 图书接口(前后端分离),每个项目都有必须独立完成的功能点。**
 
@@ -336,5 +312,3 @@ print(cache.get("book:1"))          # None(已失效)
 *项目落地自查清单*
 
 ---
-
-**系列目录 / 工具获取方式见文末 👇**
