@@ -1,0 +1,26 @@
+# Butterfly 主题美化配置
+# 放在博客根目录会自动覆盖/合并主题默认配置
+# 完整可配置项见:node_modules/hexo-theme-butterfly/_config.yml
+
+# 全站固定背景(渐变星点)。注意:主题会自动包 url(),这里只写路径
+background: /img/bg.svg
+
+# 首页顶部横幅
+index_img: /img/banner.svg
+
+# 其他页面(归档/分类/标签页)顶部横幅
+default_top_img: /img/banner.svg
+
+# 注入自定义玻璃拟态样式
+inject:
+  head:
+    - <link rel="stylesheet" href="/css/custom.css">
+
+# 关闭深色模式,保持浅色渐变观感一致
+darkmode:
+  enable: false
+
+# 侧栏头像
+avatar:
+  img: /img/avatar.svg
+  url: /
