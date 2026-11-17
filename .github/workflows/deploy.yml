@@ -1,9 +1,10 @@
-# 自动部署:每次 push 代码到 main 分支,GitHub 自动构建并发布网站
+# 自动部署:每次 push 源码到 source 分支,GitHub 自动构建,
+# 把生成的网页发布到 main 分支(username.github.io 仓库从 main 发布网页)
 name: Deploy Hexo to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [source]
   workflow_dispatch: {}  # 允许手动触发
 
 jobs:
@@ -27,9 +28,10 @@ jobs:
       - name: 构建静态网站
         run: npx hexo generate
 
-      - name: 发布到 gh-pages 分支
+      - name: 发布到 main 分支(网页)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
+          publish_branch: main
           publish_dir: ./public
+          force_orphan: true  # main 分支只保留网页文件,干净利落
